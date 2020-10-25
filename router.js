@@ -3,8 +3,8 @@ const errRequest = require("./result/errRequest");
 const forbidden = require("./result/forbidden");
 
 class Router {
-  constructor(isAccessEnableFunc) {
-    this.isAccessEnableFunc = isAccessEnableFunc;
+  constructor(auth) {
+    this.auth = auth;
   }
 
   async do({ headers, data, path, params, event }) {
@@ -17,8 +17,8 @@ class Router {
     }
 
     if (
-      this.isAccessEnableFunc &&
-      !(await this.isAccessEnableFunc({
+      this.auth &&
+      !(await this.auth({
         headers,
         data,
         path,
