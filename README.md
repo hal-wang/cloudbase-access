@@ -128,7 +128,26 @@ module.exports = {
 
 ## Results
 
-HTTP 返回结构，都是函数。除`base`外，都支持传入两个可选参数：
+`cloudbase-access`定义了一些 HTTP 返回结构，都以函数方式调用。
+
+### 支持类型
+
+目前除`base`外，支持以下类型：
+
+- accepted, 202
+- badRequest, 400
+- errRequest, 500
+- forbidden, 403
+- noContent, 204
+- notFound, 404
+- ok, 200
+- partialContent, 206
+
+当然也可以使用`base`，自定义返回状态码。
+
+### 参数
+
+除`base`外，都支持传入两个可选参数：
 
 1. `body`: 返回的 body 内容
 2. `headers`: 返回的额外头部内容，默认包含以下头部：
@@ -142,18 +161,7 @@ HTTP 返回结构，都是函数。除`base`外，都支持传入两个可选参
 
 `base`多了个参数`statusCode`，可指定返回状态码，其余状态码都是固定的。
 
-目前除`base`外，支持以下结构：
-
-- accepted, 202
-- badRequest, 400
-- errRequest, 500
-- forbidden, 403
-- noContent, 204
-- notFound, 404
-- ok, 200
-- partialContent, 206
-
-当然也可以使用`base`，自定义返回状态码。
+### 举例
 
 以下例子中返回 200 请求成功：
 
