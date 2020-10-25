@@ -1,34 +1,34 @@
-const notFound = require("./result/notFound");
 const errRequest = require("./result/errRequest");
 const forbidden = require("./result/forbidden");
 
 class Router {
-  constructor(event, auth, getModule) {
+  constructor(event, auth) {
     this.event = event;
-    this.auth = auth;
-    this.getModule = getModule;
+    this.auth = auth.bind(this);
 
     this.headers = this.event.headers;
     this.path = this.event.path;
     this.params = this.event.queryStringParameters;
-    this.data = this.getBodyData;
+    this.data = this.bodyData;
+
+    this._initModule();
+  }
+
+  _initModule() {
+    try {
+      this.module = require(`${process.cwd()}/controllers${this.path}.js`);
+    } catch (err) {
+      throw new RouterError("Can't find a path：" + err.message, this);
+    }
   }
 
   async do() {
-    let actionModule;
-    try {
-      actionModule = this.getModule();
-    } catch (err) {
-      console.log("require action err", err);
-      return notFound("Can't find a path：" + err.message);
-    }
-
-    if (this.auth && !(await this.auth(this.requestParams))) {
+    if (this.auth && !(await this.auth())) {
       return forbidden();
     }
 
     try {
-      return await actionModule.action(this.requestParams);
+      return await this.module.action(this.requestParams);
     } catch (err) {
       return errRequest(err.message);
     }
