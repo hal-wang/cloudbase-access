@@ -20,8 +20,10 @@ class Router {
       this.isAccessEnableFunc &&
       !(await this.isAccessEnableFunc({
         headers,
+        data,
         path,
-        auth: actionModule.auth,
+        params,
+        event,
       }))
     ) {
       return forbidden();
