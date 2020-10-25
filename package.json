@@ -1,0 +1,11 @@
+{
+  "name": "@hbrwang/cloudbase-access",
+  "version": "0.0.2",
+  "description": "用于快速创建CloudBase支持HTTP访问服务的云函数",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hbrwang",
+  "license": "MTI"
+}
