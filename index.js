@@ -1,11 +1,11 @@
 const Results = require("./result/index");
-const Helpers = require("./helpers/index");
 const Router = require("./router");
+const Action = require("./action");
 
 const result = {
   Results,
-  Helpers,
   Router,
+  Action,
 };
 
 module.exports = result;

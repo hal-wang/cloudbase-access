@@ -1,6 +1,6 @@
 {
   "name": "@hbrwang/cloudbase-access",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "用于快速创建CloudBase支持HTTP访问服务的云函数",
   "main": "index.js",
   "scripts": {
