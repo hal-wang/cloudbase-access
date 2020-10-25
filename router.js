@@ -16,7 +16,7 @@ class Router {
   async do() {
     let actionModule;
     try {
-      actionModule = require(`./controllers${this.path}.js`);
+      actionModule = require(`${__dirname}/controllers${this.path}.js`);
     } catch (err) {
       console.log("require action err", err);
       return notFound("Can't find a path：" + err.message);
