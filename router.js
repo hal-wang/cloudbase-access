@@ -3,10 +3,10 @@ const errRequest = require("./result/errRequest");
 const forbidden = require("./result/forbidden");
 
 class Router {
-  constructor(event, auth, controllersPath) {
+  constructor(event, auth, getModule) {
     this.event = event;
     this.auth = auth;
-    this.controllersPath = controllersPath;
+    this.getModule = getModule;
 
     this.headers = this.event.headers;
     this.path = this.event.path;
@@ -17,7 +17,7 @@ class Router {
   async do() {
     let actionModule;
     try {
-      actionModule = require(`${this.controllersPath}${this.path}.js`);
+      actionModule = this.getModule();
     } catch (err) {
       console.log("require action err", err);
       return notFound("Can't find a path：" + err.message);
