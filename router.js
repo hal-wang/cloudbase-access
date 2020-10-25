@@ -3,37 +3,57 @@ const errRequest = require("./result/errRequest");
 const forbidden = require("./result/forbidden");
 
 class Router {
-  constructor(auth) {
+  constructor(event, auth) {
+    this.event = event;
     this.auth = auth;
+
+    this.headers = this.event.headers;
+    this.path = this.event.path;
+    this.params = this.event.queryStringParameters;
+    this.data = this.getBodyData;
   }
 
-  async do({ headers, data, path, params, event }) {
+  async do() {
     let actionModule;
     try {
-      actionModule = require(`./controllers${path}.js`);
+      actionModule = require(`./controllers${this.path}.js`);
     } catch (err) {
       console.log("require action err", err);
       return notFound("Can't find a path：" + err.message);
     }
 
-    if (
-      this.auth &&
-      !(await this.auth({
-        headers,
-        data,
-        path,
-        params,
-        event,
-      }))
-    ) {
+    if (this.auth && !(await this.auth(this.requestParams))) {
       return forbidden();
     }
 
     try {
-      return await actionModule.action({ headers, data, path, params, event });
+      return await actionModule.action(this.requestParams);
     } catch (err) {
       return errRequest(err.message);
     }
+  }
+
+  get requestParams() {
+    return {
+      event: this.event,
+      headers: this.headers,
+      path: this.path,
+      params: this.params,
+      data: this.data,
+    };
+  }
+
+  get bodyData() {
+    const body = this.event.body;
+
+    let data;
+    try {
+      data = JSON.parse(body);
+      if (!data) data = body;
+    } catch {
+      data = body;
+    }
+    return data;
   }
 }
 
