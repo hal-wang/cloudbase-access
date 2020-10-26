@@ -10,24 +10,27 @@ class Router {
     this.path = this.event.path;
     this.params = this.event.queryStringParameters;
     this.data = this.bodyData;
-
-    this._initModule();
   }
 
   _initModule() {
+    if (this.module) return;
+
     try {
       this.module = require(`${process.cwd()}/controllers${this.path}.js`);
     } catch (err) {
-      throw new RouterError("Can't find a path：" + err.message, this);
+      this.module = null;
     }
   }
 
   async do() {
-    if (this.auth && !(await this.auth())) {
-      return forbidden();
-    }
+    this._initModule();
+    if (!this.module) return notFound("Can't find a path：" + this.path);
 
     try {
+      if (this.auth && !(await this.auth())) {
+        return forbidden();
+      }
+
       return await this.module.action(this.requestParams);
     } catch (err) {
       return errRequest(err.message);

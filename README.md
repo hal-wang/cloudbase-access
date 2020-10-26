@@ -20,7 +20,9 @@ exports.main = async event => {
 }
 ```
 
-以上几行代码即创建一个简单的 MVC 架构的 API
+以上几行代码即创建一个简单的 MVC 架构的 API。
+
+如果访问的路径不存在，会返回 404 NotFound 结构。
 
 ### 请求参数
 
@@ -180,32 +182,4 @@ return ok({
 const { badRequest } = require('@hbrwang/cloudbase-access').Results
 
 return badRequest('请求错误')
-```
-
-## 较完整的入口
-
-前面的入口比较简单，实际应该要判断 `action` 是否存在。
-
-结合 `Router` 和 `Results` ，重新写个入口：
-
-```JS
-const Router = require('@hbrwang/cloudbase-access').Router
-// 这里将 auth 函数定义到其他文件，以保持 main 的整洁
-const auth = require('./auth')
-const { notFound, errRequest } = require('@hbrwang/cloudbase-access').Results
-const RouterError = require('@hbrwang/cloudbase-access/RouterError')
-
-exports.main = async event => {
-  const router = new Router(event, auth)
-
-  try {
-    return await router.do()
-  } catch (err) {
-    if (err instanceof RouterError) { // 如果未找到 action , 会抛出 RouterError 错误
-      return notFound(err.message)
-    } else {
-      return errRequest(err.message) // 如果安全性要求较高，不应返回具体未知错误
-    }
-  }
-}
 ```
