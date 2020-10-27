@@ -100,15 +100,13 @@ auth 是个角色数组。如`['login']`，可在前面`auth`函数中判断为�
 例 1
 
 ```JS
-const { ok, notFound } = require('@hbrwang/cloudbase-access').Results // 返回结构，后续 Results 部分会介绍
-
 module.exports = {
   action: async function ({ data }) {
     const { account, password } = data
 
-    if(/*账号或密码错误*/) return notFound('账号或密码错误')
+    if(/*账号或密码错误*/) return this.notFound('账号或密码错误')
 
-    return ok(new {/*返回信息*/})
+    return this.ok(new {/*返回信息*/})
   }
 }
 ```
@@ -116,14 +114,12 @@ module.exports = {
 例 2
 
 ```JS
-const { ok } = require('@hbrwang/cloudbase-access').Results
-
 module.exports = {
   auth: ['login']
   action: async function ({ headers }) {
     const uid = headers.uid // 在auth中已经验证 uid 的正确性
     const todoList = [] // 可放心从数据库读取用户数据，因为uid已验证
-    return ok(todoList)
+    return this.ok(todoList)
   }
 }
 ```
@@ -182,4 +178,16 @@ return ok({
 const { badRequest } = require('@hbrwang/cloudbase-access').Results
 
 return badRequest('请求错误')
+```
+
+### 在 Router 中
+
+在 `Router` 中已经加入了 Results 函数，可以直接 `this.func` 方式调用
+
+```JS
+module.exports = {
+  action: async function () {
+    return this.noContent()
+  }
+}
 ```

@@ -1,15 +1,22 @@
 const errRequest = require("./result/errRequest");
 const forbidden = require("./result/forbidden");
+const notFound = require("./result/notFound");
+
+const Results = require("./result/index");
 
 class Router {
   constructor(event, auth) {
     this.event = event;
-    this.auth = auth.bind(this);
+    this.auth = auth ? auth.bind(this) : undefined;
 
     this.headers = this.event.headers;
     this.path = this.event.path;
     this.params = this.event.queryStringParameters;
     this.data = this.bodyData;
+
+    for (let key in Results) {
+      this[key] = Results[key];
+    }
   }
 
   _initModule() {
@@ -31,7 +38,8 @@ class Router {
         return forbidden();
       }
 
-      return await this.module.action(this.requestParams);
+      const action = this.module.action.bind(this);
+      return await action(this.requestParams);
     } catch (err) {
       return errRequest(err.message);
     }
