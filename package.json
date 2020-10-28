@@ -1,6 +1,6 @@
 {
   "name": "@hbrwang/cloudbase-access",
-  "version": "0.3.2",
+  "version": "0.4.8",
   "description": "用于快速创建CloudBase支持HTTP访问服务的云函数",
   "homepage": "https://github.com/hbrwang/cloudbase-access",
   "repository": {
@@ -16,5 +16,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "hbrwang",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^14.14.5",
+    "fs": "0.0.1-security"
+  }
 }
