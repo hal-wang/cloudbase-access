@@ -6,9 +6,7 @@ npm i @hbrwang/cloudbase-access
 
 ## demo
 
-示例请查看 [cloudbase-access-demo](https://github.com/hbrwang/cloudbase-access-demo)
-
-或者查看本项目 `test` 文件夹中的一些单元测试。
+示例请查看本项目 `test` 文件夹中的一些单元测试。
 
 ## Router
 
