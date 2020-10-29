@@ -12,7 +12,11 @@ export default class Router {
   readonly requestParams: RequestParams;
   readonly middlewares: Array<Middleware> = new Array<Middleware>();
 
-  constructor(event: any, auth?: Authority) {
+  constructor(
+    event: any,
+    auth?: Authority,
+    public readonly cFolder = "controllers"
+  ) {
     this.requestParams = new RequestParams(event);
 
     if (auth) this.middlewares.push(auth);
@@ -20,14 +24,19 @@ export default class Router {
 
   private async initModule() {
     if (this.routerAction) return;
+    console.log("fullPath", this.fullPath);
 
-    if (!existsSync(this.requestParams.fullPath)) {
+    if (!existsSync(this.fullPath)) {
       this.routerAction = null;
       return;
     }
 
-    const actionClass = require(this.requestParams.fullPath).default;
+    const actionClass = require(this.fullPath).default;
     this.routerAction = new actionClass(this.requestParams) as BaseAction;
+  }
+
+  public get fullPath() {
+    return `${process.cwd()}/${this.cFolder}${this.requestParams.path}.ts`;
   }
 
   async do() {

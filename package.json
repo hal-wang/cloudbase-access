@@ -1,6 +1,6 @@
 {
   "name": "@hbrwang/cloudbase-access",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "用于快速创建CloudBase支持HTTP访问服务的云函数",
   "homepage": "https://github.com/hbrwang/cloudbase-access",
   "repository": {
@@ -13,12 +13,21 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "author": "hbrwang",
   "license": "MIT",
   "dependencies": {
     "@types/node": "^14.14.5",
     "fs": "0.0.1-security"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "jest": "^26.6.1",
+    "ts-jest": "^26.4.3",
+    "typescript": "^4.0.5"
   }
 }

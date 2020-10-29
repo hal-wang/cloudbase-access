@@ -23,8 +23,4 @@ export default class RequestParams {
     }
     return data;
   }
-
-  public get fullPath() {
-    return `${process.cwd()}/controllers${this.path}.js`;
-  }
 }
