@@ -71,18 +71,4 @@ export default class HttpResult {
   static errRequest = function (body?: any) {
     return new HttpResult(500, body);
   };
-
-  static get funcs() {
-    return {
-      base: HttpResult.base,
-      ok: HttpResult.ok,
-      accepted: HttpResult.accepted,
-      noContent: HttpResult.noContent,
-      partialContent: HttpResult.partialContent,
-      badRequest: HttpResult.badRequest,
-      forbidden: HttpResult.forbidden,
-      notFound: HttpResult.notFound,
-      errRequest: HttpResult.errRequest,
-    };
-  }
 }
