@@ -12,7 +12,7 @@ export default class HttpResult {
       statusCode: this.statusCode,
       headers: this.finalHeaders,
       body: this.body,
-    };
+    } as any;
   }
 
   get isSuccess() {

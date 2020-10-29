@@ -1,13 +1,13 @@
 import { existsSync } from "fs";
 import Authority from "./Authority";
 
-import BaseAction from "./BaseAction";
+import Action from "./Action";
 import HttpResult from "./HttpResult";
 import Middleware from "./Middleware";
 import RequestParams from "./RequestParams";
 
 export default class Router {
-  private routerAction: BaseAction;
+  private routerAction: Action;
   private readonly middlewares: Array<Middleware> = new Array<Middleware>();
 
   readonly requestParams: RequestParams;
@@ -46,7 +46,6 @@ export default class Router {
 
   private async initModule() {
     if (this.routerAction) return;
-    console.log("fullPath", this.fullPath);
 
     if (!existsSync(this.fullPath)) {
       this.routerAction = null;
@@ -54,7 +53,8 @@ export default class Router {
     }
 
     const actionClass = require(this.fullPath).default;
-    this.routerAction = new actionClass(this.requestParams) as BaseAction;
+    this.routerAction = new actionClass(this.requestParams) as Action;
+    this.routerAction.requestParams = this.requestParams;
   }
 
   private get fullPath() {
