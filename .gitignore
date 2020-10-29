@@ -53,5 +53,7 @@ node_modules/
 # dotenv environment variables file
 .env
 
-*.js
-*.js.map
+**.js
+**.js.map
+
+package-lock.json

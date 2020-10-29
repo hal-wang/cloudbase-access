@@ -2,41 +2,37 @@ import { existsSync } from "fs";
 
 import BaseAction from "./BaseAction";
 import HttpResult from "./HttpResult";
+import RequestParams from "./RequestParams";
 
 export default class Router {
-  readonly auth: Function;
+  private routerAction: BaseAction;
 
-  readonly headers: Object;
-  readonly path: String;
-  readonly params: Object;
-  readonly data: any;
+  readonly auth: Function;
+  readonly requestParams: RequestParams;
 
   constructor(readonly event: any, auth?: Function) {
     this.auth = auth ? auth.bind(this) : undefined;
-
-    this.headers = this.event.headers;
-    this.path = this.event.path;
-    this.params = this.event.queryStringParameters;
-    this.data = this.bodyData;
+    this.requestParams = new RequestParams(event);
   }
 
-  private routerAction: BaseAction;
   private async initModule() {
     if (this.routerAction) return;
 
-    if (!existsSync(this.getFullPath())) {
+    if (!existsSync(this.requestParams.fullPath)) {
       this.routerAction = null;
       return;
     }
 
-    const actionClass = require(this.getFullPath()).default;
+    const actionClass = require(this.requestParams.fullPath).default;
     this.routerAction = new actionClass(this.requestParams) as BaseAction;
   }
 
   async do() {
     await this.initModule();
     if (!this.routerAction)
-      return HttpResult.notFound("Can't find a path：" + this.path);
+      return HttpResult.notFound(
+        "Can't find the path：" + this.requestParams.path
+      );
 
     try {
       if (this.auth && !(await this.auth())) {
@@ -47,32 +43,5 @@ export default class Router {
     } catch (err) {
       return HttpResult.errRequest(err.message);
     }
-  }
-
-  private getFullPath() {
-    return `${process.cwd()}/controllers${this.path}.js`;
-  }
-
-  get requestParams() {
-    return {
-      event: this.event,
-      headers: this.headers,
-      path: this.path,
-      params: this.params,
-      data: this.data,
-    };
-  }
-
-  private get bodyData() {
-    const body = this.event.body;
-
-    let data: any;
-    try {
-      data = JSON.parse(body);
-      if (!data) data = body;
-    } catch {
-      data = body;
-    }
-    return data;
   }
 }
