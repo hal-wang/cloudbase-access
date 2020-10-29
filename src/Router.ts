@@ -8,18 +8,40 @@ import RequestParams from "./RequestParams";
 
 export default class Router {
   private routerAction: BaseAction;
+  private readonly middlewares: Array<Middleware> = new Array<Middleware>();
 
   readonly requestParams: RequestParams;
-  readonly middlewares: Array<Middleware> = new Array<Middleware>();
 
   constructor(
     event: any,
-    auth?: Authority,
+    private readonly auth: Authority = null,
     public readonly cFolder = "controllers"
   ) {
     this.requestParams = new RequestParams(event);
 
-    if (auth) this.middlewares.push(auth);
+    if (auth != null) this.middlewares.push(auth);
+  }
+
+  async do() {
+    await this.initModule();
+    if (!this.routerAction)
+      return HttpResult.notFound(
+        "Can't find the path：" + this.requestParams.path
+      );
+
+    if (this.auth != null) this.auth.roles = this.routerAction.roles;
+
+    for (let i = 0; i < this.middlewares.length; i++) {
+      this.middlewares[i].requestParams = this.requestParams;
+      const mdwResult = await this.middlewares[i].do();
+      if (mdwResult) return mdwResult;
+    }
+
+    try {
+      return await this.routerAction.do();
+    } catch (err) {
+      return HttpResult.errRequest(err.message);
+    }
   }
 
   private async initModule() {
@@ -35,26 +57,7 @@ export default class Router {
     this.routerAction = new actionClass(this.requestParams) as BaseAction;
   }
 
-  public get fullPath() {
+  private get fullPath() {
     return `${process.cwd()}/${this.cFolder}${this.requestParams.path}.ts`;
-  }
-
-  async do() {
-    await this.initModule();
-    if (!this.routerAction)
-      return HttpResult.notFound(
-        "Can't find the path：" + this.requestParams.path
-      );
-
-    for (let i = 0; i < this.middlewares.length; i++) {
-      const mdwResult = await this.middlewares[i].do();
-      if (mdwResult) return mdwResult;
-    }
-
-    try {
-      return await this.routerAction.do();
-    } catch (err) {
-      return HttpResult.errRequest(err.message);
-    }
   }
 }
