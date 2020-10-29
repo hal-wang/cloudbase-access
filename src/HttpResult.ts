@@ -15,6 +15,10 @@ export default class HttpResult {
     };
   }
 
+  get isSuccess() {
+    return this.statusCode > 200 && this.statusCode < 300;
+  }
+
   private get finalHeaders() {
     let headers = {
       "Content-Type": "application/json",

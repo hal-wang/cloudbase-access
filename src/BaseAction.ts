@@ -13,7 +13,7 @@ export default abstract class BaseAction {
 
   constructor(
     public readonly requestParams: Object,
-    public readonly auth?: Array<string>
+    public readonly roles?: Array<string>
   ) {
     this.base = HttpResult.base;
     this.ok = HttpResult.ok;
