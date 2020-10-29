@@ -16,7 +16,7 @@ export default class HttpResult {
   }
 
   get isSuccess() {
-    return this.statusCode > 200 && this.statusCode < 300;
+    return this.statusCode >= 200 && this.statusCode < 300;
   }
 
   private get finalHeaders() {
@@ -37,39 +37,39 @@ export default class HttpResult {
     headers?: object,
     cors?: boolean
   ) {
-    return new HttpResult(statusCode, body, headers, cors).result;
+    return new HttpResult(statusCode, body, headers, cors);
   };
 
   static ok = function (body?: any) {
-    return new HttpResult(200, body).result;
+    return new HttpResult(200, body);
   };
 
   static accepted = function (body?: any) {
-    return new HttpResult(202, body).result;
+    return new HttpResult(202, body);
   };
 
   static noContent = function () {
-    return new HttpResult(204).result;
+    return new HttpResult(204);
   };
 
   static partialContent = function (body?: any) {
-    return new HttpResult(206, body).result;
+    return new HttpResult(206, body);
   };
 
   static badRequest = function (body?: any) {
-    return new HttpResult(400, body).result;
+    return new HttpResult(400, body);
   };
 
   static forbidden = function (body?: any) {
-    return new HttpResult(403, body).result;
+    return new HttpResult(403, body);
   };
 
   static notFound = function (body?: any) {
-    return new HttpResult(404, body).result;
+    return new HttpResult(404, body);
   };
 
   static errRequest = function (body?: any) {
-    return new HttpResult(500, body).result;
+    return new HttpResult(500, body);
   };
 
   static get funcs() {

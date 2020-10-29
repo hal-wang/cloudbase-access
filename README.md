@@ -20,7 +20,7 @@ npm i @hbrwang/cloudbase-access
 import { Router } from "@hbrwang/cloudbase-access";
 export const main = async (event: any) => {
   const router = new Router(event);
-  return await router.do();
+  return (await router.do()).result;
 };
 ```
 
@@ -28,9 +28,11 @@ export const main = async (event: any) => {
 
 如果访问的路径不存在，会返回 404 NotFound 结构。
 
-### 请求参数
+## 请求参数
 
-已解析并封装了请求参数 `RequestParams`，包含以下字段：
+`RequestParams` 类解析并封装请求参数，构造函数传入云函数 `event`。
+
+实例包含以下字段：
 
 1. event，云函数环境 event
 2. headers, 请求头部
@@ -38,11 +40,17 @@ export const main = async (event: any) => {
 4. params，查询参数
 5. data，请求 body，如果是 JSON 字符串，则转为 JSON 对象
 
-在 Router 中，有 `RequestParams` 实例对象 `requestParams`
+在 Router 中，有 `RequestParams` 实例对象 `requestParams`，可通过 `this.requestParams.headers` 方式使用
 
-### 权限
+## 中间件
 
-`Router`构造函数第二个参数是权限验证的函数
+所有中间件应派生自类 `Middleware`，
+
+## 权限
+
+`Router` 构造函数第二个参数是权限验证 `Authority` 对象。
+
+你需要新写个类，继承 `Authority`，并实现 `do` 函数。
 
 权限是用于判断用户能否使用 API，用法如下：
 
@@ -62,7 +70,7 @@ const auth = async function () {
 
 export const main = async (event: any) => {
   const router = new Router(event, auth);
-  return await router.do();
+  return (await router.do()).result;
 };
 ```
 

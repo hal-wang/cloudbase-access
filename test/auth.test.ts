@@ -17,7 +17,7 @@ test("router test login access", async function () {
     "test"
   );
 
-  const result = await router.do();
+  const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
 });
 
@@ -34,7 +34,7 @@ test("router test login not access", async function () {
     "test"
   );
 
-  const result = await router.do();
+  const result = (await router.do()).result;
   expect(result.statusCode).toBe(403);
 });
 
@@ -51,7 +51,7 @@ test("router test admin access", async function () {
     "test"
   );
 
-  const result = await router.do();
+  const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
 });
 
@@ -68,7 +68,7 @@ test("router test admin not access", async function () {
     "test"
   );
 
-  const result = await router.do();
+  const result = (await router.do()).result;
   expect(result.statusCode).toBe(403);
 });
 

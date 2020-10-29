@@ -1,4 +1,4 @@
-import { RequestParams } from "..";
+import { Middleware, RequestParams } from "..";
 import HttpResult from "./HttpResult";
 
 export default abstract class Action {
@@ -16,6 +16,7 @@ export default abstract class Action {
 
   /** will be set before doing */
   requestParams: RequestParams;
+  middlewares: Array<Middleware>;
 
   abstract async do(): Promise<HttpResult>;
 }

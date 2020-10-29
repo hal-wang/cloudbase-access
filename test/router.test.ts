@@ -10,5 +10,6 @@ test("router test", async function () {
     "test"
   );
 
-  expect((await router.do()).statusCode).toBe(200);
+  const result = (await router.do()).result;
+  expect(result.statusCode).toBe(200);
 });
