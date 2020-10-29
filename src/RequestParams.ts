@@ -1,7 +1,7 @@
 export default class RequestParams {
-  readonly headers: Object;
+  readonly headers: any;
   readonly path: String;
-  readonly params: Object;
+  readonly params: any;
   readonly data: any;
 
   constructor(public readonly event: any) {

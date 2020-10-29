@@ -4,6 +4,10 @@
 
 npm i @hbrwang/cloudbase-access
 
+## demo
+
+示例请查看 [cloudbase-access-demo](https://github.com/hbrwang/cloudbase-access-demo)
+
 ## Router
 
 帮助你快速构建 MVC 架构的 WebAPI。
@@ -26,25 +30,15 @@ export const main = async (event: any) => {
 
 ### 请求参数
 
-在 Router 中，解析了请求参数，放在`router.requestParams`字段，结构如下：
+已解析并封装了请求参数 `RequestParams`，包含以下字段：
 
-```ts
-get requestParams() {
-  return {
-    event: this.event,
-    headers: this.headers,
-    path: this.path,
-    params: this.params,
-    data: this.data,
-  };
-}
-```
+1. event，云函数环境 event
+2. headers, 请求头部
+3. path，访问路径，如`POST https://api.com/user/login`，path 值为`/user/login`
+4. params，查询参数
+5. data，请求 body，如果是 JSON 字符串，则转为 JSON 对象
 
-- event: 云函数环境 event
-- headers: 请求头部
-- path: 访问路径，如`POST https://api.com/user/login`，path 值为`/user/login`
-- params: 查询参数
-- data: 请求 body 数据，已转 JSON
+在 Router 中，有 `RequestParams` 实例对象 `requestParams`
 
 ### 权限
 
