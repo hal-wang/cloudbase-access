@@ -48,8 +48,8 @@ export default class HttpResult {
     return new HttpResult(202, body).result;
   };
 
-  static noContent = function (body?: any) {
-    return new HttpResult(204, body).result;
+  static noContent = function () {
+    return new HttpResult(204).result;
   };
 
   static partialContent = function (body?: any) {

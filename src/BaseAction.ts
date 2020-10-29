@@ -1,3 +1,4 @@
+import { RequestParams } from "..";
 import HttpResult from "./HttpResult";
 
 export default abstract class BaseAction {
@@ -12,7 +13,7 @@ export default abstract class BaseAction {
   readonly errRequest: Function;
 
   constructor(
-    public readonly requestParams: Object,
+    public readonly requestParams: RequestParams,
     public readonly roles?: Array<string>
   ) {
     this.base = HttpResult.base;
