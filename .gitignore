@@ -56,4 +56,6 @@ node_modules/
 **.js
 **.js.map
 
+!jest.config.js
+
 package-lock.json

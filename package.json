@@ -1,6 +1,6 @@
 {
   "name": "@hbrwang/cloudbase-access",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "用于快速创建CloudBase支持HTTP访问服务的云函数",
   "homepage": "https://github.com/hbrwang/cloudbase-access",
   "repository": {
