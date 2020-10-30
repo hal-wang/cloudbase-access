@@ -1,5 +1,5 @@
-import { Router } from "../index";
-import { HttpResult } from "..";
+import { Router } from "../src/index";
+import { HttpResult } from "../src";
 import Authority from "../src/Authority";
 import linq = require("linq");
 import global from "./global";

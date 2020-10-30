@@ -1,4 +1,4 @@
-import { HttpResult, RequestParams } from "..";
+import { HttpResult, RequestParams } from ".";
 
 export default abstract class Middleware {
   constructor(public readonly type: MiddlewareType) {}

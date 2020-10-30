@@ -1,4 +1,4 @@
-import { Router } from "../index";
+import { Router } from "../src/index";
 
 test("router test", async function () {
   const router = new Router(

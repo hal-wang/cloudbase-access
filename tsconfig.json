@@ -5,6 +5,8 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
+    "outDir": "./dist",
     "target": "ES2020"
-  }
+  },
+  "exclude": ["test"]
 }

@@ -1,4 +1,4 @@
-import { Middleware, RequestParams } from "..";
+import { Middleware, RequestParams } from ".";
 import HttpResult from "./HttpResult";
 
 export default abstract class Action {

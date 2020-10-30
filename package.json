@@ -1,18 +1,25 @@
 {
   "name": "@hbrwang/cloudbase-access",
-  "version": "0.5.9",
+  "version": "0.5.12",
   "description": "用于快速创建CloudBase支持HTTP访问服务的云函数",
   "homepage": "https://github.com/hbrwang/cloudbase-access",
   "repository": {
     "type": "git",
     "url": "https://github.com/hbrwang/cloudbase-access"
   },
+  "keywords": [
+    "mvc",
+    "hbrwang",
+    "cloudbase",
+    "cloudbase-access"
+  ],
   "bugs": {
     "url": "https://github.com/hbrwang/cloudbase-access/issues",
     "email": "hbrwang@outlook.com"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
     "test": "jest",
     "eslint": "eslint src --ext .ts"
   },

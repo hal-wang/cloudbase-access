@@ -1,4 +1,4 @@
-import { Action, HttpResult, RequestParams } from "../index";
+import { Action, HttpResult, RequestParams } from "../src/index";
 
 class Login extends Action {
   async do(): Promise<HttpResult> {

@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "../..";
+import { Action, HttpResult } from "../../src";
 
 export default class Login extends Action {
   constructor() {

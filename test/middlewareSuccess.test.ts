@@ -1,4 +1,4 @@
-import { HttpResult, Middleware, Router } from "../index";
+import { HttpResult, Middleware, Router } from "../src/index";
 import { MiddlewareType } from "../src/Middleware";
 
 test("middleware test success", async function () {
