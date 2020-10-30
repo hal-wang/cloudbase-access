@@ -2,3 +2,4 @@ demo/
 test/
 
 jest.config.js
+.eslintrc.js

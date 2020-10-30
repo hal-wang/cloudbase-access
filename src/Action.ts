@@ -16,6 +16,7 @@ export default abstract class Action {
 
   /** will be set before doing */
   requestParams: RequestParams;
+  /** will be set before doing */
   middlewares: Array<Middleware>;
 
   abstract async do(): Promise<HttpResult>;

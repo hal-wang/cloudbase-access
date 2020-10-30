@@ -12,7 +12,7 @@ export default class Router {
   readonly requestParams: RequestParams;
 
   constructor(
-    event: any,
+    event: Record<string, unknown>,
     private readonly auth: Authority = null,
     public readonly cFolder = "controllers"
   ) {
@@ -21,7 +21,7 @@ export default class Router {
     if (auth != null) this.middlewares.push(auth);
   }
 
-  async configure(mdw: Middleware) {
+  async configure(mdw: Middleware): Promise<void> {
     this.middlewares.push(mdw);
   }
 
@@ -72,17 +72,24 @@ export default class Router {
   private async initModule() {
     if (this.routerAction) return;
 
-    const fullPath = `${process.cwd()}/${this.cFolder}${
-      this.requestParams.path
-    }.ts`;
+    let fullPath = this.getFullPath("js");
+    if (!existsSync(fullPath)) {
+      fullPath = this.getFullPath("ts");
+      if (!existsSync(fullPath)) {
+        return;
+      }
+    }
 
-    if (!existsSync(fullPath)) return;
-
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const actionClass = require(fullPath).default;
     this.routerAction = new actionClass(this.requestParams) as Action;
     this.routerAction.requestParams = this.requestParams;
     this.routerAction.middlewares = this.middlewares.map((val) => val);
 
     if (this.auth != null) this.auth.roles = this.routerAction.roles;
+  }
+
+  private getFullPath(type: string) {
+    return `${process.cwd()}/${this.cFolder}${this.requestParams.path}.${type}`;
   }
 }

@@ -2,12 +2,14 @@ import { Action, HttpResult, RequestParams } from "../index";
 
 class Login extends Action {
   async do(): Promise<HttpResult> {
-    const { account, password } = this.requestParams.data;
+    const { account, password } = <Record<string, unknown>>(
+      this.requestParams.data
+    );
 
     if (account != "abc") return this.notFound("用户不存在");
     if (password != "123456") return this.badRequest("密码错误");
 
-    return this.ok('action ok');
+    return this.ok("action ok");
   }
 }
 

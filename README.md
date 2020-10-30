@@ -82,7 +82,7 @@ class Auth extends Authority {
     if (!this.roles || !this.roles.length) return null;
 
     if (this.roles.includes("login") && !this.loginAuth()) {
-      return HttpResult.forbidden("账号或密码错误") as any;
+      return HttpResult.forbidden("账号或密码错误");
     }
 
     return null;

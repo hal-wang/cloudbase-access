@@ -1,26 +1,27 @@
 export default class RequestParams {
-  readonly headers: any;
-  readonly path: String;
-  readonly params: any;
-  readonly data: any;
+  readonly headers: Record<string, unknown>;
+  readonly path: string;
+  readonly params: Record<string, unknown>;
+  readonly data: Record<string, unknown>;
 
-  constructor(public readonly event: any) {
-    this.headers = this.event.headers;
-    this.path = this.event.path;
-    this.params = this.event.queryStringParameters;
-    this.data = this.bodyData;
-  }
+  constructor(public readonly event: Record<string, unknown>) {
+    this.headers = <Record<string, unknown>>this.event.headers;
+    this.path = <string>this.event.path;
+    this.params = <Record<string, unknown>>this.event.queryStringParameters;
 
-  private get bodyData() {
     const body = this.event.body;
-
-    let data: any;
-    try {
-      data = JSON.parse(body);
-      if (!data) data = body;
-    } catch {
-      data = body;
+    if (
+      this.headers &&
+      this.headers["content-type"] &&
+      (<string>this.headers["content-type"]).includes("application/json")
+    ) {
+      if (typeof body == "string") {
+        this.data = <Record<string, unknown>>JSON.parse(body);
+      } else {
+        this.data = <Record<string, unknown>>body;
+      }
+    } else {
+      this.data = <Record<string, unknown>>body;
     }
-    return data;
   }
 }
