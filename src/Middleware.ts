@@ -4,7 +4,7 @@ export default abstract class Middleware {
   constructor(public readonly type: MiddlewareType) {}
 
   /**will be set before doing */
-  requestParams: RequestParams;
+  requestParams?: RequestParams;
 
   /** if success, return null */
   abstract async do(): Promise<HttpResult>;

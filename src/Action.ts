@@ -15,9 +15,9 @@ export default abstract class Action {
   protected readonly errRequest = HttpResult.errRequest;
 
   /** will be set before doing */
-  requestParams: RequestParams;
+  requestParams?: RequestParams;
   /** will be set before doing */
-  middlewares: Array<Middleware>;
+  middlewares?: Array<Middleware>;
 
   abstract async do(): Promise<HttpResult>;
 }

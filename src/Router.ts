@@ -6,14 +6,14 @@ import Middleware, { MiddlewareType } from "./Middleware";
 import RequestParams from "./RequestParams";
 
 export default class Router {
-  private routerAction: Action;
+  private routerAction?: Action;
   private readonly middlewares: Array<Middleware> = new Array<Middleware>();
 
   readonly requestParams: RequestParams;
 
   constructor(
     event: Record<string, unknown>,
-    private readonly auth: Authority = null,
+    private readonly auth: Authority,
     public readonly cFolder = "controllers"
   ) {
     this.requestParams = new RequestParams(event);
