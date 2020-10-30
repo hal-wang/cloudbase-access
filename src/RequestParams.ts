@@ -24,4 +24,13 @@ export default class RequestParams {
       this.data = <Record<string, unknown>>body;
     }
   }
+
+  static get empty(): RequestParams {
+    return new RequestParams({
+      headers: {},
+      path: null,
+      params: {},
+      data: {},
+    });
+  }
 }

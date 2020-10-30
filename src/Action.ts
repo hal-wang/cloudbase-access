@@ -2,7 +2,7 @@ import { Middleware, RequestParams } from ".";
 import HttpResult from "./HttpResult";
 
 export default abstract class Action {
-  constructor(public readonly roles?: Array<string>) {}
+  constructor(public readonly roles: Array<string> = new Array<string>()) {}
 
   protected readonly base = HttpResult.base;
   protected readonly ok = HttpResult.ok;
@@ -15,9 +15,9 @@ export default abstract class Action {
   protected readonly errRequest = HttpResult.errRequest;
 
   /** will be set before doing */
-  requestParams?: RequestParams;
+  requestParams: RequestParams = RequestParams.empty;
   /** will be set before doing */
-  middlewares?: Array<Middleware>;
+  middlewares: Array<Middleware> = new Array<Middleware>();
 
   abstract async do(): Promise<HttpResult>;
 }
