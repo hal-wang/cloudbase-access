@@ -21,6 +21,7 @@ export default class HttpResult {
   static readonly baseHeaders = <Record<string, unknown>>{
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
+    "nodejs-api": "cloudbase-access",
   };
 
   static base = function (
