@@ -1,20 +1,20 @@
-用于快速创建支持 HTTP 访问服务的 CloudBase 云函数
+用于快速创建 MVC 架构支持 HTTP 访问服务的 CloudBase 云函数
 
 ## 安装
 
 npm i @hbrwang/cloudbase-access
 
-## demo
+## 示例
 
-示例请查看本项目 `test` 文件夹中的一些单元测试。
+示例请查看 [cloudbase-access demo](https://github.com/hbrwang/cloudbase-access-demo)。
+
+或者查看本项目 `test` 文件夹中的一些单元测试。
 
 ## Router
 
-帮助你快速构建 MVC 架构的 WebAPI。
+路由管理类，也是 `cloudbase-access` 的控制中心。构造函数传入环境 `event`。
 
-### 入口
-
-构造函数传入环境 `event`，然后执行 `do` 函数。如在 `main` 函数中：
+如在 `main` 函数中：
 
 ```ts
 import { Router } from "@hbrwang/cloudbase-access";
@@ -27,6 +27,77 @@ export const main = async (event: any) => {
 以上几行代码即创建一个简单的 MVC 架构的 API。
 
 如果访问的路径不存在，会返回 404 NotFound 结构。
+
+### 权限
+
+`Router` 第二个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
+
+### controllers 目录
+
+`Router` 第二个参数（可选）传入 `controllers` 目录名称，默认为 `controllers`。
+
+MVC 架构的 `controllers` 统一放在一个文件夹中，建议不传此参数，即 `controllers`。
+
+在 `controllers` 目录中，建立各 `controller` 文件夹，再在 `controller` 文件夹中建 `action` 文件。详情后面 [Action](#Action) 部分有介绍。
+
+## HttpResult
+
+`HttpResult` 封装了 HTTP 返回结构。可在构造函数传入相关参数。
+
+`HttpResult` 有个 `get` 属性 `result` ，可获取最终 HTTP 返回结构。
+
+### 内置类型
+
+目前 `HttpResult` 内置一些返回类型，都是以静态方式调用：
+
+- ok, 200
+- accepted, 202
+- noContent, 204
+- partialContent, 206
+- badRequest, 400
+- forbidden, 403
+- notFound, 404
+- errRequest, 500
+
+```TS
+return HttpResult.ok("success");
+```
+
+内置类型都支持传入`body`可选参数，API 返回为 body 内容。
+
+### 举例
+
+以下例子中返回 200 请求成功：
+
+```ts
+import { HttpResult } from "@hbrwang/cloudbase-access";
+return HttpResult.ok({
+  list: [],
+  count: 0,
+});
+```
+
+以下例子中返回 400 请求错误：
+
+```TS
+import { HttpResult } from "@hbrwang/cloudbase-access";
+return HttpResult.badRequest("请求错误");
+```
+
+### 在 Action 中
+
+在 `Action` 中已经加入了 `HttpResult` 内置函数，可以直接以 `this.func` 方式调用
+
+```TS
+import { Action, HttpResult } from "@hbrwang/cloudbase-access";
+
+export default class UnimportentName extends Action {
+  async do(): Promise<HttpResult> {
+    return this.noContent();
+    // or return this.ok('success');
+  }
+}
+```
 
 ## 请求参数
 
@@ -42,67 +113,9 @@ export const main = async (event: any) => {
 
 在 Router 中，有 `RequestParams` 实例对象 `requestParams`，可通过 `this.requestParams.headers` 方式使用
 
-## 中间件
-
-所有中间件应派生自类 `Middleware`，中间件有几种类别：
-
-1.  BeforeStart `Router` 初始化时就调用，此时 `Action` 未被加载
-1.  BeforeAction `Action` 执行前调用
-1.  BeforeEnd `Action` 执行后调用
-1.  BeforeSuccessEnd `Action` 执行后，而且返回结果为 2xx 时调用
-1.  BeforeErrEnd `Action` 执行后，而且返回结果不为 2xx 时调用
-
-中间件都必须实现 `do` 函数，返回 `HttpResult` 。如果返回为 `null`，则执行成功，否则 API 此次调用结束，返回中间件结果。
-
-使用 router.configure 注册中间件，如
-
-```TS
-  import { Router } from "@hbrwang/cloudbase-access";
-  export const main = async (event: any) => {
-    const router = new Router(event);
-    router.configure(new YourMiddleware());
-
-    return (await router.do()).result;
-  };
-```
-
-## 权限
-
-`Router` 构造函数第二个参数是权限验证 `Authority` 对象。
-
-你需要新写个类，继承 `Authority`，并实现 `do` 函数。
-
-其实 `Authority` 也是个中间件，只是加载方式较特殊。当然你也可以自己写个权限管理中间件。
-
-权限是用于判断用户能否使用 API。下例使用请求头部的账号信息验证调用者信息，用法如下：
-
-```ts
-class Auth extends Authority {
-  async do(): Promise<HttpResult> {
-    if (!this.roles || !this.roles.length) return null;
-
-    if (this.roles.includes("login") && !this.loginAuth()) {
-      return HttpResult.forbidden("账号或密码错误");
-    }
-
-    return null;
-  }
-
-  loginAuth() {
-    const { account, password } = this.requestParams.headers;
-    return account == "abc" && password == "123456";
-  }
-}
-
-export const main = async (event: any) => {
-  const router = new Router(event, new Auth());
-  return (await router.do()).result;
-};
-```
-
 ## Action
 
-每次调用 API，最终执行的是 `Action` 中的 `do` 函数。
+每次调用 API，如果顺利进行，主要执行的是 `Action` 中的 `do` 函数。
 
 所有 `Action` 都应派生自 `Action` 类，并重写 `do` 函数。
 
@@ -181,61 +194,60 @@ export default class GetToDoList extends Action {
 }
 ```
 
-## HttpResult
+## 中间件
 
-封装了 HTTP 返回结构 `HttpResult`。可在构造函数传入相关参数。
+所有中间件应派生自类 `Middleware`，中间件有几种类别：
 
-有个 `get` 属性 `result` 可获取最终 HTTP 返回结构。
+1.  BeforeStart `Router` 初始化时就调用，此时 `Action` 未被加载
+1.  BeforeAction `Action` 执行前调用
+1.  BeforeEnd `Action` 执行后调用
+1.  BeforeSuccessEnd `Action` 执行后，而且返回结果为 2xx 时调用
+1.  BeforeErrEnd `Action` 执行后，而且返回结果不为 2xx 时调用
 
-### 内置类型
+中间件都必须实现 `do` 函数，返回 `HttpResult` 。如果返回为 `null`，则执行成功，否则 API 此次调用结束，返回中间件结果。
 
-目前 `HttpResult` 内置一些返回类型，都是以静态方式调用：
-
-- ok, 200
-- accepted, 202
-- noContent, 204
-- partialContent, 206
-- badRequest, 400
-- forbidden, 403
-- notFound, 404
-- errRequest, 500
+使用 router.configure 注册中间件，如
 
 ```TS
-return HttpResult.ok("success");
+  import { Router } from "@hbrwang/cloudbase-access";
+  export const main = async (event: any) => {
+    const router = new Router(event);
+    router.configure(new YourMiddleware());
+
+    return (await router.do()).result;
+  };
 ```
 
-内置类型都支持传入`body`可选参数，返回为 body 内容。
+## 权限
 
-### 举例
+`Router` 构造函数第二个参数是权限验证 `Authority` 对象。
 
-以下例子中返回 200 请求成功：
+你需要新写个类，继承 `Authority`，并实现 `do` 函数。
+
+其实 `Authority` 也是个中间件，只是加载方式较特殊。当然你也可以自己写个权限管理中间件。
+
+权限是用于判断用户能否使用 API。下例使用请求头部的账号信息验证调用者信息，用法如下：
 
 ```ts
-import { HttpResult } from "@hbrwang/cloudbase-access";
-return HttpResult.ok({
-  list: [],
-  count: 0,
-});
-```
-
-以下例子中返回 400 请求错误：
-
-```TS
-import { HttpResult } from "@hbrwang/cloudbase-access";
-return HttpResult.badRequest("请求错误");
-```
-
-### 在 Action 中
-
-在 `Action` 中已经加入了 `HttpResult` 内置函数，可以直接以 `this.func` 方式调用
-
-```TS
-import { Action, HttpResult } from "@hbrwang/cloudbase-access";
-
-export default class UnimportentName extends Action {
+class Auth extends Authority {
   async do(): Promise<HttpResult> {
-    return this.noContent();
-    // or return this.ok('success');
+    if (!this.roles || !this.roles.length) return null;
+
+    if (this.roles.includes("login") && !this.loginAuth()) {
+      return HttpResult.forbidden("账号或密码错误");
+    }
+
+    return null;
+  }
+
+  loginAuth() {
+    const { account, password } = this.requestParams.headers;
+    return account == "abc" && password == "123456";
   }
 }
+
+export const main = async (event: any) => {
+  const router = new Router(event, new Auth());
+  return (await router.do()).result;
+};
 ```
