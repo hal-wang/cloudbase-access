@@ -1,9 +1,10 @@
-import { existsSync } from "fs";
+import { readdirSync } from "fs";
 import Authority from "./Authority";
 import Action from "./Action";
 import HttpResult from "./HttpResult";
 import Middleware, { MiddlewareType } from "./Middleware";
 import RequestParams from "./RequestParams";
+import linq = require("linq");
 
 export default class Router {
   private routerAction?: Action;
@@ -72,16 +73,11 @@ export default class Router {
   private async initModule() {
     if (this.routerAction) return;
 
-    let fullPath = this.getFullPath("js");
-    if (!existsSync(fullPath)) {
-      fullPath = this.getFullPath("ts");
-      if (!existsSync(fullPath)) {
-        return;
-      }
-    }
+    const path = this.actionPath;
+    if (!path) return;
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const actionClass = require(fullPath).default;
+    const actionClass = require(path).default;
     this.routerAction = new actionClass(this.requestParams) as Action;
     this.routerAction.requestParams = this.requestParams;
     this.routerAction.middlewares = this.middlewares.map((val) => val);
@@ -89,7 +85,34 @@ export default class Router {
     if (this.auth != null) this.auth.roles = this.routerAction.roles;
   }
 
-  private getFullPath(type: string) {
-    return `${process.cwd()}/${this.cFolder}${this.requestParams.path}.${type}`;
+  private get actionPath(): string | undefined {
+    if (!this.requestParams.path) return;
+    if (this.requestParams.path.includes("..")) return;
+
+    const folderIndex = this.requestParams.path.lastIndexOf("/");
+    if (folderIndex < 0 || folderIndex >= this.requestParams.path.length - 1) {
+      return;
+    }
+
+    const folder = this.requestParams.path.substr(0, folderIndex);
+    const folderPath = `${process.cwd()}/${this.cFolder}${folder}`;
+    const actionFile = this.requestParams.path.substr(
+      folderIndex + 1,
+      this.requestParams.path.length - folderIndex - 1
+    );
+    const files = readdirSync(folderPath);
+
+    const file = linq
+      .from(files)
+      .where(
+        (f) =>
+          f.toLowerCase() == actionFile.toLowerCase() + ".js" ||
+          f.toLowerCase() == actionFile.toLowerCase() + ".ts"
+      )
+      .orderByDescending((f) => f)
+      .firstOrDefault();
+    if (!file) return;
+
+    return `${folderPath}/${file}`;
   }
 }

@@ -1,6 +1,6 @@
 import { Action, HttpResult } from "../../src";
 
-export default class Login extends Action {
+export default class extends Action {
   constructor() {
     super(["admin"]);
   }
