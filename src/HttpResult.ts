@@ -2,15 +2,14 @@ export default class HttpResult {
   constructor(
     public readonly statusCode: number,
     public readonly body?: unknown,
-    public readonly headers?: Record<string, unknown>,
-    public readonly cors?: boolean
+    public readonly headers?: Record<string, unknown>
   ) {}
 
   get result(): Record<string, unknown> {
-    return {
+    return <Record<string, unknown>>{
       isBase64: false,
       statusCode: this.statusCode,
-      headers: this.finalHeaders,
+      headers: Object.assign(HttpResult.baseHeaders, this.headers),
       body: this.body,
     };
   }
@@ -19,25 +18,17 @@ export default class HttpResult {
     return this.statusCode >= 200 && this.statusCode < 300;
   }
 
-  private get finalHeaders() {
-    let headers = {
-      "Content-Type": "application/json",
-    };
-    if (this.cors) {
-      headers = Object.assign({ "Access-Control-Allow-Origin": "*" }, headers);
-    }
-    headers = Object.assign(headers, this.headers);
-
-    return headers;
-  }
+  static readonly baseHeaders = <Record<string, unknown>>{
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  };
 
   static base = function (
     statusCode: number,
     body?: unknown,
-    headers?: Record<string, unknown>,
-    cors?: boolean
+    headers?: Record<string, unknown>
   ): HttpResult {
-    return new HttpResult(statusCode, body, headers, cors);
+    return new HttpResult(statusCode, body, headers);
   };
 
   static ok = function (body?: unknown): HttpResult {
