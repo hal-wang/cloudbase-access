@@ -1,4 +1,4 @@
-import { readdirSync } from "fs";
+import { existsSync, readdirSync } from "fs";
 import Authority from "./Authority";
 import Action from "./Action";
 import HttpResult from "./HttpResult";
@@ -96,6 +96,8 @@ export default class Router {
 
     const folder = this.requestParams.path.substr(0, folderIndex);
     const folderPath = `${process.cwd()}/${this.cFolder}${folder}`;
+    if (!existsSync(folderPath)) return;
+
     const actionFile = this.requestParams.path.substr(
       folderIndex + 1,
       this.requestParams.path.length - folderIndex - 1
