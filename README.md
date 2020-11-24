@@ -1,4 +1,4 @@
-用于快速创建 MVC 架构支持 HTTP 访问服务的 CloudBase 云函数
+利用 NodeJS 和 CloudBase 快速创建 MVC 架构的 Serverless RESTful Api
 
 ## 安装
 
