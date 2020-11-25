@@ -10,7 +10,7 @@ test("middleware test err", async function () {
     body: {},
     path: "/actions/notExist",
   };
-  const router = new Router(event, null, "test");
+  const router = new Router(event, undefined, "test");
 
   router.configure(new BeforeStartMdw(stepResult));
   router.configure(new BeforeActionMdw(stepResult));
@@ -27,7 +27,7 @@ class BeforeStartMdw extends Middleware {
     super(MiddlewareType.BeforeStart);
   }
 
-  do(): Promise<HttpResult> {
+  async do(): Promise<HttpResult | null> {
     this.stepResult.step += 1;
     return null;
   }
@@ -38,7 +38,7 @@ class BeforeActionMdw extends Middleware {
     super(MiddlewareType.BeforeAction);
   }
 
-  do(): Promise<HttpResult> {
+  async do(): Promise<HttpResult | null> {
     this.stepResult.step += 10;
     return null;
   }
@@ -49,7 +49,7 @@ class BeforeSuccessEndMdw extends Middleware {
     super(MiddlewareType.BeforeSuccessEnd);
   }
 
-  do(): Promise<HttpResult> {
+  async do(): Promise<HttpResult | null> {
     this.stepResult.step += 100;
     return null;
   }
@@ -60,7 +60,7 @@ class BeforeErrEndMdw extends Middleware {
     super(MiddlewareType.BeforeErrEnd);
   }
 
-  do(): Promise<HttpResult> {
+  async do(): Promise<HttpResult | null> {
     this.stepResult.step += 1000;
     return null;
   }

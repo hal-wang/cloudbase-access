@@ -19,5 +19,5 @@ export default abstract class Action {
   /** will be set before doing */
   middlewares: Array<Middleware> = new Array<Middleware>();
 
-  abstract async do(): Promise<HttpResult>;
+  abstract do(): Promise<HttpResult>;
 }
