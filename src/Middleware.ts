@@ -7,7 +7,7 @@ export default abstract class Middleware {
   requestParams: RequestParams = RequestParams.empty;
 
   /** if success, return null */
-  abstract async do(): Promise<HttpResult | null>;
+  abstract do(): Promise<HttpResult | null>;
 }
 
 export const enum MiddlewareType {

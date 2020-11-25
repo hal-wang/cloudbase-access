@@ -73,7 +73,7 @@ test("router test admin not access", async function () {
 });
 
 class Auth extends Authority {
-  async do(): Promise<HttpResult> {
+  async do(): Promise<HttpResult | null> {
     if (!this.roles || !this.roles.length) return null;
 
     if (

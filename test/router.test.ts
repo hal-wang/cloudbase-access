@@ -30,7 +30,6 @@ test("shallow router test", async function () {
   const router = new Router(event, undefined, "test");
 
   const result = (await router.do()).result;
-  console.log("s r t", result);
   expect(result.statusCode).toBe(200);
 });
 
