@@ -1,4 +1,4 @@
-POST https://env-caafniqh.service.tcloudbase.com/cloudbase-access-demo/user/login
+POST https://env-caafniqh.service.tcloudbase.com/cad/user/login
 content-type:application/json
 
 {
