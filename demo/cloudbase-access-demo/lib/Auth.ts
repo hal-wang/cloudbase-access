@@ -10,27 +10,30 @@ export default class Auth extends Authority {
       (this.roles.includes("login") || this.roles.includes("admin")) &&
       !this.loginAuth()
     ) {
-      return HttpResult.forbidden("账号或密码错误") as any;
+      return HttpResult.forbidden("账号或密码错误");
     }
 
     if (this.roles.includes("admin") && !this.adminAuth()) {
-      return HttpResult.forbidden("不是管理员") as any;
+      return HttpResult.forbidden("不是管理员");
     }
 
     return null;
   }
 
-  adminAuth() {
+  adminAuth(): boolean {
     const { account } = this.requestParams.headers;
     return account == global.adminAccount;
   }
 
-  loginAuth() {
+  loginAuth(): boolean {
     const { account, password } = this.requestParams.headers;
     return (
       linq
         .from(global.users)
-        .where((u: any) => u.account == account && u.password == password)
+        .where(
+          (u: Record<string, unknown>) =>
+            u.account == account && u.password == password
+        )
         .count() > 0
     );
   }
