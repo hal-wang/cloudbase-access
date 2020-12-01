@@ -1,6 +1,6 @@
 {
   "name": "@hbrwang/cloudbase-access",
-  "version": "0.5.22",
+  "version": "0.6.0",
   "description": "利用 NodeJS 和 CloudBase 快速创建 MVC 架构的 Serverless RESTful Api",
   "homepage": "https://github.com/hbrwang/cloudbase-access",
   "repository": {
