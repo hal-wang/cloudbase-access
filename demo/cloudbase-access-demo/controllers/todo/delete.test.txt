@@ -1,0 +1,18 @@
+POST https://env-caafniqh.service.tcloudbase.com/cloudbase-access-demo/todo/delete
+content-type:application/json
+account:abc
+password:123456
+
+{
+  
+}
+
+
+POST https://env-caafniqh.service.tcloudbase.com/cloudbase-access-demo/todo/delete
+content-type:application/json
+account:admin
+password:abcdef
+
+{
+  
+}

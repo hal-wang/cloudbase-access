@@ -1,0 +1,7 @@
+POST https://env-caafniqh.service.tcloudbase.com/cloudbase-access-demo/user/login
+content-type:application/json
+
+{
+  "account":"abc",
+  "password":"123456"
+}

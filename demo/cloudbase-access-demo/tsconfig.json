@@ -9,6 +9,6 @@
   "exclude": [
     "test",
     "dist",
-    "demo"
+    "../functions"
   ]
 }
