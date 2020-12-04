@@ -91,7 +91,7 @@ return HttpResult.badRequest("请求错误");
 ```TS
 import { Action, HttpResult } from "@hbrwang/cloudbase-access";
 
-export default class UnimportentName extends Action {
+export default class extends Action {
   async do(): Promise<HttpResult> {
     return this.noContent();
     // or return this.ok('success');
@@ -129,7 +129,7 @@ export default class UnimportentName extends Action {
 ```ts
 import { Action, HttpResult } from "@hbrwang/cloudbase-access";
 
-export default class UnimportentName extends Action {
+export default class extends Action {
   async do(): Promise<HttpResult> {
     return this.noContent();
   }
@@ -165,7 +165,7 @@ export default class UnimportentName extends Action {
 ```ts
 import { Action, HttpResult } from "@hbrwang/cloudbase-access";
 
-export default class Login extends Action {
+export default class extends Action {
   async do(): Promise<HttpResult> {
     const { account, password } = this.requestParams.data
 
@@ -180,7 +180,7 @@ export default class Login extends Action {
 ```ts
 import { Action, HttpResult } from "@hbrwang/cloudbase-access";
 
-export default class GetToDoList extends Action {
+export default class extends Action {
   constructor() {
     super(["login"]);
   }
