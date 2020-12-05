@@ -1,7 +1,7 @@
 export default class RequestParams {
-  readonly headers: Record<string, unknown>;
+  readonly headers: Record<string, string>;
   readonly path: string;
-  readonly params: Record<string, unknown>;
+  readonly params: Record<string, string>;
   readonly data: Record<string, unknown>;
 
   constructor(public readonly event: Record<string, unknown>) {
@@ -13,7 +13,7 @@ export default class RequestParams {
     if (
       this.headers &&
       this.headers["content-type"] &&
-      (<string>this.headers["content-type"]).includes("application/json")
+      this.headers["content-type"].includes("application/json")
     ) {
       if (typeof body == "string") {
         this.data = <Record<string, unknown>>JSON.parse(body);
