@@ -2,7 +2,8 @@ export default class RequestParams {
   readonly headers: Record<string, string | undefined>;
   readonly path: string;
   readonly params: Record<string, string | undefined>;
-  readonly data: Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly data: any;
 
   constructor(public readonly event: Record<string, unknown>) {
     this.headers = <Record<string, string | undefined>>this.event.headers;
@@ -15,15 +16,12 @@ export default class RequestParams {
     if (
       this.headers &&
       this.headers["content-type"] &&
-      this.headers["content-type"].includes("application/json")
+      this.headers["content-type"].includes("application/json") &&
+      typeof body == "string"
     ) {
-      if (typeof body == "string") {
-        this.data = <Record<string, unknown>>JSON.parse(body);
-      } else {
-        this.data = <Record<string, unknown>>body;
-      }
+      this.data = <Record<string, unknown>>JSON.parse(body);
     } else {
-      this.data = <Record<string, unknown>>body;
+      this.data = body;
     }
   }
 
