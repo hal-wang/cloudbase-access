@@ -1,27 +1,27 @@
 export default class RequestParams {
-  readonly headers: Record<string, unknown>;
+  readonly headers: Record<string, string | undefined>;
   readonly path: string;
-  readonly params: Record<string, unknown>;
-  readonly data: Record<string, unknown>;
+  readonly params: Record<string, string | undefined>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly data: any;
 
   constructor(public readonly event: Record<string, unknown>) {
-    this.headers = <Record<string, string>>this.event.headers;
+    this.headers = <Record<string, string | undefined>>this.event.headers;
     this.path = <string>this.event.path;
-    this.params = <Record<string, string>>this.event.queryStringParameters;
+    this.params = <Record<string, string | undefined>>(
+      this.event.queryStringParameters
+    );
 
     const body = this.event.body;
     if (
       this.headers &&
       this.headers["content-type"] &&
-      (<string>this.headers["content-type"]).includes("application/json")
+      this.headers["content-type"].includes("application/json") &&
+      typeof body == "string"
     ) {
-      if (typeof body == "string") {
-        this.data = <Record<string, unknown>>JSON.parse(body);
-      } else {
-        this.data = <Record<string, unknown>>body;
-      }
+      this.data = <Record<string, unknown>>JSON.parse(body);
     } else {
-      this.data = <Record<string, unknown>>body;
+      this.data = body;
     }
   }
 
