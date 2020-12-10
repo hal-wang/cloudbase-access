@@ -1,21 +1,21 @@
 {
-  "name": "@hbrwang/cloudbase-access",
-  "version": "0.6.0",
+  "name": "@hal-wang/cloudbase-access",
+  "version": "0.7.0",
   "description": "利用 NodeJS 和 CloudBase 快速创建 MVC 架构的 Serverless RESTful Api",
-  "homepage": "https://github.com/hbrwang/cloudbase-access",
+  "homepage": "https://github.com/hal-wang/cloudbase-access",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hbrwang/cloudbase-access"
+    "url": "https://github.com/hal-wang/cloudbase-access"
   },
   "keywords": [
     "mvc",
-    "hbrwang",
+    "hal-wang",
     "cloudbase",
     "cloudbase-access"
   ],
   "bugs": {
-    "url": "https://github.com/hbrwang/cloudbase-access/issues",
-    "email": "hbrwang@outlook.com"
+    "url": "https://github.com/hal-wang/cloudbase-access/issues",
+    "email": "support@hal.wang"
   },
   "main": "dist/index.js",
   "scripts": {
@@ -27,7 +27,7 @@
   "jest": {
     "testEnvironment": "node"
   },
-  "author": "hbrwang",
+  "author": "hal-wang",
   "license": "MIT",
   "dependencies": {
     "@types/node": "^14.14.10",

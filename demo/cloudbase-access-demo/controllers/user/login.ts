@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "@hbrwang/cloudbase-access";
+import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import global from "../../lib/Global";
 import linq = require("linq");
 

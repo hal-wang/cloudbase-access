@@ -2,7 +2,7 @@
 
 ## 安装
 
-npm i @hbrwang/cloudbase-access
+npm i @hal-wang/cloudbase-access
 
 ## 示例
 
@@ -17,7 +17,7 @@ npm i @hbrwang/cloudbase-access
 如在 `main` 函数中：
 
 ```ts
-import { Router } from "@hbrwang/cloudbase-access";
+import { Router } from "@hal-wang/cloudbase-access";
 export const main = async (event: any) => {
   const router = new Router(event);
   return (await router.do()).result;
@@ -70,7 +70,7 @@ return HttpResult.ok("success");
 以下例子中返回 200 请求成功：
 
 ```ts
-import { HttpResult } from "@hbrwang/cloudbase-access";
+import { HttpResult } from "@hal-wang/cloudbase-access";
 return HttpResult.ok({
   list: [],
   count: 0,
@@ -80,7 +80,7 @@ return HttpResult.ok({
 以下例子中返回 400 请求错误：
 
 ```TS
-import { HttpResult } from "@hbrwang/cloudbase-access";
+import { HttpResult } from "@hal-wang/cloudbase-access";
 return HttpResult.badRequest("请求错误");
 ```
 
@@ -89,7 +89,7 @@ return HttpResult.badRequest("请求错误");
 在 `Action` 中已经加入了 `HttpResult` 内置函数，可以直接以 `this.func` 方式调用
 
 ```TS
-import { Action, HttpResult } from "@hbrwang/cloudbase-access";
+import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 
 export default class UnimportentName extends Action {
   async do(): Promise<HttpResult> {
@@ -127,7 +127,7 @@ export default class UnimportentName extends Action {
 - 在`.ts`文件中创建类，并继承 `Action`，重写 `do` 函数
 
 ```ts
-import { Action, HttpResult } from "@hbrwang/cloudbase-access";
+import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 
 export default class UnimportentName extends Action {
   async do(): Promise<HttpResult> {
@@ -163,7 +163,7 @@ export default class UnimportentName extends Action {
 例 1
 
 ```ts
-import { Action, HttpResult } from "@hbrwang/cloudbase-access";
+import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 
 export default class Login extends Action {
   async do(): Promise<HttpResult> {
@@ -178,7 +178,7 @@ export default class Login extends Action {
 例 2
 
 ```ts
-import { Action, HttpResult } from "@hbrwang/cloudbase-access";
+import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 
 export default class GetToDoList extends Action {
   constructor() {
@@ -209,7 +209,7 @@ export default class GetToDoList extends Action {
 使用 router.configure 注册中间件，如
 
 ```TS
-  import { Router } from "@hbrwang/cloudbase-access";
+  import { Router } from "@hal-wang/cloudbase-access";
   export const main = async (event: any) => {
     const router = new Router(event);
     router.configure(new YourMiddleware());

@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "@hbrwang/cloudbase-access";
+import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 
 /**admin 权限验证 */
 export default class extends Action {
