@@ -1,4 +1,4 @@
-import { HttpResult, Authority } from "@hbrwang/cloudbase-access";
+import { HttpResult, Authority } from "@hal-wang/cloudbase-access";
 import linq = require("linq");
 import global from "./Global";
 
