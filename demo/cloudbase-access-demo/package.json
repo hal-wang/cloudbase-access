@@ -11,7 +11,7 @@
     "eslint": "eslint . --ext .ts",
     "test": "jest"
   },
-  "author": "hubery.wang",
+  "author": "hal-wang",
   "license": "ISC",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.3.5",
