@@ -66,8 +66,12 @@ export default class HttpResult {
 
   static redirect = function (
     location: string,
-    code: 301 | 302 = 301
+    code: 301 | 302 | 303 | 307 | 308 = 302
   ): HttpResult {
     return new HttpResult(code, {}, { location });
+  };
+
+  static created = function (location: string, body?: unknown): HttpResult {
+    return new HttpResult(201, body, { location });
   };
 }

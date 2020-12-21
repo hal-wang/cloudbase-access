@@ -14,6 +14,7 @@ export default abstract class Action {
   protected readonly notFound = HttpResult.notFound;
   protected readonly errRequest = HttpResult.errRequest;
   protected readonly redirect = HttpResult.redirect;
+  protected readonly created = HttpResult.created;
 
   /** will be set before doing */
   requestParams: RequestParams = RequestParams.empty;
