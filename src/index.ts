@@ -4,6 +4,7 @@ import Action from "./Action";
 import RequestParams from "./RequestParams";
 import Middleware, { MiddlewareType } from "./Middleware";
 import Authority from "./Authority";
+import AppInstance from "./AppInstance";
 
 export {
   HttpResult,
@@ -13,4 +14,5 @@ export {
   Middleware,
   MiddlewareType,
   Authority,
+  AppInstance,
 };
