@@ -15,12 +15,15 @@ class Login extends Action {
 
 test("action test", async function () {
   const loginAction = new Login();
-  loginAction.requestParams = new RequestParams({
-    body: {
-      account: "abc",
-      password: "123456",
+  loginAction.requestParams = new RequestParams(
+    {
+      body: {
+        account: "abc",
+        password: "123456",
+      },
     },
-  });
+    {}
+  );
 
   let doResult = await loginAction.do();
   expect(doResult.statusCode).toBe(200);
