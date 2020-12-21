@@ -13,6 +13,7 @@ export default abstract class Action {
   protected readonly forbidden = HttpResult.forbidden;
   protected readonly notFound = HttpResult.notFound;
   protected readonly errRequest = HttpResult.errRequest;
+  protected readonly redirect = HttpResult.redirect;
 
   /** will be set before doing */
   requestParams: RequestParams = RequestParams.empty;
