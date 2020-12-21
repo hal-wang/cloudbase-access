@@ -6,7 +6,7 @@ test("router test", async function () {
     path: "/actions/router",
   };
   HttpResult.baseHeaders["custom-header"] = "aaa";
-  const router = new Router(event, undefined, "test");
+  const router = new Router(event, {}, undefined, "test");
 
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);

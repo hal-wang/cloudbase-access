@@ -13,6 +13,7 @@ test("router test login access", async function () {
       },
       path: "/actions/loginAuth",
     },
+    {},
     new Auth(),
     "test"
   );
@@ -30,6 +31,7 @@ test("router test login not access", async function () {
       },
       path: "/actions/loginAuth",
     },
+    {},
     new Auth(),
     "test"
   );
@@ -47,6 +49,7 @@ test("router test admin access", async function () {
       },
       path: "/actions/adminAuth",
     },
+    {},
     new Auth(),
     "test"
   );
@@ -64,6 +67,7 @@ test("router test admin not access", async function () {
       },
       path: "/actions/adminAuth",
     },
+    {},
     new Auth(),
     "test"
   );
