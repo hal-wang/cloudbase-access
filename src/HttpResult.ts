@@ -63,4 +63,11 @@ export default class HttpResult {
   static errRequest = function (body?: unknown): HttpResult {
     return new HttpResult(500, body);
   };
+
+  static redirect = function (
+    location: string,
+    code: 301 | 302 = 301
+  ): HttpResult {
+    return new HttpResult(code, {}, { location });
+  };
 }
