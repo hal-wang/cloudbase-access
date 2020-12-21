@@ -18,8 +18,11 @@ npm i @hal-wang/cloudbase-access
 
 ```ts
 import { Router } from "@hal-wang/cloudbase-access";
-export const main = async (event: any) => {
-  const router = new Router(event);
+export const main = async (
+  event: Record<string, unknown>,
+  context: Record<string, unknown>
+) => {
+  const router = new Router(event, context);
   return (await router.do()).result;
 };
 ```
@@ -30,11 +33,11 @@ export const main = async (event: any) => {
 
 ### 权限
 
-`Router` 第二个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
+`Router` 第三个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
 
 ### controllers 目录
 
-`Router` 第二个参数（可选）传入 `controllers` 目录名称，默认为 `controllers`。
+`Router` 第四个参数（可选）传入 `controllers` 目录名称，默认为 `controllers`。
 
 MVC 架构的 `controllers` 统一放在一个文件夹中，建议不传此参数，即 `controllers`。
 
@@ -121,7 +124,7 @@ export default class extends Action {
 
 ### 新建文件
 
-- 在云函数根目录（即与 index.ts 同级）创建名为`controllers`文件夹。也可以为其他，需要在 Router 构造函数第三个参数可以指定，默认为`controllers`
+- 在云函数根目录（即与 index.ts 同级）创建名为`controllers`文件夹。也可以为其他，需要在 Router 构造函数第四个参数可以指定，默认为`controllers`
 - 根据各业务，创建不同 controller 文件夹，名称自定，但名称与路由名称对应。
 - 在 controller 文件夹中，创建`.ts`文件，每个`.ts`文件对应一个`action`
 - 在`.ts`文件中创建类，并继承 `Action`，重写 `do` 函数
@@ -208,19 +211,22 @@ export default class extends Action {
 
 使用 router.configure 注册中间件，如
 
-```TS
-  import { Router } from "@hal-wang/cloudbase-access";
-  export const main = async (event: any) => {
-    const router = new Router(event);
-    router.configure(new YourMiddleware());
+```ts
+import { Router } from "@hal-wang/cloudbase-access";
+export const main = async (
+  event: Record<string, unknown>,
+  context: Record<string, unknown>
+) => {
+  const router = new Router(event, context);
+  router.configure(new YourMiddleware());
 
-    return (await router.do()).result;
-  };
+  return (await router.do()).result;
+};
 ```
 
 ## 权限
 
-`Router` 构造函数第二个参数是权限验证 `Authority` 对象。
+`Router` 构造函数第三个参数是权限验证 `Authority` 对象。
 
 你需要新写个类，继承 `Authority`，并实现 `do` 函数。
 
@@ -246,8 +252,11 @@ class Auth extends Authority {
   }
 }
 
-export const main = async (event: any) => {
-  const router = new Router(event, new Auth());
+export const main = async (
+  event: Record<string, unknown>,
+  context: Record<string, unknown>
+) => {
+  const router = new Router(event, context, new Auth());
   return (await router.do()).result;
 };
 ```
