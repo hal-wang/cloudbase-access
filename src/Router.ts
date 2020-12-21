@@ -14,10 +14,11 @@ export default class Router {
 
   constructor(
     event: Record<string, unknown>,
+    context: Record<string, unknown>,
     private readonly auth?: Authority,
     public readonly cFolder = "controllers"
   ) {
-    this.requestParams = new RequestParams(event);
+    this.requestParams = new RequestParams(event, context);
 
     if (auth != null) this.middlewares.push(auth);
   }

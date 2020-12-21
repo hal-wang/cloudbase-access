@@ -5,7 +5,10 @@ export default class RequestParams {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly data: any;
 
-  constructor(public readonly event: Record<string, unknown>) {
+  constructor(
+    public readonly event: Record<string, unknown>,
+    public readonly context: Record<string, unknown>
+  ) {
     this.headers = <Record<string, string | undefined>>this.event.headers;
     this.path = <string>this.event.path;
     this.params = <Record<string, string | undefined>>(
@@ -26,11 +29,14 @@ export default class RequestParams {
   }
 
   static get empty(): RequestParams {
-    return new RequestParams({
-      headers: {},
-      path: null,
-      params: {},
-      data: {},
-    });
+    return new RequestParams(
+      {
+        headers: {},
+        path: null,
+        params: {},
+        data: {},
+      },
+      {}
+    );
   }
 }
