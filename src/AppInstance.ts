@@ -10,7 +10,7 @@ export default class AppInstance {
   }
 
   public static instance: AppInstance;
-  public static init(config: tcb.ICloudBaseConfig) {
+  public static init(config: tcb.ICloudBaseConfig): void {
     AppInstance.instance = new AppInstance(config);
   }
 }

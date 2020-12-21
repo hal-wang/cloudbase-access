@@ -5,6 +5,7 @@ import RequestParams from "./RequestParams";
 import Middleware, { MiddlewareType } from "./Middleware";
 import Authority from "./Authority";
 import AppInstance from "./AppInstance";
+import DbHelper from "./DbHelper";
 
 export {
   HttpResult,
@@ -15,4 +16,5 @@ export {
   MiddlewareType,
   Authority,
   AppInstance,
+  DbHelper,
 };
