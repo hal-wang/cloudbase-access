@@ -30,6 +30,7 @@
   "author": "hal-wang",
   "license": "MIT",
   "dependencies": {
+    "@cloudbase/node-sdk": "^2.4.7",
     "@types/node": "^14.14.10",
     "fs": "0.0.1-security",
     "linq": "^3.2.3"
