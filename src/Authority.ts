@@ -1,4 +1,5 @@
-import Middleware, { MiddlewareType } from "./Middleware";
+import Middleware from "./Middleware";
+import MiddlewareType from "./MiddlewareType";
 
 export default abstract class Authority extends Middleware {
   constructor() {

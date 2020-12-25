@@ -1,6 +1,6 @@
 import {
-  HttpResult,
   Middleware,
+  MiddlewareResult,
   MiddlewareType,
   Router,
 } from "@hal-wang/cloudbase-access";
@@ -31,9 +31,9 @@ class BeforeStartMdw extends Middleware {
     super(MiddlewareType.BeforeStart);
   }
 
-  async do(): Promise<HttpResult | null> {
+  async do(): Promise<MiddlewareResult> {
     this.stepResult.step += 1;
-    return null;
+    return MiddlewareResult.getSuccessResult();
   }
 }
 
@@ -42,9 +42,9 @@ class BeforeActionMdw extends Middleware {
     super(MiddlewareType.BeforeAction);
   }
 
-  async do(): Promise<HttpResult | null> {
+  async do(): Promise<MiddlewareResult> {
     this.stepResult.step += 10;
-    return null;
+    return MiddlewareResult.getSuccessResult();
   }
 }
 
@@ -53,9 +53,9 @@ class BeforeSuccessEndMdw extends Middleware {
     super(MiddlewareType.BeforeSuccessEnd);
   }
 
-  async do(): Promise<HttpResult | null> {
+  async do(): Promise<MiddlewareResult> {
     this.stepResult.step += 100;
-    return null;
+    return MiddlewareResult.getSuccessResult();
   }
 }
 
@@ -64,8 +64,8 @@ class BeforeErrEndMdw extends Middleware {
     super(MiddlewareType.BeforeErrEnd);
   }
 
-  async do(): Promise<HttpResult | null> {
+  async do(): Promise<MiddlewareResult> {
     this.stepResult.step += 1000;
-    return null;
+    return MiddlewareResult.getSuccessResult();
   }
 }
