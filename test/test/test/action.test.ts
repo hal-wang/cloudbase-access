@@ -1,4 +1,4 @@
-import { Action, HttpResult, RequestParams } from "../src/index";
+import { Action, HttpResult, RequestParams } from "@hal-wang/cloudbase-access";
 
 class Login extends Action {
   async do(): Promise<HttpResult> {

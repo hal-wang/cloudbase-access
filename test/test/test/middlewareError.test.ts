@@ -1,14 +1,18 @@
-import { HttpResult, Middleware, Router } from "../src/index";
-import { MiddlewareType } from "../src/Middleware";
+import {
+  HttpResult,
+  Middleware,
+  MiddlewareType,
+  Router,
+} from "@hal-wang/cloudbase-access";
 
-test("middleware test success", async function () {
+test("middleware test err", async function () {
   const stepResult: Record<string, number> = {
     step: 0,
   };
 
   const event = {
     body: {},
-    path: "/actions/router",
+    path: "/actions/notExist",
   };
   const router = new Router(event, {}, undefined, "test");
 
@@ -18,8 +22,8 @@ test("middleware test success", async function () {
   router.configure(new BeforeErrEndMdw(stepResult));
 
   const result = (await router.do()).result;
-  expect(result.statusCode).toBe(200);
-  expect(stepResult.step).toBe(111);
+  expect(result.statusCode).toBe(404);
+  expect(stepResult.step).toBe(1);
 });
 
 class BeforeStartMdw extends Middleware {
