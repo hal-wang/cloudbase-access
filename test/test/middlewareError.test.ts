@@ -1,6 +1,6 @@
 import {
-  HttpResult,
   Middleware,
+  MiddlewareResult,
   MiddlewareType,
   Router,
 } from "@hal-wang/cloudbase-access";
@@ -28,8 +28,8 @@ class BeforeStartMdw extends Middleware {
     super(MiddlewareType.BeforeStart);
   }
 
-  async do(): Promise<HttpResult | null> {
+  async do(): Promise<MiddlewareResult> {
     this.stepResult.step += 1;
-    return null;
+    return MiddlewareResult.getSuccessResult();
   }
 }

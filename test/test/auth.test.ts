@@ -1,4 +1,9 @@
-import { Router, HttpResult, Authority } from "@hal-wang/cloudbase-access";
+import {
+  Router,
+  HttpResult,
+  Authority,
+  MiddlewareResult,
+} from "@hal-wang/cloudbase-access";
 import linq = require("linq");
 
 const config = {
@@ -88,21 +93,27 @@ test("router test admin not access", async function () {
 });
 
 class Auth extends Authority {
-  async do(): Promise<HttpResult | null> {
-    if (!this.roles || !this.roles.length) return null;
+  async do(): Promise<MiddlewareResult> {
+    if (!this.roles || !this.roles.length) {
+      return MiddlewareResult.getSuccessResult();
+    }
 
     if (
       (this.roles.includes("login") || this.roles.includes("admin")) &&
       !this.loginAuth()
     ) {
-      return HttpResult.forbidden("账号或密码错误");
+      return MiddlewareResult.getFailedResult(
+        HttpResult.forbidden("账号或密码错误")
+      );
     }
 
     if (this.roles.includes("admin") && !this.adminAuth()) {
-      return HttpResult.forbidden("不是管理员");
+      return MiddlewareResult.getFailedResult(
+        HttpResult.forbidden("不是管理员")
+      );
     }
 
-    return null;
+    return MiddlewareResult.getSuccessResult();
   }
 
   adminAuth() {

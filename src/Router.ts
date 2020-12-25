@@ -1,10 +1,12 @@
 import Authority from "./Authority";
 import Action from "./Action";
 import HttpResult from "./HttpResult";
-import Middleware, { MiddlewareType } from "./Middleware";
+import Middleware from "./Middleware";
+import MiddlewareType from "./MiddlewareType";
 import RequestParams from "./RequestParams";
 import MapCreater from "./MapCreater";
 import MapItem from "./MapItem";
+import MiddlewareResult from "./MiddlewareResult";
 
 export default class Router {
   private readonly middlewares: Array<Middleware> = new Array<Middleware>();
@@ -57,14 +59,14 @@ export default class Router {
     return result;
   }
 
-  private async ExecMdw(type: MiddlewareType) {
+  private async ExecMdw(type: MiddlewareType): Promise<HttpResult | null> {
     for (let i = 0; i < this.middlewares.length; i++) {
       const middleware = this.middlewares[i];
       if (middleware.type != type) continue;
 
       middleware.requestParams = this.requestParams;
       const mdwResult = await middleware.do();
-      if (mdwResult) return mdwResult;
+      if (!mdwResult.success) return mdwResult.failedResult;
     }
     return null;
   }
