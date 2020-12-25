@@ -1,2 +1,4 @@
-cd test/test
+set -e
+
+cd test
 npm run test

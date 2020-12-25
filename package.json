@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsc",
     "deploy": "tsc && npm publish --access=public",
-    "test": "bash test.sh",
+    "test": "tsc && bash test.sh",
     "eslint": "eslint src --ext .ts"
   },
   "author": "hal-wang",
