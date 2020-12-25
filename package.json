@@ -8,10 +8,22 @@
     "url": "https://github.com/hal-wang/cloudbase-access"
   },
   "keywords": [
+    "cloudbase-access",
     "mvc",
-    "hal-wang",
+    "nodejs-api",
     "cloudbase",
-    "cloudbase-access"
+    "restful-api",
+    "mongodb",
+    "cloud-function",
+    "nodejs-server",
+    "serverless",
+    "tencent-cloud",
+    "tencent-scf",
+    "nodejs",
+    "ts",
+    "typescript",
+    "javascript",
+    "js"
   ],
   "bugs": {
     "url": "https://github.com/hal-wang/cloudbase-access/issues",
