@@ -1,4 +1,3 @@
-import { existsSync, readdirSync } from "fs";
 import Authority from "./Authority";
 import Action from "./Action";
 import HttpResult from "./HttpResult";
@@ -73,19 +72,35 @@ export default class Router {
     return null;
   }
 
-  private async initModule() {
+  private async initModule(): Promise<void> {
     if (this.routerAction) return;
 
     const mapArr = new MapCreater(this.cFolder).getMap();
-    const path = `${this.requestParams.path.toLowerCase()}.js`;
-    if (!mapArr.includes(path)) return;
+    const mapPath = linq
+      .from(mapArr)
+      .where((ap) => this.isPathMatched(ap))
+      .firstOrDefault();
+    if (!mapPath) return;
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const actionClass = require(path).default;
+    const actionClass = require(`${this.cFolderPath}/${mapPath}`).default;
     this.routerAction = new actionClass(this.requestParams) as Action;
     this.routerAction.requestParams = this.requestParams;
     this.routerAction.middlewares = this.middlewares.map((val) => val);
 
     if (this.auth != null) this.auth.roles = this.routerAction.roles;
+  }
+
+  private get cFolderPath(): string {
+    return `${process.cwd()}/${this.cFolder}`;
+  }
+
+  private isPathMatched(mapPath: string) {
+    const mPath = mapPath.toLowerCase().replace(/\\/g, "/");
+    const path = `${this.requestParams.path}.js`
+      .toLowerCase()
+      .replace(/\\/g, "/");
+
+    return mPath == path;
   }
 }
