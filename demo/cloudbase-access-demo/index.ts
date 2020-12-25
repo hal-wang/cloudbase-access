@@ -13,7 +13,7 @@ export const main = async (
     return (await router.do()).result;
   } catch (err) {
     console.log("err", err);
-    return HttpResult.errRequest(err.message);
+    return HttpResult.errRequest(err.message).result;
   }
 };
 
