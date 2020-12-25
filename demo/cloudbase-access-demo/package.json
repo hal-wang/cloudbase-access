@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build:test": "bash build.sh test",
-    "build:prod": "bash build.sh cad",
+    "build": "bash build.sh cad",
     "deploy:test": "bash deploy.sh test",
-    "deploy:prod": "bash deploy.sh cad",
+    "deploy": "bash deploy.sh cad",
     "eslint": "eslint . --ext .ts",
     "test": "jest"
   },
@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.3.5",
-    "@hal-wang/cloudbase-access": "^0.8.0-beta.3",
+    "@hal-wang/cloudbase-access": "^0.8.1",
     "linq": "^3.2.3"
   },
   "devDependencies": {
