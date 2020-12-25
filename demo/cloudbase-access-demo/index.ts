@@ -9,7 +9,11 @@ export const main = async (
   setHeaders();
 
   const router = new Router(event, context, new Auth());
-  return (await router.do()).result;
+  try {
+    return (await router.do()).result;
+  } catch (err) {
+    return HttpResult.errRequest(err.message);
+  }
 };
 
 function setHeaders(): void {

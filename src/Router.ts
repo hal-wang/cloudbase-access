@@ -3,11 +3,10 @@ import Action from "./Action";
 import HttpResult from "./HttpResult";
 import Middleware, { MiddlewareType } from "./Middleware";
 import RequestParams from "./RequestParams";
-import linq = require("linq");
 import MapCreater from "./MapCreater";
+import MapItem from "./MapItem";
 
 export default class Router {
-  private routerAction?: Action;
   private readonly middlewares: Array<Middleware> = new Array<Middleware>();
 
   readonly requestParams: RequestParams;
@@ -23,41 +22,39 @@ export default class Router {
     if (auth != null) this.middlewares.push(auth);
   }
 
-  async configure(mdw: Middleware): Promise<void> {
+  configure(mdw: Middleware): void {
     this.middlewares.push(mdw);
   }
 
   async do(): Promise<HttpResult> {
-    try {
-      let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
-      if (mdwResult) return mdwResult;
-
-      await this.initModule();
-      if (!this.routerAction)
-        return HttpResult.notFound(
-          "Can't find the path：" + this.requestParams.path
-        );
-
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
-      if (mdwResult) return mdwResult;
-
-      const result = await this.routerAction.do();
-
-      if (result.isSuccess) {
-        mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd);
-      } else {
-        mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd);
-      }
-      if (mdwResult) return mdwResult;
-
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd);
-      if (mdwResult) return mdwResult;
-
-      return result;
-    } catch (err) {
-      console.log("err", err);
-      return HttpResult.errRequest(err.message);
+    const mapItem = this.getMapItem();
+    if (!mapItem) {
+      return HttpResult.notFound(
+        "Can't find the path：" + this.requestParams.path
+      );
     }
+
+    let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
+    if (mdwResult) return mdwResult;
+
+    const actionPath = `${process.cwd()}/${this.cFolder}/${mapItem.path}`;
+    const action = await this.getAction(actionPath);
+
+    mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
+    if (mdwResult) return mdwResult;
+
+    const result = await action.do();
+    if (result.isSuccess) {
+      mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd);
+    } else {
+      mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd);
+    }
+    if (mdwResult) return mdwResult;
+
+    mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd);
+    if (mdwResult) return mdwResult;
+
+    return result;
   }
 
   private async ExecMdw(type: MiddlewareType) {
@@ -72,35 +69,20 @@ export default class Router {
     return null;
   }
 
-  private async initModule(): Promise<void> {
-    if (this.routerAction) return;
+  private getMapItem(): MapItem | undefined {
+    const mapItem = new MapCreater(this.requestParams, this.cFolder).getMap();
+    if (!mapItem) return;
 
-    const mapArr = new MapCreater(this.cFolder).getMap();
-    const mapPath = linq
-      .from(mapArr)
-      .where((ap) => this.isPathMatched(ap))
-      .firstOrDefault();
-    if (!mapPath) return;
+    if (this.auth != null) this.auth.roles = mapItem.roles;
+    return mapItem;
+  }
 
+  private async getAction(actionPath: string): Promise<Action> {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const actionClass = require(`${this.cFolderPath}/${mapPath}`).default;
-    this.routerAction = new actionClass(this.requestParams) as Action;
-    this.routerAction.requestParams = this.requestParams;
-    this.routerAction.middlewares = this.middlewares.map((val) => val);
-
-    if (this.auth != null) this.auth.roles = this.routerAction.roles;
-  }
-
-  private get cFolderPath(): string {
-    return `${process.cwd()}/${this.cFolder}`;
-  }
-
-  private isPathMatched(mapPath: string) {
-    const mPath = mapPath.toLowerCase().replace(/\\/g, "/");
-    const path = `${this.requestParams.path}.js`
-      .toLowerCase()
-      .replace(/\\/g, "/");
-
-    return mPath == path;
+    const actionClass = require(actionPath).default;
+    const routerAction = new actionClass(this.requestParams) as Action;
+    routerAction.requestParams = this.requestParams;
+    routerAction.middlewares = this.middlewares.map((val) => val);
+    return routerAction;
   }
 }
