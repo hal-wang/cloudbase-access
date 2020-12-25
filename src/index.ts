@@ -8,7 +8,6 @@ import MiddlewareResult from "./MiddlewareResult";
 import Authority from "./Authority";
 import AppInstance from "./AppInstance";
 import DbHelper from "./DbHelper";
-import MapItem from "./MapItem";
 
 export {
   HttpResult,
@@ -21,5 +20,4 @@ export {
   Authority,
   AppInstance,
   DbHelper,
-  MapItem,
 };

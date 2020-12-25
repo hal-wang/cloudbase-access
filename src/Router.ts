@@ -1,14 +1,14 @@
+import { existsSync, readdirSync } from "fs";
 import Authority from "./Authority";
 import Action from "./Action";
 import HttpResult from "./HttpResult";
 import Middleware from "./Middleware";
 import MiddlewareType from "./MiddlewareType";
 import RequestParams from "./RequestParams";
-import MapCreater from "./MapCreater";
-import MapItem from "./MapItem";
-import MiddlewareResult from "./MiddlewareResult";
+import linq = require("linq");
 
 export default class Router {
+  private routerAction?: Action;
   private readonly middlewares: Array<Middleware> = new Array<Middleware>();
 
   readonly requestParams: RequestParams;
@@ -24,39 +24,40 @@ export default class Router {
     if (auth != null) this.middlewares.push(auth);
   }
 
-  configure(mdw: Middleware): void {
+  async configure(mdw: Middleware): Promise<void> {
     this.middlewares.push(mdw);
   }
 
   async do(): Promise<HttpResult> {
-    const mapItem = this.getMapItem();
-    if (!mapItem) {
-      return HttpResult.notFound(
-        "Can't find the path：" + this.requestParams.path
-      );
+    try {
+      let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
+      if (mdwResult) return mdwResult;
+
+      await this.initModule();
+      if (!this.routerAction)
+        return HttpResult.notFound(
+          "Can't find the path：" + this.requestParams.path
+        );
+
+      mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
+      if (mdwResult) return mdwResult;
+
+      const result = await this.routerAction.do();
+
+      if (result.isSuccess) {
+        mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd);
+      } else {
+        mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd);
+      }
+      if (mdwResult) return mdwResult;
+
+      mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd);
+      if (mdwResult) return mdwResult;
+
+      return result;
+    } catch (err) {
+      return HttpResult.errRequest(err.message);
     }
-
-    let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
-    if (mdwResult) return mdwResult;
-
-    const actionPath = `${process.cwd()}/${this.cFolder}/${mapItem.path}`;
-    const action = await this.getAction(actionPath);
-
-    mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
-    if (mdwResult) return mdwResult;
-
-    const result = await action.do();
-    if (result.isSuccess) {
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd);
-    } else {
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd);
-    }
-    if (mdwResult) return mdwResult;
-
-    mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd);
-    if (mdwResult) return mdwResult;
-
-    return result;
   }
 
   private async ExecMdw(type: MiddlewareType): Promise<HttpResult | null> {
@@ -71,20 +72,53 @@ export default class Router {
     return null;
   }
 
-  private getMapItem(): MapItem | undefined {
-    const mapItem = new MapCreater(this.requestParams, this.cFolder).getMap();
-    if (!mapItem) return;
+  private async initModule() {
+    if (this.routerAction) return;
 
-    if (this.auth != null) this.auth.roles = mapItem.roles;
-    return mapItem;
+    const path = this.actionPath;
+    if (!path) return;
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const actionClass = require(path).default;
+    this.routerAction = new actionClass(this.requestParams) as Action;
+    this.routerAction.requestParams = this.requestParams;
+    this.routerAction.middlewares = this.middlewares.map((val) => val);
+
+    if (this.auth) {
+      this.auth.roles = ([] as string[]).concat(this.routerAction.roles);
+    }
   }
 
-  private async getAction(actionPath: string): Promise<Action> {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const actionClass = require(actionPath).default;
-    const routerAction = new actionClass(this.requestParams) as Action;
-    routerAction.requestParams = this.requestParams;
-    routerAction.middlewares = this.middlewares.map((val) => val);
-    return routerAction;
+  private get actionPath(): string | undefined {
+    if (!this.requestParams.path) return;
+    if (this.requestParams.path.includes("..")) return;
+
+    const folderIndex = this.requestParams.path.lastIndexOf("/");
+    if (folderIndex < 0 || folderIndex >= this.requestParams.path.length - 1) {
+      return;
+    }
+
+    const folder = this.requestParams.path.substr(0, folderIndex);
+    const folderPath = `${process.cwd()}/${this.cFolder}${folder}`;
+    if (!existsSync(folderPath)) return;
+
+    const actionFile = this.requestParams.path.substr(
+      folderIndex + 1,
+      this.requestParams.path.length - folderIndex - 1
+    );
+    const files = readdirSync(folderPath);
+
+    const file = linq
+      .from(files)
+      .where(
+        (f) =>
+          f.toLowerCase() == actionFile.toLowerCase() + ".js" ||
+          f.toLowerCase() == actionFile.toLowerCase() + ".ts"
+      )
+      .orderByDescending((f) => f)
+      .firstOrDefault();
+    if (!file) return;
+
+    return `${folderPath}/${file}`;
   }
 }

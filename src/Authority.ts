@@ -3,7 +3,7 @@ import MiddlewareType from "./MiddlewareType";
 
 export default abstract class Authority extends Middleware {
   constructor() {
-    super(MiddlewareType.BeforeStart);
+    super(MiddlewareType.BeforeAction);
   }
 
   /**will be set before doing*/

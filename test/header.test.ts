@@ -1,4 +1,4 @@
-import { HttpResult, Router } from "@hal-wang/cloudbase-access";
+import { HttpResult, Router } from "../src/index";
 
 test("router test", async function () {
   const event = <Record<string, unknown>>{
@@ -6,7 +6,7 @@ test("router test", async function () {
     path: "/actions/router",
   };
   HttpResult.baseHeaders["custom-header"] = "aaa";
-  const router = new Router(event, {}, undefined, "dist");
+  const router = new Router(event, {}, undefined, "test");
 
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);

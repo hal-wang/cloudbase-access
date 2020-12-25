@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "@hal-wang/cloudbase-access";
+import { Action, HttpResult } from "../../src";
 
 export default class extends Action {
   constructor() {

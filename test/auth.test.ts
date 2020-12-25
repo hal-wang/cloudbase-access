@@ -1,37 +1,21 @@
-import {
-  Router,
-  HttpResult,
-  Authority,
-  MiddlewareResult,
-} from "@hal-wang/cloudbase-access";
+import { MiddlewareResult, Router } from "../src/index";
+import { HttpResult } from "../src";
+import Authority from "../src/Authority";
 import linq = require("linq");
-
-const config = {
-  users: [
-    {
-      account: "abc",
-      password: "123456",
-    },
-    {
-      account: "admin",
-      password: "abcdef",
-    },
-  ],
-  adminAccount: "admin",
-};
+import global from "./global";
 
 test("router test login access", async function () {
   const router = new Router(
     {
       headers: {
-        account: config.users[0].account,
-        password: config.users[0].password,
+        account: global.users[0].account,
+        password: global.users[0].password,
       },
       path: "/actions/loginAuth",
     },
     {},
     new Auth(),
-    "dist"
+    "test"
   );
 
   const result = (await router.do()).result;
@@ -42,14 +26,14 @@ test("router test login not access", async function () {
   const router = new Router(
     {
       headers: {
-        account: config.users[0].account,
-        password: config.users[0].password + "1",
+        account: global.users[0].account,
+        password: global.users[0].password + "1",
       },
       path: "/actions/loginAuth",
     },
     {},
     new Auth(),
-    "dist"
+    "test"
   );
 
   const result = (await router.do()).result;
@@ -60,14 +44,14 @@ test("router test admin access", async function () {
   const router = new Router(
     {
       headers: {
-        account: config.users[1].account,
-        password: config.users[1].password,
+        account: global.users[1].account,
+        password: global.users[1].password,
       },
       path: "/actions/adminAuth",
     },
     {},
     new Auth(),
-    "dist"
+    "test"
   );
 
   const result = (await router.do()).result;
@@ -78,14 +62,14 @@ test("router test admin not access", async function () {
   const router = new Router(
     {
       headers: {
-        account: config.users[0].account,
-        password: config.users[0].password,
+        account: global.users[0].account,
+        password: global.users[0].password,
       },
       path: "/actions/adminAuth",
     },
     {},
     new Auth(),
-    "dist"
+    "test"
   );
 
   const result = (await router.do()).result;
@@ -94,6 +78,8 @@ test("router test admin not access", async function () {
 
 class Auth extends Authority {
   async do(): Promise<MiddlewareResult> {
+    console.log("auth", this.roles);
+
     if (!this.roles || !this.roles.length) {
       return MiddlewareResult.getSuccessResult();
     }
@@ -118,14 +104,14 @@ class Auth extends Authority {
 
   adminAuth() {
     const { account } = this.requestParams.headers;
-    return account == config.adminAccount;
+    return account == global.adminAccount;
   }
 
   loginAuth() {
     const { account, password } = this.requestParams.headers;
     return (
       linq
-        .from(config.users)
+        .from(global.users)
         .where(
           (u: Record<string, unknown>) =>
             u.account == account && u.password == password
