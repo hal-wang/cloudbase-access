@@ -14,7 +14,7 @@ test("middleware test success", async function () {
     body: {},
     path: "/actions/router",
   };
-  const router = new Router(event, {}, undefined, "test");
+  const router = new Router(event, {}, undefined, "dist");
 
   router.configure(new BeforeStartMdw(stepResult));
   router.configure(new BeforeActionMdw(stepResult));
