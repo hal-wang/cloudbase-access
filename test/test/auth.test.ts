@@ -26,7 +26,7 @@ test("router test login access", async function () {
     },
     {},
     new Auth(),
-    "test"
+    "dist"
   );
 
   const result = (await router.do()).result;
@@ -44,7 +44,7 @@ test("router test login not access", async function () {
     },
     {},
     new Auth(),
-    "test"
+    "dist"
   );
 
   const result = (await router.do()).result;
@@ -62,7 +62,7 @@ test("router test admin access", async function () {
     },
     {},
     new Auth(),
-    "test"
+    "dist"
   );
 
   const result = (await router.do()).result;
@@ -80,7 +80,7 @@ test("router test admin not access", async function () {
     },
     {},
     new Auth(),
-    "test"
+    "dist"
   );
 
   const result = (await router.do()).result;

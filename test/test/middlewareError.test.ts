@@ -14,7 +14,7 @@ test("middleware test err", async function () {
     body: {},
     path: "/actions/notExist",
   };
-  const router = new Router(event, {}, undefined, "test");
+  const router = new Router(event, {}, undefined, "dist");
 
   router.configure(new BeforeStartMdw(stepResult));
   router.configure(new BeforeActionMdw(stepResult));
