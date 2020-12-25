@@ -12,7 +12,7 @@ npm i @hal-wang/cloudbase-access
 
 ## Router
 
-路由管理类，也是 `cloudbase-access` 的控制中心。构造函数传入环境 `event`。
+路由管理类，也是 `cloudbase-access` 的控制中心。构造函数传入环境 `event` 和 `context`。
 
 如在 `main` 函数中：
 
@@ -31,7 +31,7 @@ export const main = async (
 
 如果访问的路径不存在，会返回 404 NotFound 结构。
 
-### 权限
+### 权限参数
 
 `Router` 第三个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
 
@@ -55,14 +55,16 @@ MVC 架构的 `controllers` 统一放在一个文件夹中，建议不传此参�
 
 - ok, 200
 - accepted, 202
+- created, 201
 - noContent, 204
 - partialContent, 206
+- redirect, 30\*
 - badRequest, 400
 - forbidden, 403
 - notFound, 404
 - errRequest, 500
 
-```TS
+```ts
 return HttpResult.ok("success");
 ```
 
@@ -82,7 +84,7 @@ return HttpResult.ok({
 
 以下例子中返回 400 请求错误：
 
-```TS
+```ts
 import { HttpResult } from "@hal-wang/cloudbase-access";
 return HttpResult.badRequest("请求错误");
 ```
@@ -91,7 +93,7 @@ return HttpResult.badRequest("请求错误");
 
 在 `Action` 中已经加入了 `HttpResult` 内置函数，可以直接以 `this.func` 方式调用
 
-```TS
+```ts
 import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 
 export default class extends Action {
@@ -110,7 +112,7 @@ export default class extends Action {
 
 1. event，云函数环境 event
 2. headers, 请求头部
-3. path，访问路径，如`POST https://api.com/user/login`，path 值为`/user/login`
+3. path，访问路径，如`POST https://domain.com/api/user/login`，path 值为`/user/login`
 4. params，查询参数
 5. data，请求 body，如果是 JSON 字符串，则转为 JSON 对象
 
@@ -147,21 +149,21 @@ export default class extends Action {
 
 ### Action 文件内容
 
-在`.ts`文件中，模块返回一个类，该类继承 `Action`，构造函数有一个字符串数组参数，传入为权限角色。
+在`.ts`文件中，模块返回一个类，该类继承 `Action`，构造函数有一个可选参数，传入字符串数组，值为允许的权限角色。
 
-如判断调用需要登录：
+如判断调用需要登录信息：
 
-```TS
-['login']
+```ts
+["login"];
 ```
 
 如判断调用者是管理员：
 
-```TS
-['admin']
+```ts
+["admin"];
 ```
 
-具体判断方式，参考前面说的权限部分。
+具体判断方式，参考后面的 [权限](#权限) 部分。
 
 例 1
 
@@ -191,7 +193,7 @@ export default class extends Action {
   async do(): Promise<HttpResult> {
     const { account } = this.requestParams.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
 
-    const todoList = []; // 可放心从数据库读取用户数据，因为 account 已验证
+    const todoList = []; // 可放心从数据库读取用户数据，因为 account 已验证登录
     return this.ok(todoList);
   }
 }
@@ -199,7 +201,13 @@ export default class extends Action {
 
 ## 中间件
 
-所有中间件应派生自类 `Middleware`，中间件有几种类别：
+中间件可以在 API 每次调用的生命周期各个阶段执行，如果记录日志，验证权限等。
+
+所有中间件应派生自类 `Middleware`，实现 `do` 函数，返回 `MiddlewareResult`
+
+### 中间件类型
+
+在 `cloudbase-access` 中，中间件有以下几种类别：
 
 1.  BeforeStart `Router` 初始化时就调用，此时 `Action` 未被加载
 1.  BeforeAction `Action` 执行前调用
@@ -207,9 +215,27 @@ export default class extends Action {
 1.  BeforeSuccessEnd `Action` 执行后，而且返回结果为 2xx 时调用
 1.  BeforeErrEnd `Action` 执行后，而且返回结果不为 2xx 时调用
 
-中间件都必须实现 `do` 函数，返回 `HttpResult` 。如果返回为 `null`，则执行成功，否则 API 此次调用结束，返回中间件结果。
+### 中间件结果
 
-使用 router.configure 注册中间件，如
+```ts
+// 成功
+return new MiddlewareResult(true);
+// 或
+return MiddlewareResult.getSuccessResult();
+
+// 失败
+return new MiddlewareResult(false, HttpResult.badRequest("中间件调用失败"));
+// 或
+return MiddlewareResult.getFailedResult(
+  HttpResult.badRequest("中间件调用失败")
+);
+```
+
+如果返回失败，则 API 此次调用结束，返回中间件结果。
+
+### 注册中间件
+
+你需要使用 router.configure 注册中间件，如
 
 ```ts
 import { Router } from "@hal-wang/cloudbase-access";
@@ -230,23 +256,28 @@ export const main = async (
 
 你需要新写个类，继承 `Authority`，并实现 `do` 函数。
 
-其实 `Authority` 也是个中间件，只是加载方式较特殊。当然你也可以自己写个权限管理中间件。
+其实 `Authority` 也是个中间件，只是加载方式较特殊。当然你也可以自己写个权限管理中间件，效果可以与 `Authority` 相同。
 
-权限是用于判断用户能否使用 API。下例使用请求头部的账号信息验证调用者信息，用法如下：
+权限是用于判断用户能否使用 API，可以精确到控制每个 `Action` 。下例使用请求头部的账号信息验证调用者信息，用法如下：
 
 ```ts
 class Auth extends Authority {
-  async do(): Promise<HttpResult> {
-    if (!this.roles || !this.roles.length) return null;
-
-    if (this.roles.includes("login") && !this.loginAuth()) {
-      return HttpResult.forbidden("账号或密码错误");
+  async do(): Promise<MiddlewareResult> {
+    if (!this.roles || !this.roles.length) {
+      return MiddlewareResult.getSuccessResult();
     }
 
-    return null;
+    if (this.roles.includes("login") && !this.loginAuth()) {
+      return MiddlewareResult.getFailedResult(
+        HttpResult.forbidden("账号或密码错误")
+      );
+    }
+
+    return MiddlewareResult.getSuccessResult();
   }
 
   loginAuth() {
+    // 实际情况应该需要查表等复杂操作
     const { account, password } = this.requestParams.headers;
     return account == "abc" && password == "123456";
   }
@@ -263,11 +294,11 @@ export const main = async (
 
 ## Demo
 
-Demo 内容在本项目 `demo` 文件夹，演示 `cloudbase-access` 用法。
+Demo 内容在本项目 `demo` 文件夹，用于演示 `cloudbase-access` 用法。
 
 ### 一个简单的 todo API
 
-没有访问数据库，只有模拟账号，在 `lib/Global.ts` 中。
+此 demo 没有访问数据库，只有模拟账号，在 `lib/Global.ts` 中。
 
 1. account: abc, password: 123456
 1. account: admin, password: abcdef
@@ -298,11 +329,11 @@ npm run build:cad
 
 在 cad 文件夹中包含以下内容：
 
-- controllers：符合 cloudbase-access 规则的 Controllers 目录
-- lib：除 controllers 外的其他类
-- index.js：入口文件
+- controllers：符合 cloudbase-access 规则的 controllers 目录
+- lib：除 controllers 外的其他帮助类
+- index.js：入口函数
 
-### 调用 API
+### 调用 API 测试
 
 使用 `vscode` 插件 `REST Client` 测试，测试文件都是以 `.test.txt` 结尾
 
@@ -313,7 +344,7 @@ npm run build:cad
 如
 
 ```txt
-POST https://env-***.service.tcloudbase.com/cloudbase-access-demo/user/login
+POST https://env-***.service.tcloudbase.com/cad/user/login
 content-type:application/json
 
 {
