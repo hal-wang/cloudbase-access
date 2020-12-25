@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.3.5",
-    "@hal-wang/cloudbase-access": "^0.8.1",
+    "@hal-wang/cloudbase-access": "^0.8.2",
     "linq": "^3.2.3"
   },
   "devDependencies": {
