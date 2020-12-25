@@ -28,36 +28,32 @@ export default class Router {
   }
 
   async do(): Promise<HttpResult> {
-    try {
-      let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
-      if (mdwResult) return mdwResult;
+    let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
+    if (mdwResult) return mdwResult;
 
-      const action = this.getAction();
-      if (!action) {
-        return HttpResult.notFound(
-          `Can't find the path：${this.requestParams.path}`
-        );
-      }
-
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
-      if (mdwResult) return mdwResult;
-
-      const result = await action.do();
-
-      if (result.isSuccess) {
-        mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd);
-      } else {
-        mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd);
-      }
-      if (mdwResult) return mdwResult;
-
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd);
-      if (mdwResult) return mdwResult;
-
-      return result;
-    } catch (err) {
-      return HttpResult.errRequest(err.message);
+    const action = this.getAction();
+    if (!action) {
+      return HttpResult.notFound(
+        `Can't find the path：${this.requestParams.path}`
+      );
     }
+
+    mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
+    if (mdwResult) return mdwResult;
+
+    const result = await action.do();
+
+    if (result.isSuccess) {
+      mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd);
+    } else {
+      mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd);
+    }
+    if (mdwResult) return mdwResult;
+
+    mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd);
+    if (mdwResult) return mdwResult;
+
+    return result;
   }
 
   private async ExecMdw(type: MiddlewareType): Promise<HttpResult | null> {
