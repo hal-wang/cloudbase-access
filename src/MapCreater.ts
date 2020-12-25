@@ -11,24 +11,25 @@ export default class MapCreater {
 
   private createMap(): string[] {
     const mapArr: string[] = [];
-    this.load(process.cwd(), this.cFolder, mapArr);
+    this.load("", mapArr);
     writeFileSync(this.mapPath, JSON.stringify(mapArr));
     return mapArr;
   }
 
-  private load(basePath: string, folder: string, mapArr: string[]): void {
-    const items = readdirSync(`${basePath}/${folder}`);
+  private load(folder: string, mapArr: string[]): void {
+    const items = readdirSync(`${this.cFolderPath}/${folder}`);
     console.log("items", items);
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
+      const itemPath = `${folder}/${item}`;
       if (!item.includes(".")) {
-        this.load(`${basePath}/${folder}`, item, mapArr);
+        this.load(itemPath, mapArr);
         continue;
       }
 
-      if (item.toLowerCase().lastIndexOf(".js") != item.length - 3) continue;
+      if (item.lastIndexOf(".js") != item.length - 3) continue;
 
-      mapArr.push(item.toLowerCase());
+      mapArr.push(itemPath);
     }
   }
 
@@ -42,7 +43,7 @@ export default class MapCreater {
   private get mapPath(): string {
     return `${process.cwd()}/mvc-map.json`;
   }
-  private get controllerFolder(): string {
+  private get cFolderPath(): string {
     return `${process.cwd()}/${this.cFolder}`;
   }
 }
