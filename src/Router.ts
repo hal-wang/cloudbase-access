@@ -8,7 +8,6 @@ import RequestParams from "./RequestParams";
 import linq = require("linq");
 
 export default class Router {
-  private routerAction?: Action;
   private readonly middlewares: Array<Middleware> = new Array<Middleware>();
 
   readonly requestParams: RequestParams;
@@ -33,16 +32,17 @@ export default class Router {
       let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
       if (mdwResult) return mdwResult;
 
-      await this.initModule();
-      if (!this.routerAction)
+      const action = this.getAction();
+      if (!action) {
         return HttpResult.notFound(
-          "Can't find the path：" + this.requestParams.path
+          `Can't find the path：${this.requestParams.path}`
         );
+      }
 
       mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
       if (mdwResult) return mdwResult;
 
-      const result = await this.routerAction.do();
+      const result = await action.do();
 
       if (result.isSuccess) {
         mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd);
@@ -72,24 +72,22 @@ export default class Router {
     return null;
   }
 
-  private async initModule() {
-    if (this.routerAction) return;
-
-    const path = this.actionPath;
+  private getAction(): Action | undefined {
+    const path = this.getActionPath();
     if (!path) return;
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const actionClass = require(path).default;
-    this.routerAction = new actionClass(this.requestParams) as Action;
-    this.routerAction.requestParams = this.requestParams;
-    this.routerAction.middlewares = this.middlewares.map((val) => val);
-
+    const action = new actionClass(this.requestParams) as Action;
+    action.requestParams = this.requestParams;
+    action.middlewares = this.middlewares.map((val) => val);
     if (this.auth) {
-      this.auth.roles = ([] as string[]).concat(this.routerAction.roles);
+      this.auth.roles = ([] as string[]).concat(action.roles);
     }
+    return action;
   }
 
-  private get actionPath(): string | undefined {
+  private getActionPath(): string | undefined {
     if (!this.requestParams.path) return;
     if (this.requestParams.path.includes("..")) return;
 
