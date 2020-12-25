@@ -1,6 +1,6 @@
 {
   "name": "@hal-wang/cloudbase-access",
-  "version": "0.8.0-beta.0",
+  "version": "0.8.0-beta.2",
   "description": "利用 NodeJS 和 CloudBase 快速创建 MVC 架构的 Serverless RESTful Api",
   "homepage": "https://github.com/hal-wang/cloudbase-access",
   "repository": {
@@ -21,6 +21,7 @@
   "scripts": {
     "build": "tsc",
     "deploy": "tsc && npm publish --access=public",
+    "deploy:beta": "tsc && npm publish --tag beta --access=public",
     "test": "jest",
     "eslint": "eslint src --ext .ts"
   },
