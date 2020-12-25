@@ -1,9 +1,9 @@
 import {
   Middleware,
   MiddlewareResult,
-  MiddlewareType,
   Router,
-} from "@hal-wang/cloudbase-access";
+  MiddlewareType,
+} from "../src/index";
 
 test("middleware test success", async function () {
   const stepResult: Record<string, number> = {
@@ -14,7 +14,7 @@ test("middleware test success", async function () {
     body: {},
     path: "/actions/router",
   };
-  const router = new Router(event, {}, undefined, "dist");
+  const router = new Router(event, {}, undefined, "test");
 
   router.configure(new BeforeStartMdw(stepResult));
   router.configure(new BeforeActionMdw(stepResult));

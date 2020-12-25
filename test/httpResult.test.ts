@@ -1,5 +1,4 @@
-import { HttpResult } from "@hal-wang/cloudbase-access";
-
+import HttpResult from "../src/HttpResult";
 test("302 redirect test", async function () {
   const httpResult = HttpResult.redirect("/test").result;
   expect(httpResult.statusCode).toBe(302);
