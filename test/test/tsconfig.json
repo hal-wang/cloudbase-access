@@ -7,9 +7,8 @@
     "strict": true
   },
   "exclude": [
-    "tests",
-    "routerTest",
+    "test",
     "dist",
-    "demo"
+    "../functions"
   ]
 }

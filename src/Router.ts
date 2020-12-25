@@ -5,6 +5,7 @@ import HttpResult from "./HttpResult";
 import Middleware, { MiddlewareType } from "./Middleware";
 import RequestParams from "./RequestParams";
 import linq = require("linq");
+import MapCreater from "./MapCreater";
 
 export default class Router {
   private routerAction?: Action;
@@ -55,6 +56,7 @@ export default class Router {
 
       return result;
     } catch (err) {
+      console.log("err", err);
       return HttpResult.errRequest(err.message);
     }
   }
@@ -74,8 +76,9 @@ export default class Router {
   private async initModule() {
     if (this.routerAction) return;
 
-    const path = this.actionPath;
-    if (!path) return;
+    const mapArr = new MapCreater(this.cFolder).getMap();
+    const path = `${this.requestParams.path.toLowerCase()}.js`;
+    if (!mapArr.includes(path)) return;
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const actionClass = require(path).default;
@@ -84,38 +87,5 @@ export default class Router {
     this.routerAction.middlewares = this.middlewares.map((val) => val);
 
     if (this.auth != null) this.auth.roles = this.routerAction.roles;
-  }
-
-  private get actionPath(): string | undefined {
-    if (!this.requestParams.path) return;
-    if (this.requestParams.path.includes("..")) return;
-
-    const folderIndex = this.requestParams.path.lastIndexOf("/");
-    if (folderIndex < 0 || folderIndex >= this.requestParams.path.length - 1) {
-      return;
-    }
-
-    const folder = this.requestParams.path.substr(0, folderIndex);
-    const folderPath = `${process.cwd()}/${this.cFolder}${folder}`;
-    if (!existsSync(folderPath)) return;
-
-    const actionFile = this.requestParams.path.substr(
-      folderIndex + 1,
-      this.requestParams.path.length - folderIndex - 1
-    );
-    const files = readdirSync(folderPath);
-
-    const file = linq
-      .from(files)
-      .where(
-        (f) =>
-          f.toLowerCase() == actionFile.toLowerCase() + ".js" ||
-          f.toLowerCase() == actionFile.toLowerCase() + ".ts"
-      )
-      .orderByDescending((f) => f)
-      .firstOrDefault();
-    if (!file) return;
-
-    return `${folderPath}/${file}`;
   }
 }

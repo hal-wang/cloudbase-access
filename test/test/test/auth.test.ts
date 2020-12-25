@@ -1,15 +1,26 @@
-import { Router } from "../src/index";
-import { HttpResult } from "../src";
-import Authority from "../src/Authority";
+import { Router, HttpResult, Authority } from "@hal-wang/cloudbase-access";
 import linq = require("linq");
-import global from "./global";
+
+const config = {
+  users: [
+    {
+      account: "abc",
+      password: "123456",
+    },
+    {
+      account: "admin",
+      password: "abcdef",
+    },
+  ],
+  adminAccount: "admin",
+};
 
 test("router test login access", async function () {
   const router = new Router(
     {
       headers: {
-        account: global.users[0].account,
-        password: global.users[0].password,
+        account: config.users[0].account,
+        password: config.users[0].password,
       },
       path: "/actions/loginAuth",
     },
@@ -26,8 +37,8 @@ test("router test login not access", async function () {
   const router = new Router(
     {
       headers: {
-        account: global.users[0].account,
-        password: global.users[0].password + "1",
+        account: config.users[0].account,
+        password: config.users[0].password + "1",
       },
       path: "/actions/loginAuth",
     },
@@ -44,8 +55,8 @@ test("router test admin access", async function () {
   const router = new Router(
     {
       headers: {
-        account: global.users[1].account,
-        password: global.users[1].password,
+        account: config.users[1].account,
+        password: config.users[1].password,
       },
       path: "/actions/adminAuth",
     },
@@ -62,8 +73,8 @@ test("router test admin not access", async function () {
   const router = new Router(
     {
       headers: {
-        account: global.users[0].account,
-        password: global.users[0].password,
+        account: config.users[0].account,
+        password: config.users[0].password,
       },
       path: "/actions/adminAuth",
     },
@@ -96,14 +107,14 @@ class Auth extends Authority {
 
   adminAuth() {
     const { account } = this.requestParams.headers;
-    return account == global.adminAccount;
+    return account == config.adminAccount;
   }
 
   loginAuth() {
     const { account, password } = this.requestParams.headers;
     return (
       linq
-        .from(global.users)
+        .from(config.users)
         .where(
           (u: Record<string, unknown>) =>
             u.account == account && u.password == password

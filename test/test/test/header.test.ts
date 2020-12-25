@@ -1,4 +1,4 @@
-import { HttpResult, Router } from "../src/index";
+import { HttpResult, Router } from "@hal-wang/cloudbase-access";
 
 test("router test", async function () {
   const event = <Record<string, unknown>>{
