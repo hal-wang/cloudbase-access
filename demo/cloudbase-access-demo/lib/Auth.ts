@@ -17,13 +17,13 @@ export default class Auth extends Authority {
       !this.loginAuth()
     ) {
       return MiddlewareResult.getFailedResult(
-        HttpResult.forbidden("账号或密码错误")
+        HttpResult.forbiddenMsg({ message: "账号或密码错误" })
       );
     }
 
     if (this.roles.includes("admin") && !this.adminAuth()) {
       return MiddlewareResult.getFailedResult(
-        HttpResult.forbidden("不是管理员")
+        HttpResult.forbiddenMsg({ message: "不是管理员" })
       );
     }
 
