@@ -1,0 +1,12 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "framework": "cd cloudbase-access-demo && npm run build && cd .."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

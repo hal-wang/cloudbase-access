@@ -1,4 +1,4 @@
-POST https://env-caafniqh.service.tcloudbase.com/cad/todo/getList
+POST https://env-caafniqh.service.tcloudbase.com/cloudbase-access/todo/getList
 content-type:application/json
 account:abc
 password:123456
@@ -8,7 +8,7 @@ password:123456
 }
 
 
-POST https://env-caafniqh.service.tcloudbase.com/cad/todo/getList
+POST https://env-caafniqh.service.tcloudbase.com/cloudbase-access/todo/getList
 content-type:application/json
 account:abc
 password:1234567

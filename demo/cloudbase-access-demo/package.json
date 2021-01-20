@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build:test": "bash build.sh test",
-    "build": "bash build.sh cad",
+    "build": "bash build.sh cloudbase-access",
     "deploy:test": "bash deploy.sh test",
-    "deploy": "bash deploy.sh cad",
+    "deploy": "bash deploy.sh cloudbase-access",
     "eslint": "eslint . --ext .ts",
     "test": "jest"
   },

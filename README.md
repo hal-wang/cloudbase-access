@@ -324,16 +324,16 @@ Demo 内容在本项目 `demo` 文件夹，用于演示 `cloudbase-access` 用�
 ```shell
 cd demo/cloudbase-access-demo
 npm install
-npm run build:cad
+npm run build
 ```
 
 首次发布需要登录。发布成功后，在 `CloudaBase` 云函数控制台，配置 HTTP 访问服务。
 
 #### 生成的内容
 
-编译后会在云函数目录 `functions` 生成文件夹 `cad`，
+编译后会在云函数目录 `functions` 生成文件夹 `cloudbase-access`，
 
-在 cad 文件夹中包含以下内容：
+在 cloudbase-access 文件夹中包含以下内容：
 
 - controllers：符合 cloudbase-access 规则的 controllers 目录
 - lib：除 controllers 外的其他帮助类
@@ -350,7 +350,7 @@ npm run build:cad
 如
 
 ```txt
-POST https://env-***.service.tcloudbase.com/cad/user/login
+POST https://env-***.service.tcloudbase.com/cloudbase-access/user/login
 content-type:application/json
 
 {
