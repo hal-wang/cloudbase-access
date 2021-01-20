@@ -1,12 +1,9 @@
 {
-  "name": "demo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "cloudbase-access-demo",
   "scripts": {
     "framework": "cd cloudbase-access-demo && npm install && npm run build && cd .."
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "hal-wang",
+  "license": "MIT"
 }
