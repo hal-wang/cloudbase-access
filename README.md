@@ -47,7 +47,7 @@ MVC 架构的 `controllers` 统一放在一个文件夹中，建议不传此参�
 
 `HttpResult` 封装了 HTTP 返回结构。可在构造函数传入相关参数。
 
-`HttpResult` 有个 `get` 属性 `result` ，可获取最终 HTTP 返回结构。
+`HttpResult` 有个属性 `result` ，可获取最终 HTTP 返回结构。
 
 ### 内置类型
 
@@ -60,15 +60,20 @@ MVC 架构的 `controllers` 统一放在一个文件夹中，建议不传此参�
 - partialContent, 206
 - redirect, 30\*
 - badRequest, 400
+- badRequestMsg, 400
 - forbidden, 403
+- forbiddenMsg, 403
 - notFound, 404
+- notFoundMsg, 404
 - errRequest, 500
+- errRequestMsg, 500
 
 ```ts
 return HttpResult.ok("success");
 ```
 
-内置类型都支持传入`body`可选参数，API 返回为 body 内容。
+普通内置类型支持传入 `body` 可选参数，`body` 为返回的内容。
+API 返回错误时，可统一返回 `ErrorMessage`，以 `Msg` 结尾的内置类型接受 `ErrorMessage` 参数。
 
 ### 举例
 
@@ -86,7 +91,8 @@ return HttpResult.ok({
 
 ```ts
 import { HttpResult } from "@hal-wang/cloudbase-access";
-return HttpResult.badRequest("请求错误");
+return HttpResult.badRequestMsg({ message: "请求错误" });
+// 或 return HttpResult.badRequestMsg("请求错误");
 ```
 
 ### 在 Action 中
