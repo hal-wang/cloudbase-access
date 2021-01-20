@@ -18,7 +18,7 @@
     "hooks": {
       "preDeploy": {
         "type": "execCommand",
-        "commands": ["npm run framework"]
+        "commands": ["npm install -g typescript", "npm run framework"]
       }
     },
     "plugins": {
