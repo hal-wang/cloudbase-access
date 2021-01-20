@@ -12,7 +12,7 @@
     "test": "jest"
   },
   "author": "hal-wang",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.5.0",
     "@hal-wang/cloudbase-access": "^0.8.3",
