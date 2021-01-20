@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "framework": "cd cloudbase-access-demo && npm run build && cd .."
+    "framework": "cd cloudbase-access-demo && npm install && npm run build && cd .."
   },
   "keywords": [],
   "author": "",
