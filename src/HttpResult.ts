@@ -1,5 +1,12 @@
 import ErrorMessage from "./ErrorMessage";
 
+interface HttpResultStruct {
+  isBase64: boolean;
+  statusCode: number;
+  headers: Record<string, string>;
+  body: unknown;
+}
+
 export default class HttpResult {
   constructor(
     public readonly statusCode: number,
@@ -7,8 +14,8 @@ export default class HttpResult {
     public readonly headers?: Record<string, unknown>
   ) {}
 
-  get result(): Record<string, unknown> {
-    return <Record<string, unknown>>{
+  get result(): HttpResultStruct {
+    return <HttpResultStruct>{
       isBase64: false,
       statusCode: this.statusCode,
       headers: Object.assign(HttpResult.baseHeaders, this.headers),
