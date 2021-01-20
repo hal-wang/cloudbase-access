@@ -1,3 +1,5 @@
+import ErrorMessage from "./ErrorMessage";
+
 export default class HttpResult {
   constructor(
     public readonly statusCode: number,
@@ -51,17 +53,53 @@ export default class HttpResult {
   static badRequest = function (body?: unknown): HttpResult {
     return new HttpResult(400, body);
   };
+  static badRequestMsg = function (msg?: ErrorMessage): HttpResult {
+    if (!msg) {
+      msg = <ErrorMessage>{
+        message: "Bad Request",
+      };
+    }
+
+    return HttpResult.badRequest(msg);
+  };
 
   static forbidden = function (body?: unknown): HttpResult {
     return new HttpResult(403, body);
+  };
+  static forbiddenMsg = function (msg?: ErrorMessage): HttpResult {
+    if (!msg) {
+      msg = <ErrorMessage>{
+        message: "Forbidden",
+      };
+    }
+
+    return HttpResult.forbidden(msg);
   };
 
   static notFound = function (body?: unknown): HttpResult {
     return new HttpResult(404, body);
   };
+  static notFoundMsg = function (msg?: ErrorMessage): HttpResult {
+    if (!msg) {
+      msg = <ErrorMessage>{
+        message: "Not Found",
+      };
+    }
+
+    return HttpResult.notFound(msg);
+  };
 
   static errRequest = function (body?: unknown): HttpResult {
     return new HttpResult(500, body);
+  };
+  static errRequestMsg = function (msg?: ErrorMessage): HttpResult {
+    if (!msg) {
+      msg = <ErrorMessage>{
+        message: "Error Request",
+      };
+    }
+
+    return HttpResult.errRequest(msg);
   };
 
   static redirect = function (

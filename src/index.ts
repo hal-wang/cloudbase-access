@@ -1,4 +1,5 @@
 import HttpResult from "./HttpResult";
+import ErrorMessage from "./ErrorMessage";
 import Router from "./Router";
 import Action from "./Action";
 import RequestParams from "./RequestParams";
@@ -11,6 +12,7 @@ import DbHelper from "./DbHelper";
 
 export {
   HttpResult,
+  ErrorMessage,
   Action,
   Router,
   RequestParams,
