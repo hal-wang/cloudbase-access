@@ -10,9 +10,13 @@ export default abstract class Action {
   protected readonly noContent = HttpResult.noContent;
   protected readonly partialContent = HttpResult.partialContent;
   protected readonly badRequest = HttpResult.badRequest;
+  protected readonly badRequestMsg = HttpResult.badRequestMsg;
   protected readonly forbidden = HttpResult.forbidden;
+  protected readonly forbiddenMsg = HttpResult.forbiddenMsg;
   protected readonly notFound = HttpResult.notFound;
+  protected readonly notFoundMsg = HttpResult.notFoundMsg;
   protected readonly errRequest = HttpResult.errRequest;
+  protected readonly errRequestMsg = HttpResult.errRequestMsg;
   protected readonly redirect = HttpResult.redirect;
   protected readonly created = HttpResult.created;
 
