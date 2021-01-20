@@ -1,18 +1,11 @@
 {
-  "envId": "env-caafniqh",
+  "version": "2.0",
+  "envId": "{{env.ENV_ID}}",
   "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
   "functionRoot": "./functions",
   "functions": [
     {
-      "name": "cad",
-      "timeout": 5,
-      "envVariables": {},
-      "runtime": "Nodejs10.15",
-      "memorySize": 128,
-      "handler": "index.main"
-    },
-    {
-      "name": "test",
+      "name": "cloudbase-access",
       "timeout": 5,
       "envVariables": {},
       "runtime": "Nodejs10.15",
@@ -21,11 +14,24 @@
     }
   ],
   "framework": {
-    "name": "node-starter",
+    "name": "cloudbase-access",
+    "hooks": {
+      "preDeploy": {
+        "type": "execCommand",
+        "commands": ["npm run framework"]
+      }
+    },
     "plugins": {
       "function": {
         "use": "@cloudbase/framework-plugin-function",
-        "inputs": {}
+        "inputs": {
+          "functionRootPath": "functions",
+          "functions": [
+            {
+              "name": "cloudbase-access"
+            }
+          ]
+        }
       }
     }
   }
