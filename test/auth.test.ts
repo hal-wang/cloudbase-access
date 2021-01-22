@@ -78,8 +78,6 @@ test("router test admin not access", async function () {
 
 class Auth extends Authority {
   async do(): Promise<MiddlewareResult> {
-    console.log("auth", this.roles);
-
     if (!this.roles || !this.roles.length) {
       return MiddlewareResult.getSuccessResult();
     }
