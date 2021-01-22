@@ -1,4 +1,5 @@
 import { Middleware, RequestParams } from ".";
+import ApiDocs from "./ApiDocs";
 import HttpResult from "./HttpResult";
 
 export default abstract class Action {
@@ -24,6 +25,10 @@ export default abstract class Action {
   requestParams: RequestParams = RequestParams.empty;
   /** will be set before doing */
   middlewares: Array<Middleware> = new Array<Middleware>();
+
+  /**docs of api action */
+  inputDocs?: ApiDocs;
+  outputDocs?: ApiDocs;
 
   abstract do(): Promise<HttpResult>;
 }

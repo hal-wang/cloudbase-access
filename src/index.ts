@@ -9,6 +9,7 @@ import MiddlewareResult from "./MiddlewareResult";
 import Authority from "./Authority";
 import AppInstance from "./AppInstance";
 import DbHelper from "./DbHelper";
+import ApiDocs from "./ApiDocs";
 
 export {
   HttpResult,
@@ -22,4 +23,5 @@ export {
   Authority,
   AppInstance,
   DbHelper,
+  ApiDocs,
 };
