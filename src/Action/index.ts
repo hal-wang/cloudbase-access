@@ -1,6 +1,6 @@
-import { Middleware, RequestParams } from ".";
-import ApiDocs from "./ApiDocs";
-import HttpResult from "./HttpResult";
+import { Middleware, RequestParams } from "..";
+import ApiDocs from "../ApiDocs";
+import HttpResult from "../HttpResult";
 
 export default abstract class Action {
   constructor(public readonly roles: Array<string> = new Array<string>()) {}
