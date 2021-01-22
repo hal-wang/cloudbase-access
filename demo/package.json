@@ -1,7 +1,7 @@
 {
-  "name": "cloudbase-access-demo",
+  "name": "cloudbase-access-api",
   "scripts": {
-    "framework": "cd cloudbase-access-demo && npm install && npm run build && cd .."
+    "framework": "cd cloudbase-access-api && npm install && npm run build && cd .."
   },
   "keywords": [],
   "author": "hal-wang",
