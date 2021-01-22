@@ -9,13 +9,13 @@ export default class RequestParams {
     public readonly event: Record<string, unknown>,
     public readonly context: Record<string, unknown>
   ) {
-    this.headers = <Record<string, string | undefined>>this.event.headers;
-    this.path = <string>this.event.path;
+    this.headers = <Record<string, string | undefined>>event.headers;
+    this.path = <string>event.path;
     this.params = <Record<string, string | undefined>>(
-      this.event.queryStringParameters
+      event.queryStringParameters
     );
 
-    const body = this.event.body;
+    const body = event.body;
     if (
       this.headers &&
       this.headers["content-type"] &&

@@ -1,6 +1,6 @@
-import { Middleware, RequestParams } from "..";
 import ApiDocs from "../ApiDocs";
 import HttpResult from "../HttpResult";
+import { RequestParams } from "../Router";
 
 export default abstract class Action {
   constructor(public readonly roles: Array<string> = new Array<string>()) {}
@@ -22,9 +22,7 @@ export default abstract class Action {
   protected readonly created = HttpResult.created;
 
   /** will be set before doing */
-  requestParams: RequestParams = RequestParams.empty;
-  /** will be set before doing */
-  middlewares: Array<Middleware> = new Array<Middleware>();
+  requestParams = RequestParams.empty;
 
   /**docs of api action */
   inputDocs?: ApiDocs;

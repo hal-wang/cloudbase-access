@@ -1,18 +1,15 @@
-import { existsSync, readdirSync } from "fs";
 import Authority from "../Authority";
-import Action from "../Action";
 import HttpResult from "../HttpResult";
 import Middleware from "../Middleware";
 import MiddlewareType from "../Middleware/MiddlewareType";
 import RequestParams from "./RequestParams";
-import linq = require("linq");
+import ActionParser from "../Action/ActionParser";
 
 export { RequestParams };
 
 export default class Router {
-  private readonly middlewares: Array<Middleware> = new Array<Middleware>();
-
   readonly requestParams: RequestParams;
+  readonly middlewares = <Middleware[]>[];
 
   constructor(
     event: Record<string, unknown>,
@@ -21,7 +18,6 @@ export default class Router {
     public readonly cFolder = "controllers"
   ) {
     this.requestParams = new RequestParams(event, context);
-
     if (auth != null) this.middlewares.push(auth);
   }
 
@@ -33,11 +29,16 @@ export default class Router {
     let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
     if (mdwResult) return mdwResult;
 
-    const action = this.getAction();
+    const actionParser = new ActionParser(this.requestParams, this.cFolder);
+    const action = actionParser.getAction();
     if (!action) {
       return HttpResult.notFound(
         `Can't find the path：${this.requestParams.path}`
       );
+    }
+    action.requestParams = this.requestParams;
+    if (this.auth) {
+      this.auth.roles = ([] as string[]).concat(action.roles);
     }
 
     mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
@@ -68,53 +69,5 @@ export default class Router {
       if (!mdwResult.success) return mdwResult.failedResult;
     }
     return null;
-  }
-
-  private getAction(): Action | undefined {
-    const path = this.getActionPath();
-    if (!path) return;
-
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const actionClass = require(path).default;
-    const action = new actionClass(this.requestParams) as Action;
-    action.requestParams = this.requestParams;
-    action.middlewares = this.middlewares.map((val) => val);
-    if (this.auth) {
-      this.auth.roles = ([] as string[]).concat(action.roles);
-    }
-    return action;
-  }
-
-  private getActionPath(): string | undefined {
-    if (!this.requestParams.path) return;
-    if (this.requestParams.path.includes("..")) return;
-
-    const folderIndex = this.requestParams.path.lastIndexOf("/");
-    if (folderIndex < 0 || folderIndex >= this.requestParams.path.length - 1) {
-      return;
-    }
-
-    const folder = this.requestParams.path.substr(0, folderIndex);
-    const folderPath = `${process.cwd()}/${this.cFolder}${folder}`;
-    if (!existsSync(folderPath)) return;
-
-    const actionFile = this.requestParams.path.substr(
-      folderIndex + 1,
-      this.requestParams.path.length - folderIndex - 1
-    );
-    const files = readdirSync(folderPath);
-
-    const file = linq
-      .from(files)
-      .where(
-        (f) =>
-          f.toLowerCase() == actionFile.toLowerCase() + ".js" ||
-          f.toLowerCase() == actionFile.toLowerCase() + ".ts"
-      )
-      .orderByDescending((f) => f)
-      .firstOrDefault();
-    if (!file) return;
-
-    return `${folderPath}/${file}`;
   }
 }
