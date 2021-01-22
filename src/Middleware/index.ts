@@ -1,4 +1,4 @@
-import RequestParams from "../RequestParams";
+import RequestParams from "../Router/RequestParams";
 import MiddlewareResult from "./MiddlewareResult";
 import MiddlewareType from "./MiddlewareType";
 
