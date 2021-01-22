@@ -1,11 +1,13 @@
 import { existsSync, readdirSync } from "fs";
-import Authority from "./Authority";
-import Action from "./Action";
-import HttpResult from "./HttpResult";
-import Middleware from "./Middleware";
-import MiddlewareType from "./Middleware/MiddlewareType";
+import Authority from "../Authority";
+import Action from "../Action";
+import HttpResult from "../HttpResult";
+import Middleware from "../Middleware";
+import MiddlewareType from "../Middleware/MiddlewareType";
 import RequestParams from "./RequestParams";
 import linq = require("linq");
+
+export { RequestParams };
 
 export default class Router {
   private readonly middlewares: Array<Middleware> = new Array<Middleware>();
