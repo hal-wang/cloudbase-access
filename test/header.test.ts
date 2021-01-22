@@ -3,10 +3,10 @@ import { HttpResult, Router } from "../src/index";
 test("router test", async function () {
   const event = <Record<string, unknown>>{
     body: {},
-    path: "/actions/router",
+    path: "/simple/router",
   };
   HttpResult.baseHeaders["custom-header"] = "aaa";
-  const router = new Router(event, {}, undefined, "test");
+  const router = new Router(event, {}, undefined, "test/controllers");
 
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);

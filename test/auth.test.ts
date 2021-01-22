@@ -11,11 +11,11 @@ test("router test login access", async function () {
         account: global.users[0].account,
         password: global.users[0].password,
       },
-      path: "/actions/loginAuth",
+      path: "/simple/loginAuth",
     },
     {},
     new Auth(),
-    "test"
+    "test/controllers"
   );
 
   const result = (await router.do()).result;
@@ -29,11 +29,11 @@ test("router test login not access", async function () {
         account: global.users[0].account,
         password: global.users[0].password + "1",
       },
-      path: "/actions/loginAuth",
+      path: "/simple/loginAuth",
     },
     {},
     new Auth(),
-    "test"
+    "test/controllers"
   );
 
   const result = (await router.do()).result;
@@ -47,11 +47,11 @@ test("router test admin access", async function () {
         account: global.users[1].account,
         password: global.users[1].password,
       },
-      path: "/actions/adminAuth",
+      path: "/simple/adminAuth",
     },
     {},
     new Auth(),
-    "test"
+    "test/controllers"
   );
 
   const result = (await router.do()).result;
@@ -65,11 +65,11 @@ test("router test admin not access", async function () {
         account: global.users[0].account,
         password: global.users[0].password,
       },
-      path: "/actions/adminAuth",
+      path: "/simple/adminAuth",
     },
     {},
     new Auth(),
-    "test"
+    "test/controllers"
   );
 
   const result = (await router.do()).result;

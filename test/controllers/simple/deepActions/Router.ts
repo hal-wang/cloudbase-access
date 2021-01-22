@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "../src";
+import { Action, HttpResult } from "../../../../src";
 
 export default class extends Action {
   async do(): Promise<HttpResult> {

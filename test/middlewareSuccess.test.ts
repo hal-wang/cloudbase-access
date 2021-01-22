@@ -12,9 +12,9 @@ test("middleware test success", async function () {
 
   const event = {
     body: {},
-    path: "/actions/router",
+    path: "/simple/router",
   };
-  const router = new Router(event, {}, undefined, "test");
+  const router = new Router(event, {}, undefined, "test/controllers");
 
   router.configure(new BeforeStartMdw(stepResult));
   router.configure(new BeforeActionMdw(stepResult));
