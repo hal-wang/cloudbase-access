@@ -33,8 +33,6 @@ export default class ActionParser {
   }
 
   private getAction(filePath: string): Action {
-    console.log("getAction", filePath);
-
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const actionClass = require(filePath).default;
     return new actionClass() as Action;

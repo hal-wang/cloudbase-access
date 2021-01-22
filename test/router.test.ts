@@ -3,9 +3,9 @@ import { Router } from "../src/index";
 test("router test", async function () {
   const event = {
     body: {},
-    path: "/actions/RoUtEr",
+    path: "/simple/RoUtEr",
   };
-  const router = new Router(event, {}, undefined, "test");
+  const router = new Router(event, {}, undefined, "test/controllers");
 
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
@@ -14,9 +14,9 @@ test("router test", async function () {
 test("router not exist", async function () {
   const event = {
     body: {},
-    path: "/actions/router1",
+    path: "/simple/router1",
   };
-  const router = new Router(event, {}, undefined, "test");
+  const router = new Router(event, {}, undefined, "test/controllers");
 
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(404);
@@ -25,9 +25,9 @@ test("router not exist", async function () {
 test("shallow router test", async function () {
   const event = {
     body: {},
-    path: "/Router",
+    path: "/router",
   };
-  const router = new Router(event, {}, undefined, "test");
+  const router = new Router(event, {}, undefined, "test/controllers");
 
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
@@ -36,9 +36,9 @@ test("shallow router test", async function () {
 test("deep router test", async function () {
   const event = {
     body: {},
-    path: "/actions/deepActions/RoUtEr",
+    path: "/simple/deepActions/RoUtEr",
   };
-  const router = new Router(event, {}, undefined, "test");
+  const router = new Router(event, {}, undefined, "test/controllers");
 
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
