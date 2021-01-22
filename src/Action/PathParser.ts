@@ -26,7 +26,7 @@ export default class {
   private getFolderPath(folderSeparator: number): string | undefined {
     const folder = this.requestPath.substr(0, folderSeparator);
     const folderPath = `${process.cwd()}/${this.cFolder}${folder}`.replace(
-      "\\",
+      /\\/g,
       "/"
     );
     if (!existsSync(folderPath)) return;

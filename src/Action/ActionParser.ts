@@ -40,11 +40,8 @@ export default class ActionParser {
 
   private get restfullRequestPath(): string {
     return path
-      .join(
-        this.requestParams.path,
-        this.requestParams.method.toLocaleLowerCase()
-      )
-      .replace("\\", "/");
+      .join(this.requestParams.path, this.requestParams.method.toLowerCase())
+      .replace(/\\/g, "/");
   }
 
   private get isRequestPathValid(): boolean {
