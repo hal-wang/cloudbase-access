@@ -30,12 +30,16 @@ export default class Router {
     if (mdwResult) return mdwResult;
 
     const actionParser = new ActionParser(this.requestParams, this.cFolder);
-    const action = actionParser.getAction();
-    if (!action) {
-      return HttpResult.notFound(
-        `Can't find the path：${this.requestParams.path}`
-      );
+    const actionParserResult = actionParser.getParseResult();
+    if (actionParserResult.methodNotAllowed) {
+      return HttpResult.methodNotAllowedMsg();
+    } else if (!actionParserResult.action) {
+      return HttpResult.notFoundMsg({
+        message: `Can't find the path：${this.requestParams.path}`,
+      });
     }
+
+    const action = actionParserResult.action;
     action.requestParams = this.requestParams;
     if (this.auth) {
       this.auth.roles = ([] as string[]).concat(action.roles);

@@ -1,7 +1,8 @@
 import Action from ".";
 import { RequestParams } from "../Router";
-import { existsSync, readdirSync } from "fs";
-import linq = require("linq");
+import * as path from "path";
+import PathParser from "./PathParser";
+import ActionParserResult from "./ActionParserResult";
 
 export default class ActionParser {
   constructor(
@@ -9,45 +10,50 @@ export default class ActionParser {
     readonly cFolder: string
   ) {}
 
-  public getAction(): Action | undefined {
-    const path = this.getActionPath();
-    if (!path) return;
+  public getParseResult(): ActionParserResult {
+    if (!this.isRequestPathValid) return {};
+
+    let pathParser = new PathParser(this.cFolder, this.requestParams.path);
+    if (pathParser.folderPath && pathParser.filePath) {
+      return { action: this.getAction(pathParser.filePath) };
+    } else if (this.requestParams.method) {
+      pathParser = new PathParser(this.cFolder, this.restfullRequestPath);
+      if (!pathParser.folderPath) {
+        return {};
+      } else if (!pathParser.filePath) {
+        return { methodNotAllowed: true };
+      } else {
+        return {
+          action: this.getAction(pathParser.filePath),
+        };
+      }
+    } else {
+      return {};
+    }
+  }
+
+  private getAction(filePath: string): Action {
+    console.log("getAction", filePath);
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const actionClass = require(path).default;
+    const actionClass = require(filePath).default;
     return new actionClass() as Action;
   }
 
-  private getActionPath(): string | undefined {
-    if (!this.requestParams.path) return;
-    if (this.requestParams.path.includes("..")) return;
-
-    const folderIndex = this.requestParams.path.lastIndexOf("/");
-    if (folderIndex < 0 || folderIndex >= this.requestParams.path.length - 1) {
-      return;
-    }
-
-    const folder = this.requestParams.path.substr(0, folderIndex);
-    const folderPath = `${process.cwd()}/${this.cFolder}${folder}`;
-    if (!existsSync(folderPath)) return;
-
-    const actionFile = this.requestParams.path.substr(
-      folderIndex + 1,
-      this.requestParams.path.length - folderIndex - 1
-    );
-    const files = readdirSync(folderPath);
-
-    const file = linq
-      .from(files)
-      .where(
-        (f) =>
-          f.toLowerCase() == actionFile.toLowerCase() + ".js" ||
-          f.toLowerCase() == actionFile.toLowerCase() + ".ts"
+  private get restfullRequestPath(): string {
+    return path
+      .join(
+        this.requestParams.path,
+        this.requestParams.method.toLocaleLowerCase()
       )
-      .orderByDescending((f) => f)
-      .firstOrDefault();
-    if (!file) return;
+      .replace("\\", "/");
+  }
 
-    return `${folderPath}/${file}`;
+  private get isRequestPathValid(): boolean {
+    const requestPath = this.requestParams.path;
+
+    if (!requestPath) return false;
+    if (requestPath.includes("..")) return false;
+    return true;
   }
 }
