@@ -1,16 +1,20 @@
 export default class RequestParams {
   readonly headers: Record<string, string | undefined>;
-  readonly path: string;
   readonly params: Record<string, string | undefined>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly data: any;
+
+  readonly path: string;
+  readonly method: string;
 
   constructor(
     public readonly event: Record<string, unknown>,
     public readonly context: Record<string, unknown>
   ) {
+    this.path = event.path as string;
+    this.method = event.httpMethod as string;
+
     this.headers = <Record<string, string | undefined>>event.headers;
-    this.path = <string>event.path;
     this.params = <Record<string, string | undefined>>(
       event.queryStringParameters
     );

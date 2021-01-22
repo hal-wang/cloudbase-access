@@ -92,6 +92,19 @@ export default class HttpResult {
     return HttpResult.notFound(msg);
   };
 
+  static methodNotAllowed = function (body?: unknown): HttpResult {
+    return new HttpResult(405, body);
+  };
+  static methodNotAllowedMsg = function (msg?: ErrorMessage): HttpResult {
+    if (!msg) {
+      msg = <ErrorMessage>{
+        message: "Method Not Allowed",
+      };
+    }
+
+    return HttpResult.methodNotAllowed(msg);
+  };
+
   static errRequest = function (body?: unknown): HttpResult {
     return new HttpResult(500, body);
   };
