@@ -322,7 +322,7 @@ Demo 内容在本项目 `demo` 文件夹，用于演示 `cloudbase-access` 用�
 运行以下命令发布：
 
 ```shell
-cd demo/cloudbase-access-demo
+cd demo/cloudbase-access-api
 npm install
 npm run build
 ```
