@@ -1,11 +1,7 @@
 import ErrorMessage from "./ErrorMessage";
+import HttpResultStruct from "./HttpResultStruct";
 
-interface HttpResultStruct {
-  isBase64: boolean;
-  statusCode: number;
-  headers: Record<string, string>;
-  body: unknown;
-}
+export { ErrorMessage, HttpResultStruct };
 
 export default class HttpResult {
   constructor(

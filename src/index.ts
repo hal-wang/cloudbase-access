@@ -1,5 +1,4 @@
-import HttpResult from "./HttpResult";
-import ErrorMessage from "./ErrorMessage";
+import HttpResult, { ErrorMessage, HttpResultStruct } from "./HttpResult";
 import Router from "./Router";
 import Action from "./Action";
 import RequestParams from "./RequestParams";
@@ -14,6 +13,7 @@ import ApiDocs from "./ApiDocs";
 export {
   HttpResult,
   ErrorMessage,
+  HttpResultStruct,
   Action,
   Router,
   RequestParams,
