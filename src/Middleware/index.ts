@@ -1,4 +1,4 @@
-import { MiddlewareType, RequestParams } from ".";
+import { MiddlewareType, RequestParams } from "..";
 import MiddlewareResult from "./MiddlewareResult";
 
 export default abstract class Middleware {

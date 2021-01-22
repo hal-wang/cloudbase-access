@@ -3,7 +3,7 @@ import Authority from "./Authority";
 import Action from "./Action";
 import HttpResult from "./HttpResult";
 import Middleware from "./Middleware";
-import MiddlewareType from "./MiddlewareType";
+import MiddlewareType from "./Middleware/MiddlewareType";
 import RequestParams from "./RequestParams";
 import linq = require("linq");
 

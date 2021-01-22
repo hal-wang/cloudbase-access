@@ -1,4 +1,4 @@
-import { HttpResult } from ".";
+import HttpResult from "../HttpResult";
 
 class MiddlewareResult {
   constructor(
