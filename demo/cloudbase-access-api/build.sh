@@ -7,6 +7,9 @@ mkdir ./dist
 
 tsc
 
+cba-map dist/controllers
+mv cba-map.json dist/cba-map.json
+
 find dist -name "*.d.ts" |xargs rm -rf
 cp package.json dist/package.json
 touch dist/build-time_$(date "+%Y-%m-%d_%H.%M.%S")

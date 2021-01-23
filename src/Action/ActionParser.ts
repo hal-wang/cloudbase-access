@@ -1,5 +1,5 @@
 import Action from ".";
-import { RequestParams } from "../Router";
+import RequestParams from "../Router/RequestParams";
 import * as path from "path";
 import PathParser from "./PathParser";
 import ActionParserResult from "./ActionParserResult";

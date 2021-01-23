@@ -5,8 +5,6 @@ import MiddlewareType from "../Middleware/MiddlewareType";
 import RequestParams from "./RequestParams";
 import ActionParser from "../Action/ActionParser";
 
-export { RequestParams };
-
 export default class Router {
   readonly requestParams: RequestParams;
   readonly middlewares = <Middleware[]>[];

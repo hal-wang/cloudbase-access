@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.5.0",
-    "@hal-wang/cloudbase-access": "^0.9.0-beta.1",
+    "@hal-wang/cloudbase-access": "../../",
     "linq": "^3.2.3"
   },
   "devDependencies": {

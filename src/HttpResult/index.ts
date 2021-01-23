@@ -1,8 +1,6 @@
 import ErrorMessage from "./ErrorMessage";
 import HttpResultStruct from "./HttpResultStruct";
 
-export { ErrorMessage, HttpResultStruct };
-
 export default class HttpResult {
   constructor(
     public readonly statusCode: number,
