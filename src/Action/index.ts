@@ -1,6 +1,6 @@
 import ApiDocs from "../ApiDocs";
 import HttpResult from "../HttpResult";
-import { RequestParams } from "../Router";
+import RequestParams from "../Router/RequestParams";
 
 export default abstract class Action {
   constructor(public readonly roles: Array<string> = new Array<string>()) {}

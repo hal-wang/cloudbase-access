@@ -1,7 +1,12 @@
-import HttpResult, { ErrorMessage, HttpResultStruct } from "./HttpResult";
-import Router, { RequestParams } from "./Router";
+import HttpResult from "./HttpResult";
+import ErrorMessage from "./HttpResult/ErrorMessage";
+import HttpResultStruct from "./HttpResult/HttpResultStruct";
+import Router from "./Router";
+import RequestParams from "./Router/RequestParams";
 import Action from "./Action";
-import Middleware, { MiddlewareType, MiddlewareResult } from "./Middleware";
+import Middleware from "./Middleware";
+import MiddlewareType from "./Middleware/MiddlewareType";
+import MiddlewareResult from "./Middleware/MiddlewareResult";
 import Authority from "./Authority";
 import AppInstance from "./AppInstance";
 import DbHelper from "./DbHelper";

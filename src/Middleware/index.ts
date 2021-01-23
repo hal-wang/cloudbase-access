@@ -2,8 +2,6 @@ import RequestParams from "../Router/RequestParams";
 import MiddlewareResult from "./MiddlewareResult";
 import MiddlewareType from "./MiddlewareType";
 
-export { MiddlewareResult, MiddlewareType };
-
 export default abstract class Middleware {
   constructor(public readonly type: MiddlewareType) {}
 
