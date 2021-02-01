@@ -39,11 +39,12 @@ export default class Router {
 
     let action;
     try {
-      action = new MapParser(
+      const mapParser = new MapParser(
         this.requestParams,
         this.cFolder,
         this.isMethodNecessary
-      ).action;
+      );
+      action = mapParser.action;
     } catch (err) {
       if (err.httpResult) {
         return err.httpResult;

@@ -18,7 +18,28 @@ export default class MapParser {
   public get action(): Action {
     const map = this.getMap();
     const existedMap = this.getRestfulMapPath(map);
-    return this.getActionFromMapPath(existedMap);
+    const action = this.getActionFromMapPath(existedMap);
+    action.query = this.getQuery(existedMap);
+    return action;
+  }
+
+  private getQuery(mapPath: string): Record<string, string> {
+    const query = <Record<string, string>>{};
+    if (!mapPath.includes("^")) return query;
+
+    const reqPath = this.requestParams.path;
+    const mapPathStrs = mapPath.split("/");
+    const reqPathStrs = reqPath.split("/");
+    for (let i = 0; i < Math.min(mapPathStrs.length, reqPathStrs.length); i++) {
+      const mapPathStr = mapPathStrs[i];
+      if (!mapPathStr.startsWith("^")) continue;
+      const reqPathStr = reqPathStrs[i];
+
+      const key = mapPathStr.substr(1, mapPathStr.length - 1);
+      const value = reqPathStr;
+      query[key] = value;
+    }
+    return query;
   }
 
   private getRestfulMapPath(map: string[]): string {
@@ -33,7 +54,6 @@ export default class MapParser {
       .where((item) => this.isPathMatched(item, false))
       .where((item) => {
         const name = this.removeExtension(item);
-        console.log("name", name);
         return (
           name.endsWith(RequestMethod.delete.toLowerCase()) ||
           name.endsWith(RequestMethod.get.toLowerCase()) ||
@@ -44,7 +64,6 @@ export default class MapParser {
       })
       .count();
 
-    console.log("count", likePathsCount);
     if (likePathsCount) throw this.methodNotAllowedErr;
     else throw this.notFoundErr;
   }
