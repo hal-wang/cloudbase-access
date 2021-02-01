@@ -6,11 +6,13 @@ import Action from "../Action";
 import linq = require("linq");
 import HttpResultError from "../HttpResult/HttpResultError";
 import { HttpResult } from "..";
+import RequestMethod from "./RequestMethod";
 
 export default class MapParser {
   constructor(
     private readonly requestParams: RequestParams,
-    private readonly cFolder: string
+    private readonly cFolder: string,
+    public readonly isMethodNecessary: boolean
   ) {}
 
   public get action(): Action {
@@ -22,13 +24,32 @@ export default class MapParser {
   private getRestfulMapPath(map: string[]): string {
     const mapPath = linq
       .from(map)
-      .where((item) => this.isPathMatched(item))
+      .where((item) => this.isPathMatched(item, true))
       .firstOrDefault();
-    if (!mapPath) throw this.notFoundErr;
-    return mapPath;
+    if (mapPath) return mapPath;
+
+    const likePathsCount = linq
+      .from(map)
+      .where((item) => this.isPathMatched(item, false))
+      .where((item) => {
+        const name = this.removeExtension(item);
+        console.log("name", name);
+        return (
+          name.endsWith(RequestMethod.delete.toLowerCase()) ||
+          name.endsWith(RequestMethod.get.toLowerCase()) ||
+          name.endsWith(RequestMethod.post.toLowerCase()) ||
+          name.endsWith(RequestMethod.patch.toLowerCase()) ||
+          name.endsWith(RequestMethod.put.toLowerCase())
+        );
+      })
+      .count();
+
+    console.log("count", likePathsCount);
+    if (likePathsCount) throw this.methodNotAllowedErr;
+    else throw this.notFoundErr;
   }
 
-  private isPathMatched(path: string): boolean {
+  private isPathMatched(path: string, methodIncluded: boolean): boolean {
     const reqUrlStrs = this.requestParams.path.toLowerCase().split("/");
     const pathStrs = path.toLowerCase().split("/");
     if (!pathStrs.length) return false;
@@ -36,8 +57,15 @@ export default class MapParser {
     // method action
     if (pathStrs.length - 1 == reqUrlStrs.length) {
       if (!this.requestParams.method) throw this.notFoundErr;
-      reqUrlStrs.push(this.requestParams.method.toLowerCase());
+      if (methodIncluded) {
+        reqUrlStrs.push(this.requestParams.method.toLowerCase());
+      } else {
+        pathStrs.splice(pathStrs.length - 1, 1);
+      }
+    } else if (this.isMethodNecessary) {
+      throw this.notFoundErr;
     }
+
     if (pathStrs.length != reqUrlStrs.length) return false;
 
     for (let i = 0; i < pathStrs.length - 1; i++) {
@@ -46,12 +74,8 @@ export default class MapParser {
       }
     }
 
-    let actionName = pathStrs[pathStrs.length - 1];
-    const dotIndex = actionName.lastIndexOf(".");
-    if (dotIndex) {
-      actionName = actionName.substr(0, dotIndex);
-    }
-    if (actionName != reqUrlStrs[reqUrlStrs.length - 1]) {
+    const actionName = pathStrs[pathStrs.length - 1];
+    if (this.removeExtension(actionName) != reqUrlStrs[reqUrlStrs.length - 1]) {
       return false;
     }
 
@@ -79,10 +103,29 @@ export default class MapParser {
     }
   }
 
+  private removeExtension(name: string): string {
+    const dotIndex = name.lastIndexOf(".");
+    if (dotIndex > 0) {
+      name = name.substr(0, dotIndex);
+    }
+    return name;
+  }
+
   private get notFoundErr(): HttpResultError {
     return new HttpResultError(
       HttpResult.notFoundMsg({
         message: `Can't find the path：${this.requestParams.path}`,
+        path: this.requestParams.path,
+      })
+    );
+  }
+
+  private get methodNotAllowedErr(): HttpResultError {
+    return new HttpResultError(
+      HttpResult.methodNotAllowedMsg({
+        message: `method not allowed：${this.requestParams.method}`,
+        method: this.requestParams.method,
+        path: this.requestParams.path,
       })
     );
   }

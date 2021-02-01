@@ -1,4 +1,4 @@
-利用 NodeJS 和 CloudBase 快速创建 MVC 架构的 Serverless RESTful Api
+利用 NodeJS 和 CloudBase 快速创建 Serverless RESTful Api
 
 ## 安装
 
@@ -27,7 +27,7 @@ export const main = async (
 };
 ```
 
-以上几行代码即创建一个简单的 MVC 架构的 API。
+以上几行代码即创建一个简单的 RESTful 规范的 API。
 
 如果访问的路径不存在，会返回 404 NotFound 结构。
 
@@ -39,7 +39,7 @@ export const main = async (
 
 `Router` 第四个参数（可选）传入 `controllers` 目录名称，默认为 `controllers`。
 
-MVC 架构的 `controllers` 统一放在一个文件夹中，建议不传此参数，即 `controllers`。
+`controllers` 统一放在一个文件夹中，建议不传此参数，即 `controllers`。
 
 在 `controllers` 目录中，建立各 `controller` 文件夹，再在 `controller` 文件夹中建 `action` 文件。详情后面 [Action](#Action) 部分有介绍。
 
