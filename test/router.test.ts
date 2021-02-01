@@ -47,3 +47,37 @@ test("deep router test", async function () {
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
 });
+
+test("isMethodNecessary test", async function () {
+  let event = {
+    body: {},
+    path: "/simple/Router",
+    httpMethod: "POST",
+  };
+
+  let router = new Router(event, {}, undefined, "test/controllers");
+  router.isMethodNecessary = false;
+  let result = (await router.do()).result;
+  expect(result.statusCode).toBe(200);
+
+  router = new Router(event, {}, undefined, "test/controllers");
+  router.isMethodNecessary = true;
+  result = (await router.do()).result;
+  expect(result.statusCode).toBe(404);
+
+  event = {
+    body: {},
+    path: "/restful",
+    httpMethod: "PUT",
+  };
+
+  router = new Router(event, {}, undefined, "test/controllers");
+  router.isMethodNecessary = false;
+  result = (await router.do()).result;
+  expect(result.statusCode).toBe(200);
+
+  router = new Router(event, {}, undefined, "test/controllers");
+  router.isMethodNecessary = true;
+  result = (await router.do()).result;
+  expect(result.statusCode).toBe(200);
+});

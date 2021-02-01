@@ -54,9 +54,11 @@ export default class HttpResult {
   static badRequest = function (body?: unknown): HttpResult {
     return new HttpResult(400, body);
   };
-  static badRequestMsg = function (msg?: ErrorMessage): HttpResult {
+  static badRequestMsg = function (
+    msg?: ErrorMessage & Record<string, unknown>
+  ): HttpResult {
     if (!msg) {
-      msg = <ErrorMessage>{
+      msg = {
         message: "Bad Request",
       };
     }
@@ -67,9 +69,11 @@ export default class HttpResult {
   static forbidden = function (body?: unknown): HttpResult {
     return new HttpResult(403, body);
   };
-  static forbiddenMsg = function (msg?: ErrorMessage): HttpResult {
+  static forbiddenMsg = function (
+    msg?: ErrorMessage & Record<string, unknown>
+  ): HttpResult {
     if (!msg) {
-      msg = <ErrorMessage>{
+      msg = {
         message: "Forbidden",
       };
     }
@@ -80,9 +84,11 @@ export default class HttpResult {
   static notFound = function (body?: unknown): HttpResult {
     return new HttpResult(404, body);
   };
-  static notFoundMsg = function (msg?: ErrorMessage): HttpResult {
+  static notFoundMsg = function (
+    msg?: ErrorMessage & Record<string, unknown>
+  ): HttpResult {
     if (!msg) {
-      msg = <ErrorMessage>{
+      msg = {
         message: "Not Found",
       };
     }
@@ -93,9 +99,11 @@ export default class HttpResult {
   static methodNotAllowed = function (body?: unknown): HttpResult {
     return new HttpResult(405, body);
   };
-  static methodNotAllowedMsg = function (msg?: ErrorMessage): HttpResult {
+  static methodNotAllowedMsg = function (
+    msg?: ErrorMessage & Record<string, unknown>
+  ): HttpResult {
     if (!msg) {
-      msg = <ErrorMessage>{
+      msg = {
         message: "Method Not Allowed",
       };
     }
@@ -106,9 +114,11 @@ export default class HttpResult {
   static errRequest = function (body?: unknown): HttpResult {
     return new HttpResult(500, body);
   };
-  static errRequestMsg = function (msg?: ErrorMessage): HttpResult {
+  static errRequestMsg = function (
+    msg?: ErrorMessage & Record<string, unknown>
+  ): HttpResult {
     if (!msg) {
-      msg = <ErrorMessage>{
+      msg = {
         message: "Error Request",
       };
     }

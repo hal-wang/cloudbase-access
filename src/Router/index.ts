@@ -9,6 +9,16 @@ export default class Router {
   readonly requestParams: RequestParams;
   readonly middlewares = <Middleware[]>[];
 
+  /**
+   * is httpMethod necessary
+   *
+   * if not, the path end with the httpMethod word will be matched.
+   * for example, the post request with path 'user/get' match 'user.ts'.
+   *
+   * if true, the action in definition must appoint method.
+   */
+  public isMethodNecessary = false;
+
   constructor(
     event: Record<string, unknown>,
     context: Record<string, unknown>,
@@ -29,7 +39,11 @@ export default class Router {
 
     let action;
     try {
-      action = new MapParser(this.requestParams, this.cFolder).action;
+      action = new MapParser(
+        this.requestParams,
+        this.cFolder,
+        this.isMethodNecessary
+      ).action;
     } catch (err) {
       if (err.httpResult) {
         return err.httpResult;
