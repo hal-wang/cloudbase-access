@@ -3,6 +3,7 @@ import ErrorMessage from "./HttpResult/ErrorMessage";
 import HttpResultStruct from "./HttpResult/HttpResultStruct";
 import Router from "./Router";
 import RequestParams from "./Router/RequestParams";
+import RequestMethod from "./Router/RequestMethod";
 import Action from "./Action";
 import Middleware from "./Middleware";
 import MiddlewareType from "./Middleware/MiddlewareType";
@@ -19,6 +20,7 @@ export {
   Action,
   Router,
   RequestParams,
+  RequestMethod,
   Middleware,
   MiddlewareType,
   MiddlewareResult,
