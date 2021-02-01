@@ -3,7 +3,7 @@ import HttpResult from "../HttpResult";
 import Middleware from "../Middleware";
 import MiddlewareType from "../Middleware/MiddlewareType";
 import RequestParams from "./RequestParams";
-import ActionParser from "../Action/ActionParser";
+import MapParser from "./MapParser";
 
 export default class Router {
   readonly requestParams: RequestParams;
@@ -27,17 +27,16 @@ export default class Router {
     let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
     if (mdwResult) return mdwResult;
 
-    const actionParser = new ActionParser(this.requestParams, this.cFolder);
-    const actionParserResult = actionParser.getParseResult();
-    if (actionParserResult.methodNotAllowed) {
-      return HttpResult.methodNotAllowedMsg();
-    } else if (!actionParserResult.action) {
-      return HttpResult.notFoundMsg({
-        message: `Can't find the path：${this.requestParams.path}`,
-      });
+    let action;
+    try {
+      action = new MapParser(this.requestParams, this.cFolder).action;
+    } catch (err) {
+      if (err.httpResult) {
+        return err.httpResult;
+      } else {
+        throw err;
+      }
     }
-
-    const action = actionParserResult.action;
     action.requestParams = this.requestParams;
     if (this.auth) {
       this.auth.roles = ([] as string[]).concat(action.roles);

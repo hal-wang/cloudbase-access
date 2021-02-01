@@ -1,3 +1,5 @@
+import RequestMethod from "./RequestMethod";
+
 export default class RequestParams {
   readonly headers: Record<string, string | undefined>;
   readonly params: Record<string, string | undefined>;
@@ -5,31 +7,42 @@ export default class RequestParams {
   readonly data: any;
 
   readonly path: string;
-  readonly method: string;
+  readonly method: RequestMethod;
 
   constructor(
     public readonly event: Record<string, unknown>,
     public readonly context: Record<string, unknown>
   ) {
-    this.path = event.path as string;
-    this.method = event.httpMethod as string;
+    this.path = this.getPath(<string>event.path);
+    this.method = <RequestMethod>event.httpMethod;
 
     this.headers = <Record<string, string | undefined>>event.headers;
     this.params = <Record<string, string | undefined>>(
       event.queryStringParameters
     );
 
-    const body = event.body;
+    this.data = this.getData(event.body, this.headers);
+  }
+
+  private getData(
+    body: unknown,
+    headers: Record<string, string | undefined>
+  ): unknown {
     if (
-      this.headers &&
-      this.headers["content-type"] &&
-      this.headers["content-type"].includes("application/json") &&
+      headers &&
+      headers["content-type"] &&
+      headers["content-type"].includes("application/json") &&
       typeof body == "string"
     ) {
-      this.data = <Record<string, unknown>>JSON.parse(body);
+      return <Record<string, unknown>>JSON.parse(body);
     } else {
-      this.data = body;
+      return body;
     }
+  }
+
+  private getPath(path: string) {
+    if (!path || !path.startsWith("/")) return path;
+    else return path.substr(1, path.length - 1);
   }
 
   static get empty(): RequestParams {
