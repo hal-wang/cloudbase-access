@@ -4,6 +4,7 @@ test("router test", async function () {
   const event = {
     body: {},
     path: "/simple/RoUtEr",
+    httpMethod: "POST",
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
@@ -15,6 +16,7 @@ test("router not exist", async function () {
   const event = {
     body: {},
     path: "/simple/router1",
+    httpMethod: "POST",
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
@@ -26,6 +28,7 @@ test("shallow router test", async function () {
   const event = {
     body: {},
     path: "/router",
+    httpMethod: "POST",
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
@@ -37,6 +40,7 @@ test("deep router test", async function () {
   const event = {
     body: {},
     path: "/simple/deepActions/RoUtEr",
+    httpMethod: "POST",
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 

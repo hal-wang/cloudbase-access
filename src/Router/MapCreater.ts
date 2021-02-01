@@ -3,14 +3,11 @@ import linq = require("linq");
 import path = require("path");
 
 export default class MapCreater {
-  private readonly cFolder: string;
-
-  constructor(cfPath: string) {
-    this.cFolder = path.join(process.cwd(), cfPath);
+  constructor(private readonly cfPath: string) {
     if (
-      !cfPath ||
-      !existsSync(this.cFolder) ||
-      !lstatSync(this.cFolder).isDirectory()
+      !this.cfPath ||
+      !existsSync(this.cfPath) ||
+      !lstatSync(this.cfPath).isDirectory()
     ) {
       throw new Error(
         "please input controllers folder path, for example 'src/controllers'"
@@ -31,17 +28,17 @@ export default class MapCreater {
 
   private readFilesFromFolder(folderRePath: string, result: Array<string>) {
     const storageItems = linq
-      .from(readdirSync(path.join(this.cFolder, folderRePath)))
+      .from(readdirSync(path.join(this.cfPath, folderRePath)))
       .select((item) => path.join(folderRePath, item));
     storageItems.forEach((storageItem) => {
-      const stat = lstatSync(path.join(this.cFolder, storageItem));
+      const stat = lstatSync(path.join(this.cfPath, storageItem));
       if (stat.isDirectory()) {
         this.readFilesFromFolder(storageItem, result);
       } else if (
         stat.isFile() &&
         (storageItem.endsWith(".js") || storageItem.endsWith(".ts"))
       ) {
-        result.push(storageItem);
+        result.push(storageItem.replace(/\\/g, "/"));
       }
     });
     return result;
