@@ -20,34 +20,39 @@ export default class MapParser {
   }
 
   private getRestfulMapPath(map: string[]): string {
-    const reqUrlStrs = this.requestParams.path
-      .substr(1, this.requestParams.path.length - 1)
-      .toLowerCase()
-      .split("/");
-    if (!reqUrlStrs.length) throw this.notFoundErr;
-
     const mapPath = linq
       .from(map)
-      .where((item) => this.isPathMatched(item, reqUrlStrs))
+      .where((item) => this.isPathMatched(item))
       .firstOrDefault();
     if (!mapPath) throw this.notFoundErr;
     return mapPath;
   }
 
-  private isPathMatched(path: string, reqUrlStrs: string[]): boolean {
+  private isPathMatched(path: string): boolean {
+    const reqUrlStrs = this.requestParams.path.toLowerCase().split("/");
     const pathStrs = path.toLowerCase().split("/");
     if (!pathStrs.length) return false;
 
     // method action
     if (pathStrs.length - 1 == reqUrlStrs.length) {
+      if (!this.requestParams.method) throw this.notFoundErr;
       reqUrlStrs.push(this.requestParams.method.toLowerCase());
     }
     if (pathStrs.length != reqUrlStrs.length) return false;
 
-    for (let i = 0; i < Math.min(pathStrs.length, reqUrlStrs.length); i++) {
+    for (let i = 0; i < pathStrs.length - 1; i++) {
       if (pathStrs[i] != reqUrlStrs[i] && !pathStrs[i].startsWith("^")) {
         return false;
       }
+    }
+
+    let actionName = pathStrs[pathStrs.length - 1];
+    const dotIndex = actionName.lastIndexOf(".");
+    if (dotIndex) {
+      actionName = actionName.substr(0, dotIndex);
+    }
+    if (actionName != reqUrlStrs[reqUrlStrs.length - 1]) {
+      return false;
     }
 
     return true;

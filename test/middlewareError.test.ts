@@ -13,6 +13,7 @@ test("middleware test err", async function () {
   const event = {
     body: {},
     path: "/simple/notExist",
+    httpMethod: "POST",
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 

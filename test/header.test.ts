@@ -4,6 +4,7 @@ test("router test", async function () {
   const event = <Record<string, unknown>>{
     body: {},
     path: "/simple/router",
+    httpMethod: "POST",
   };
   HttpResult.baseHeaders["custom-header"] = "aaa";
   const router = new Router(event, {}, undefined, "test/controllers");
