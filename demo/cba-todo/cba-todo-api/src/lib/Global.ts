@@ -9,5 +9,5 @@ export default {
     }
   },
 
-  adminId: "admin",
+  adminId: "support@hal.wang",
 };
