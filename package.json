@@ -1,6 +1,6 @@
 {
   "name": "@hal-wang/cloudbase-access",
-  "version": "0.9.0-beta.1",
+  "version": "0.9.0-beta.3",
   "description": "利用 NodeJS 和 CloudBase 快速创建 MVC 架构的 Serverless RESTful Api",
   "homepage": "https://github.com/hal-wang/cloudbase-access",
   "repository": {
@@ -66,6 +66,14 @@
     "cba-map": "bin/cba-map.js"
   },
   "files": [
-    "dist/"
+    "dist/",
+    "bin/",
+    "src",
+    "test/",
+    ".eslintrc.js",
+    ".gitignore",
+    "jest.config.js",
+    ".LICENSE",
+    "tsconfig.json"
   ]
 }
