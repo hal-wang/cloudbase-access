@@ -1,4 +1,5 @@
 import { HttpResult, Router } from "@hal-wang/cloudbase-access";
+import { AppInstanceMiddleware } from "./lib/AppInstanceMiddleware";
 import Auth from "./lib/Auth";
 
 export const main = async (
@@ -9,6 +10,8 @@ export const main = async (
   setHeaders();
 
   const router = new Router(event, context, new Auth());
+  router.isMethodNecessary = true;
+  router.configure(new AppInstanceMiddleware());
   try {
     return (await router.do()).result;
   } catch (err) {
