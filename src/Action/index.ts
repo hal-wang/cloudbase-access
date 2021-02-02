@@ -28,7 +28,5 @@ export default abstract class Action {
   inputDocs?: ApiDocs;
   outputDocs?: ApiDocs;
 
-  query = <Record<string, string>>{};
-
   abstract do(): Promise<HttpResult>;
 }

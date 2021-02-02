@@ -9,6 +9,8 @@ export default class RequestParams {
   readonly path: string;
   readonly method: RequestMethod;
 
+  query = <Record<string, string>>{};
+
   constructor(
     public readonly event: Record<string, unknown>,
     public readonly context: Record<string, unknown>

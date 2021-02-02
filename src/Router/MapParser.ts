@@ -19,7 +19,7 @@ export default class MapParser {
     const map = this.getMap();
     const existedMap = this.getRestfulMapPath(map);
     const action = this.getActionFromMapPath(existedMap);
-    action.query = this.getQuery(existedMap);
+    this.requestParams.query = this.getQuery(existedMap);
     return action;
   }
 
