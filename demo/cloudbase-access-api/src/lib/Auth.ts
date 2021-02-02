@@ -3,8 +3,8 @@ import {
   Authority,
   MiddlewareResult,
 } from "@hal-wang/cloudbase-access";
-import linq = require("linq");
-import global from "./Global";
+import Collections from "./Collections";
+import Global from "./Global";
 
 export default class Auth extends Authority {
   async do(): Promise<MiddlewareResult> {
@@ -12,18 +12,23 @@ export default class Auth extends Authority {
       return MiddlewareResult.getSuccessResult();
     }
 
-    if (
-      (this.roles.includes("login") || this.roles.includes("admin")) &&
-      !this.loginAuth()
-    ) {
-      return MiddlewareResult.getFailedResult(
-        HttpResult.forbiddenMsg({ message: "账号或密码错误" })
-      );
+    if (this.roles.includes("qa") || this.roles.includes("admin")) {
+      if (!(await this.queryAccountAuth())) {
+        return MiddlewareResult.getFailedResult(
+          HttpResult.forbiddenMsg({ message: "error account or password" })
+        );
+      }
     }
 
     if (this.roles.includes("admin") && !this.adminAuth()) {
       return MiddlewareResult.getFailedResult(
-        HttpResult.forbiddenMsg({ message: "不是管理员" })
+        HttpResult.forbiddenMsg({ message: "not admin" })
+      );
+    }
+
+    if (this.roles.includes("todo") && !this.todoIdAuth()) {
+      return MiddlewareResult.getFailedResult(
+        HttpResult.notFoundMsg({ message: "the todo item is not existing" })
       );
     }
 
@@ -31,20 +36,30 @@ export default class Auth extends Authority {
   }
 
   adminAuth(): boolean {
-    const { account } = this.requestParams.headers;
-    return account == global.adminAccount;
+    const { id } = this.requestParams.headers;
+    return id == Global.adminId;
   }
 
-  loginAuth(): boolean {
-    const { account, password } = this.requestParams.headers;
-    return (
-      linq
-        .from(global.users)
-        .where(
-          (u: Record<string, unknown>) =>
-            u.account == account && u.password == password
-        )
-        .count() > 0
-    );
+  async queryAccountAuth(): Promise<boolean> {
+    const { account } = this.requestParams.query;
+    const { password } = this.requestParams.headers;
+    const countRes = await Collections.user
+      .where({
+        account,
+        password,
+      })
+      .count();
+    return countRes.total > 0;
+  }
+
+  async todoIdAuth(): Promise<boolean> {
+    const { todoId, account } = this.requestParams.query;
+    const countRes = await Collections.todo
+      .where({
+        _id: todoId,
+        account: account,
+      })
+      .count();
+    return countRes.total > 0;
   }
 }

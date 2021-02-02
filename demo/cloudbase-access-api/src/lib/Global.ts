@@ -1,13 +1,13 @@
+import { Router } from "@hal-wang/cloudbase-access";
+
 export default {
-  users: [
-    {
-      account: "abc",
-      password: "123456",
-    },
-    {
-      account: "admin",
-      password: "abcdef",
-    },
-  ],
-  adminAccount: "admin",
+  get isTest(): boolean {
+    if (Router.current && Router.current.requestParams.context) {
+      return Router.current.requestParams.context.function_name == "test";
+    } else {
+      return false;
+    }
+  },
+
+  adminId: "admin",
 };
