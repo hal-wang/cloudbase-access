@@ -6,6 +6,11 @@ import RequestParams from "./RequestParams";
 import MapParser from "./MapParser";
 
 export default class Router {
+  private static _current: Router;
+  public static get current(): Router {
+    return this._current;
+  }
+
   readonly requestParams: RequestParams;
   readonly middlewares = <Middleware[]>[];
 
@@ -25,6 +30,7 @@ export default class Router {
     private readonly auth?: Authority,
     public readonly cFolder = "controllers"
   ) {
+    Router._current = this;
     this.requestParams = new RequestParams(event, context);
     if (auth != null) this.middlewares.push(auth);
   }
