@@ -1,9 +1,0 @@
-{
-  "name": "cloudbase-access-api",
-  "scripts": {
-    "framework": "cd cloudbase-access-api && npm install && npm run build && cd .."
-  },
-  "keywords": [],
-  "author": "hal-wang",
-  "license": "MIT"
-}

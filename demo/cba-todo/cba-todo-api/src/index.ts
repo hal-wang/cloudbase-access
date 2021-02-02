@@ -24,5 +24,5 @@ function setHeaders(): void {
   const config = <Record<string, unknown>>require("./package.json");
   HttpResult.baseHeaders.version = config.version;
 
-  HttpResult.baseHeaders.demo = "cloudbase-access-demo";
+  HttpResult.baseHeaders.demo = "cba-todo";
 }
