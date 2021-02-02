@@ -19,13 +19,12 @@ export default class MapParser {
     const map = this.getMap();
     const existedMap = this.getRestfulMapPath(map);
     const action = this.getActionFromMapPath(existedMap);
-    this.requestParams.query = this.getQuery(existedMap);
+    this.setQuery(existedMap);
     return action;
   }
 
-  private getQuery(mapPath: string): Record<string, string> {
-    const query = <Record<string, string>>{};
-    if (!mapPath.includes("^")) return query;
+  private setQuery(mapPath: string): void {
+    if (!mapPath.includes("^")) return;
 
     const reqPath = this.requestParams.path;
     const mapPathStrs = mapPath.split("/");
@@ -37,9 +36,8 @@ export default class MapParser {
 
       const key = mapPathStr.substr(1, mapPathStr.length - 1);
       const value = reqPathStr;
-      query[key] = value;
+      this.requestParams.query[key] = value;
     }
-    return query;
   }
 
   private getRestfulMapPath(map: string[]): string {
