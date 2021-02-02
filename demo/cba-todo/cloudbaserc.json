@@ -5,7 +5,7 @@
   "functionRoot": "./functions",
   "functions": [
     {
-      "name": "cloudbase-access",
+      "name": "cba-todo",
       "timeout": 5,
       "envVariables": {},
       "runtime": "Nodejs10.15",
@@ -22,7 +22,7 @@
     }
   ],
   "framework": {
-    "name": "cloudbase-access",
+    "name": "cba-todo",
     "hooks": {
       "preDeploy": {
         "type": "execCommand",
@@ -36,7 +36,7 @@
           "functionRootPath": "functions",
           "functions": [
             {
-              "name": "cloudbase-access"
+              "name": "cba-todo"
             }
           ]
         }
