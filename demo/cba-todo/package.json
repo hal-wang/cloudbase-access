@@ -1,0 +1,9 @@
+{
+  "name": "cba-todo",
+  "scripts": {
+    "framework": "cd cba-todo-api && npm install && npm run build && cd .."
+  },
+  "keywords": [],
+  "author": "hal-wang",
+  "license": "MIT"
+}
