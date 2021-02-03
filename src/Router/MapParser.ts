@@ -73,14 +73,14 @@ export default class MapParser {
 
     // method action
     if (pathStrs.length - 1 == reqUrlStrs.length) {
-      if (!this.requestParams.method) throw this.notFoundErr;
+      if (!this.requestParams.method) return false;
       if (methodIncluded) {
         reqUrlStrs.push(this.requestParams.method.toLowerCase());
       } else {
         pathStrs.splice(pathStrs.length - 1, 1);
       }
     } else if (this.isMethodNecessary) {
-      throw this.notFoundErr;
+      return false;
     }
 
     if (pathStrs.length != reqUrlStrs.length) return false;
