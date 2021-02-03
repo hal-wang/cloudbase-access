@@ -1,0 +1,8 @@
+POST https://cb-api.hal.wang/cba-todo/user/test@hal.wang/todo
+content-type:application/json
+password:123456
+
+{
+  "content":"content_test",
+  "schedule":1612317715096
+}

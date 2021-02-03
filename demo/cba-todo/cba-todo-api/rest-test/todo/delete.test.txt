@@ -1,0 +1,7 @@
+DELETE https://cb-api.hal.wang/cba-todo/user/test@hal.wang/todo/3b020ca3601a05760241a62976ad421b
+content-type:application/json
+password:123456
+
+{
+  
+}
