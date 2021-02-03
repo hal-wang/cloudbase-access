@@ -3,7 +3,7 @@ import Collections from "../../../../lib/Collections";
 
 export default class extends Action {
   constructor() {
-    super(["qa"]);
+    super(["ql"]);
   }
 
   async do(): Promise<HttpResult> {
