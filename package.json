@@ -31,9 +31,9 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "deploy": "tsc && npm publish --access=public",
-    "deploy:beta": "tsc && npm publish --tag=beta --access=public",
+    "build": "bash build.sh",
+    "deploy": "bash build.sh && npm publish --access=public",
+    "deploy:beta": "bash build.sh && npm publish --tag=beta --access=public",
     "map": "cba-map",
     "test": "jest",
     "eslint": "eslint src --ext .ts"
@@ -74,6 +74,7 @@
     ".gitignore",
     "jest.config.js",
     ".LICENSE",
-    "tsconfig.json"
+    "tsconfig.json",
+    "build.sh"
   ]
 }
