@@ -9,25 +9,31 @@ import { HttpResult } from "..";
 import RequestMethod from "./RequestMethod";
 
 export default class MapParser {
+  public readonly realPath: string;
+
   constructor(
     private readonly requestParams: RequestParams,
     private readonly cFolder: string,
     public readonly isMethodNecessary: boolean
-  ) {}
-
-  public get action(): Action {
+  ) {
     const map = this.getMap();
-    const existedMap = this.getRestfulMapPath(map);
-    const action = this.getActionFromMapPath(existedMap);
-    this.setQuery(existedMap);
-    return action;
+    this.realPath = this.getRestfulMapPath(map);
+
+    this.setQuery();
   }
 
-  private setQuery(mapPath: string): void {
-    if (!mapPath.includes("^")) return;
+  public get action(): Action {
+    const filePath = path.join(this.cfPath, this.realPath);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const actionClass = require(filePath).default;
+    return new actionClass() as Action;
+  }
+
+  private setQuery(): void {
+    if (!this.realPath.includes("^")) return;
 
     const reqPath = this.requestParams.path;
-    const mapPathStrs = mapPath.split("/");
+    const mapPathStrs = this.realPath.split("/");
     const reqPathStrs = reqPath.split("/");
     for (let i = 0; i < Math.min(mapPathStrs.length, reqPathStrs.length); i++) {
       const mapPathStr = mapPathStrs[i];
@@ -97,13 +103,6 @@ export default class MapParser {
     }
 
     return true;
-  }
-
-  private getActionFromMapPath(mapPath: string) {
-    const filePath = path.join(this.cfPath, mapPath);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const actionClass = require(filePath).default;
-    return new actionClass() as Action;
   }
 
   private get cfPath(): string {
