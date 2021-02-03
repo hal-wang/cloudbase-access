@@ -12,18 +12,32 @@ export default class Auth extends Authority {
       return MiddlewareResult.getSuccessResult();
     }
 
-    if (this.roles.includes("qa") || this.roles.includes("admin")) {
-      if (!(await this.queryAccountAuth())) {
+    if (this.roles.includes("ql")) {
+      if (this.roles.includes("admin") && !this.queryAdminAuth()) {
+        return MiddlewareResult.getFailedResult(
+          HttpResult.forbiddenMsg({ message: "not admin" })
+        );
+      }
+
+      if (!(await this.queryLoginAuth())) {
         return MiddlewareResult.getFailedResult(
           HttpResult.forbiddenMsg({ message: "error account or password" })
         );
       }
     }
 
-    if (this.roles.includes("admin") && !this.adminAuth()) {
-      return MiddlewareResult.getFailedResult(
-        HttpResult.forbiddenMsg({ message: "not admin" })
-      );
+    if (this.roles.includes("hl")) {
+      if (this.roles.includes("admin") && !this.headerAdminAuth()) {
+        return MiddlewareResult.getFailedResult(
+          HttpResult.forbiddenMsg({ message: "not admin" })
+        );
+      }
+
+      if (!(await this.headerLoginAuth())) {
+        return MiddlewareResult.getFailedResult(
+          HttpResult.forbiddenMsg({ message: "error account or password" })
+        );
+      }
     }
 
     if (this.roles.includes("todo") && !(await this.todoIdAuth())) {
@@ -35,14 +49,30 @@ export default class Auth extends Authority {
     return MiddlewareResult.getSuccessResult();
   }
 
-  adminAuth(): boolean {
-    const { id } = this.requestParams.headers;
-    return id == Global.adminId;
+  private queryAdminAuth(): boolean {
+    const { account } = this.requestParams.query;
+    return account == Global.adminId;
   }
 
-  async queryAccountAuth(): Promise<boolean> {
+  private headerAdminAuth(): boolean {
+    const { account } = this.requestParams.headers;
+    return account == Global.adminId;
+  }
+
+  private async headerLoginAuth(): Promise<boolean> {
+    const { account, password } = this.requestParams.headers;
+    if (!account || !password) return false;
+    return await this.loginAuth(account, password);
+  }
+
+  private async queryLoginAuth(): Promise<boolean> {
     const { account } = this.requestParams.query;
     const { password } = this.requestParams.headers;
+    if (!account || !password) return false;
+    return await this.loginAuth(account, password);
+  }
+
+  private async loginAuth(account: string, password: string): Promise<boolean> {
     const countRes = await Collections.user
       .where({
         _id: account,
@@ -52,7 +82,7 @@ export default class Auth extends Authority {
     return countRes.total > 0;
   }
 
-  async todoIdAuth(): Promise<boolean> {
+  private async todoIdAuth(): Promise<boolean> {
     const { todoId, account } = this.requestParams.query;
     const countRes = await Collections.todo
       .where({

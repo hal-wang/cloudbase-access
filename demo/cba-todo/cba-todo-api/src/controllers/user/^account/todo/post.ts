@@ -5,7 +5,7 @@ import moment = require("moment");
 
 export default class extends Action {
   constructor() {
-    super(["qa"]);
+    super(["ql"]);
   }
 
   async do(): Promise<HttpResult> {

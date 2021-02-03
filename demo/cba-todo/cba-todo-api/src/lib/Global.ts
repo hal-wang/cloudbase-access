@@ -10,4 +10,5 @@ export default {
   },
 
   adminId: "support@hal.wang",
+  testId: "test@hal.wang",
 };
