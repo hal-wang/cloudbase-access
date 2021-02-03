@@ -69,27 +69,30 @@ export default class Router {
     const result = await action.do();
 
     if (result.isSuccess) {
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd);
+      mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd, result);
     } else {
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd);
+      mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd, result);
     }
     if (mdwResult) return mdwResult;
 
-    mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd);
+    mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd, result);
     if (mdwResult) return mdwResult;
 
     return result;
   }
 
-  private async ExecMdw(type: MiddlewareType): Promise<HttpResult | null> {
+  private async ExecMdw(
+    type: MiddlewareType,
+    actionResult?: HttpResult
+  ): Promise<HttpResult | undefined> {
     for (let i = 0; i < this.middlewares.length; i++) {
       const middleware = this.middlewares[i];
       if (middleware.type != type) continue;
 
       middleware.requestParams = this.requestParams;
+      middleware.actionResult = actionResult;
       const mdwResult = await middleware.do();
       if (!mdwResult.success) return mdwResult.failedResult;
     }
-    return null;
   }
 }

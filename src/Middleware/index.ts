@@ -1,3 +1,4 @@
+import { HttpResult } from "..";
 import RequestParams from "../Router/RequestParams";
 import MiddlewareResult from "./MiddlewareResult";
 import MiddlewareType from "./MiddlewareType";
@@ -8,6 +9,7 @@ export default abstract class Middleware {
   /**will be set before doing */
   requestParams: RequestParams = RequestParams.empty;
 
-  /** if success, return null */
+  actionResult?: HttpResult;
+
   abstract do(): Promise<MiddlewareResult>;
 }
