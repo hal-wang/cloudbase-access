@@ -35,6 +35,7 @@ export default class HttpResult {
     return new HttpResult(statusCode, body, headers);
   };
 
+  //#region reserve
   static ok = function (body?: unknown): HttpResult {
     return new HttpResult(200, body);
   };
@@ -136,4 +137,5 @@ export default class HttpResult {
   static created = function (location: string, body?: unknown): HttpResult {
     return new HttpResult(201, body, { location });
   };
+  //#endregion
 }
