@@ -26,7 +26,7 @@ export default class Auth extends Authority {
       );
     }
 
-    if (this.roles.includes("todo") && !this.todoIdAuth()) {
+    if (this.roles.includes("todo") && !(await this.todoIdAuth())) {
       return MiddlewareResult.getFailedResult(
         HttpResult.notFoundMsg({ message: "the todo item is not existing" })
       );
@@ -45,7 +45,7 @@ export default class Auth extends Authority {
     const { password } = this.requestParams.headers;
     const countRes = await Collections.user
       .where({
-        account,
+        _id: account,
         password,
       })
       .count();
@@ -57,7 +57,7 @@ export default class Auth extends Authority {
     const countRes = await Collections.todo
       .where({
         _id: todoId,
-        account: account,
+        uid: account,
       })
       .count();
     return countRes.total > 0;
