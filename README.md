@@ -10,9 +10,14 @@ npm i @hal-wang/cloudbase-access
 
 或者查看本项目 `test` 文件夹中的一些单元测试。
 
+## 查看及使用提示
+
+1. 文档中 `cba` 部分为 `cloudbase-access` 的简称
+2. 强烈建议使用 `typescript` 并生成 `javascript`代码后上传，可参考 demo 项目。理论上 `javascript` 完全没问题，但作者并未进行测试。
+
 ## Router
 
-路由管理类，也是 `cloudbase-access` 的控制中心。构造函数传入环境 `event` 和 `context`。
+路由管理类，也是 `cba` 的控制中心。构造函数传入环境 `event` 和 `context`。
 
 如在 `main` 函数中：
 
@@ -41,13 +46,23 @@ export const main = async (
 
 `controllers` 统一放在一个文件夹中，建议不传此参数，即 `controllers`。
 
-在 `controllers` 目录中，建立各 `controller` 文件夹，再在 `controller` 文件夹中建 `action` 文件。详情后面 [Action](#Action) 部分有介绍。
+在 `controllers` 目录中，建立各 `controller` 文件夹，再在 `controller` 文件夹中建 `action` 文件。详情后面 [##Action](##Action) 部分有介绍。
+
+### isMethodNecessary
+
+如果有
+
+```ts
+router.isMethodNecessary = true;
+```
+
+则所有路由均按照标准 RESTFul 来查找，详情查看后续 [##Action](##Action) <> 部分
 
 ## HttpResult
 
 `HttpResult` 封装了 HTTP 返回结构。可在构造函数传入相关参数。
 
-`HttpResult` 有个属性 `result` ，可获取最终 HTTP 返回结构。
+`HttpResult` 有个属性 `result` ，可获取最终 HTTP 返回结构 `HttpResultStruct` 。
 
 ### 内置类型
 
@@ -65,6 +80,7 @@ export const main = async (
 - forbiddenMsg, 403
 - notFound, 404
 - notFoundMsg, 404
+- methodNotAllowed, 405
 - errRequest, 500
 - errRequestMsg, 500
 
@@ -73,7 +89,7 @@ return HttpResult.ok("success");
 ```
 
 普通内置类型支持传入 `body` 可选参数，`body` 为返回的内容。
-API 返回错误时，可统一返回 `ErrorMessage`，以 `Msg` 结尾的内置类型接受 `ErrorMessage` 参数。
+API 返回错误时，可统一返回 `ErrorMessage`，命名以 `Msg` 结尾的内置类型接受 `ErrorMessage` 参数。
 
 ### 举例
 
@@ -92,7 +108,7 @@ return HttpResult.ok({
 ```ts
 import { HttpResult } from "@hal-wang/cloudbase-access";
 return HttpResult.badRequestMsg({ message: "请求错误" });
-// 或 return HttpResult.badRequestMsg("请求错误");
+// 或 return HttpResult.badRequest("请求错误");
 ```
 
 ### 在 Action 中
@@ -112,17 +128,49 @@ export default class extends Action {
 
 ## 请求参数
 
-`RequestParams` 类解析并封装请求参数，构造函数传入云函数 `event`。
+`RequestParams` 类解析并封装请求参数，构造函数传入云函数 `event` 和 `context`。
 
-实例包含以下字段：
+在 `Action` 中，有 `RequestParams` 实例对象 `requestParams`，可通过 `this.requestParams` 方式使用。
 
-1. event，云函数环境 event
-2. headers, 请求头部
-3. path，访问路径，如`POST https://domain.com/api/user/login`，path 值为`/user/login`
-4. params，查询参数
-5. data，请求 body，如果是 JSON 字符串，则转为 JSON 对象
+实例包含以下字段
 
-在 Router 中，有 `RequestParams` 实例对象 `requestParams`，可通过 `this.requestParams.headers` 方式使用
+### event
+
+云函数环境 event
+
+### context
+
+云函数环境 context
+
+### path
+
+访问路径，如`POST https://domain.com/api/user/login`，path 值为`user/login`。
+
+_注意：在 event 中，path 实为斜杠开头，上例为 `/user/login`。但在 `cba` 中移除开头的 `/`_
+
+### headers
+
+请求头部
+
+### params
+
+查询参数
+
+### data
+
+请求 body，如果是 JSON 字符串，则转为 JSON 对象。
+
+在 event 中，json 为字符串，在 `RequestParams` 中已解析。
+
+### query
+
+v0.9.0 中新增。
+
+RESTFul 规范的路径中查询参数。如 `user/:id` 调用时是 `user/66`，在 query 中即存在
+
+```ts
+query.id == 66; // true;
+```
 
 ## Action
 
@@ -130,7 +178,44 @@ export default class extends Action {
 
 所有 `Action` 都应派生自 `Action` 类，并重写 `do` 函数。
 
-### 新建文件
+### 目录结构
+
+在 `cba` 中，路由需与文件路径相符。
+
+#### 传统模式
+
+路由与文件路径完全相符。
+
+如想调用 `post /todo/getTodoItem`，则文件目录应为：
+
+```
++-- controllers
+|   +-- todo
+|       +-- getTodoItem
+```
+
+#### RESTFul
+
+action 文件名应为 httpMethod, `post.ts`、`get.ts`、`delete.ts`、`patch.ts`、`put.ts`。
+
+路径中的查询参数，在文件路径中的文件夹，命名应以 `^` 开头（文件系统中不允许出现字符 `:`）。
+
+如想调用 `get /todo/66`，则文件目录应为：
+
+```
++-- controllers
+|   +-- todo
+|       +-- ^id
+|           +-- get.ts
+```
+
+#### isMethodNecessary
+
+如果设置 `router.isMethodNecessary = true;`, 则所有 `Action` 必须严格使用 httpMethod 命名，与 RESTFul 规范相符。否则会找不到路由。
+
+如果 `isMethodNecessary` 为 `false` 或不设置，则 RESTFul 规范的 API 可能会以非 RESTFul 方式调用。如路由 `user/login`，本应是 `get user/login`，但 `post user/login/get` 也能调用。因此如果使用 RESTFul，建议设置 `isMethodNecessary` 为 `true`。
+
+### 创建一个 Action
 
 - 在云函数根目录（即与 index.ts 同级）创建名为`controllers`文件夹。也可以为其他，需要在 Router 构造函数第四个参数可以指定，默认为`controllers`
 - 根据各业务，创建不同 controller 文件夹，名称自定，但名称与路由名称对应。
@@ -145,12 +230,6 @@ export default class extends Action {
     return this.noContent();
   }
 }
-```
-
-比如你需要一个用户登录的 API，那么路径应如下（user 和 login 名称自定）：
-
-```
-/controllers/user/login.ts
 ```
 
 ### Action 文件内容
@@ -207,19 +286,23 @@ export default class extends Action {
 
 ## 中间件
 
-中间件可以在 API 每次调用的生命周期各个阶段执行，如果记录日志，验证权限等。
+中间件可以在 API 每次调用的生命周期各个阶段执行，如记录日志，验证权限等。
 
 所有中间件应派生自类 `Middleware`，实现 `do` 函数，返回 `MiddlewareResult`
 
 ### 中间件类型
 
-在 `cloudbase-access` 中，中间件有以下几种类别：
+在 `cba` 中，中间件有以下几种类别：
 
-1.  BeforeStart `Router` 初始化时就调用，此时 `Action` 未被加载
+1.  BeforeStart `Router` 初始化时就调用
 1.  BeforeAction `Action` 执行前调用
 1.  BeforeEnd `Action` 执行后调用
 1.  BeforeSuccessEnd `Action` 执行后，而且返回结果为 2xx 时调用
 1.  BeforeErrEnd `Action` 执行后，而且返回结果不为 2xx 时调用
+
+类型为 `BeforeStart` 的中间件执行时，`Action` 未被加载，因此无法获取 `query`, `roles` 等。
+
+类型为 `BeforeStart` 和 `BeforeAction` 的中间件执行时，`Action` 未执行，因此无法获取 `Action` 执行结果。
 
 ### 中间件结果
 
@@ -230,10 +313,13 @@ return new MiddlewareResult(true);
 return MiddlewareResult.getSuccessResult();
 
 // 失败
-return new MiddlewareResult(false, HttpResult.badRequest("中间件调用失败"));
+return new MiddlewareResult(
+  false,
+  HttpResult.badRequestMsg({ message: "中间件调用失败" })
+);
 // 或
 return MiddlewareResult.getFailedResult(
-  HttpResult.badRequest("中间件调用失败")
+  HttpResult.badRequestMsg({ message: "中间件调用失败" })
 );
 ```
 
@@ -298,31 +384,56 @@ export const main = async (
 };
 ```
 
+## cba-map
+
+`cba-map` 是可选的，它能提升路由匹配速度，其本身为 json 文件，并且要上传至 `cloudbase`云函数根目录。
+
+### 建议使用
+
+如果不使用`cba-map`，路由匹配方式是先遍历 `controllers` 中的各个 `action`，再进行匹配，如果项目较大可能会影响匹配速度。
+
+在 100 个 `action` 的项目中，经测试`cba-map`提升速度大概 20 倍左右（有 `cba-map` 耗时 1-2ms，无`cba-map`耗时 30-40ms）。因此在 `action` 数量较多时建议使用 `cba-map`。
+
+### 使用方式
+
+在 package.json 文件中的 scripts 中添加
+
+```json
+  "scripts": {
+    "cba-map": "cba-map dist/controllers",
+  },
+```
+
+`dist/controllers` 应改为你的 js 文件的 `controllers` 目录路径，在 ts 项目中，应该是执行 tsc 生成的 js 目录。
+
+执行 `npm run cba-map` 会以`dist/controllers`目录，在项目目录下生成 `cba-map.json` 文件（建议将其加入 `.gitignore`文件）。
+
 ## Demo
 
-Demo 内容在本项目 `demo` 文件夹，用于演示 `cloudbase-access` 用法。
+Demo 内容在本项目 `demo` 文件夹，用于演示 `cba` 用法。
 
 ### 一个简单的 todo API
 
-此 demo 没有访问数据库，只有模拟账号，在 `lib/Global.ts` 中。
+使用了 `RESTFul` 规范的 API 格式，并且设置 `router.isMethodNecessary = true;`。
 
-1. account: abc, password: 123456
-1. account: admin, password: abcdef
+使用了数据库两个文档：`cba-user`, `cba-todo`。
+
+测试账号为 `test@hal.wang` 并且无法更改，管理员账号为 `support@hal.wang`。您可以在`Global.ts`中修改以上账号。
 
 ### 发布
 
 本示例是使用 `ts` 写的，需要编译后发布至自己的 cloudbase。
 
-修改 `/cloudbaserc.json` 文件，将 `evnId` 值改为你自己的 cloudbase 环境
+修改 `/.env` 文件，将 `ENV_ID` 值改为你自己的 cloudbase 环境 id.
 
-```JSON
-"envId": "env-***",
+```
+ENV_ID=env-***
 ```
 
 运行以下命令发布：
 
 ```shell
-cd demo/cloudbase-access-api
+cd demo/cba-todo/cba-todo-api
 npm install
 npm run build
 ```
@@ -331,15 +442,18 @@ npm run build
 
 #### 生成的内容
 
-编译后会在云函数目录 `functions` 生成文件夹 `cloudbase-access`，
+编译后会在云函数目录 `functions` 生成文件夹 `cba-todo`，
 
-在 cloudbase-access 文件夹中包含以下内容：
+在 `cba-todo` 文件夹中包含以下内容：
 
-- controllers：符合 cloudbase-access 规则的 controllers 目录
-- lib：除 controllers 外的其他帮助类
+- controllers：符合 `cba` 规则的 `controllers` 目录
+- lib：除 `controllers` 外的其他帮助类
+- models: ts model
 - index.js：入口函数
 
 ### 调用 API 测试
+
+测试文件位于 `rest-test` 文件夹中
 
 使用 `vscode` 插件 `REST Client` 测试，测试文件都是以 `.test.txt` 结尾
 
@@ -350,7 +464,7 @@ npm run build
 如
 
 ```txt
-POST https://env-***.service.tcloudbase.com/cloudbase-access/user/login
+POST https://env-***.service.tcloudbase.com/cba-todo/user/login
 content-type:application/json
 
 {
@@ -361,6 +475,22 @@ content-type:application/json
 
 ### 权限认证
 
-示例只写了 `login`、`admin` 两个身份，实际业务需要访问数据库来验证访问权限。
+#### 身份
 
-其中，`login` 权限在示例中，是根据头部的 `account` 和 `password` 验证的。在实际业务中，`password` 可能会加密，或者使用 `token` 方式等。
+示例写了 `hl`、`ql`、`admin` 三个身份
+
+##### hl
+
+即 `header login`，通过 `header` 的 `account` 和 `password` 验证登录
+
+##### ql
+
+即 `query login`, 通过 `query` 的 `account` 和 `header` 的 `password` 验证登录
+
+##### admin
+
+验证 `header`或 `query` 中的 `account` 是否管理员
+
+#### 实际业务
+
+在实际业务中，`password` 可能会加密，或者使用 `token` 方式等，验证方法与 `demo` 类似

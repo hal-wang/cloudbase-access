@@ -34,7 +34,6 @@
     "build": "bash build.sh",
     "deploy": "bash build.sh && npm publish --access=public",
     "deploy:beta": "bash build.sh && npm publish --tag=beta --access=public",
-    "map": "cba-map",
     "test": "jest",
     "eslint": "eslint src --ext .ts"
   },
