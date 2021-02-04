@@ -13,6 +13,8 @@ export default class extends Action {
     }
 
     const accRes = await Collections.user.doc(account).get();
-    return this.ok(accRes.data[0]);
+    const result = this.ok(accRes.data[0]);
+    result.headers.realPath = this.realPath || "";
+    return result;
   }
 }

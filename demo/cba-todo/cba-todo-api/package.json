@@ -1,6 +1,6 @@
 {
   "name": "cba-todo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "a demo of cloudbase-access",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.5.0",
-    "@hal-wang/cloudbase-access": "^0.9.2",
+    "@hal-wang/cloudbase-access": "^0.9.4",
     "linq": "^3.2.3",
     "moment": "^2.29.1"
   },
