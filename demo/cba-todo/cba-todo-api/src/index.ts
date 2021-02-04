@@ -1,5 +1,5 @@
 import { HttpResult, Router } from "@hal-wang/cloudbase-access";
-import { AppInstanceMiddleware } from "./lib/AppInstanceMiddleware";
+import { AppInstanceMiddleware } from "./middlewares/AppInstanceMiddleware";
 import Auth from "./lib/Auth";
 
 export const main = async (
