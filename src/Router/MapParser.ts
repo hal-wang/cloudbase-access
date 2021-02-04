@@ -26,7 +26,10 @@ export default class MapParser {
     const filePath = path.join(this.cfPath, this.realPath);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const actionClass = require(filePath).default;
-    return new actionClass() as Action;
+    const action = new actionClass() as Action;
+    action.realPath = this.realPath;
+    action.requestParams = this.requestParams;
+    return action;
   }
 
   private setQuery(): void {

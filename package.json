@@ -1,6 +1,6 @@
 {
   "name": "@hal-wang/cloudbase-access",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "利用 NodeJS 和 CloudBase 快速创建 Serverless RESTful Api",
   "homepage": "https://github.com/hal-wang/cloudbase-access",
   "repository": {
@@ -71,9 +71,11 @@
     "test/",
     ".eslintrc.js",
     ".gitignore",
+    "build.sh",
     "jest.config.js",
     ".LICENSE",
-    "tsconfig.json",
-    "build.sh"
+    "package.json",
+    "README.md",
+    "tsconfig.json"
   ]
 }

@@ -95,7 +95,6 @@ export default class Router {
         throw err;
       }
     }
-    action.requestParams = this.requestParams;
     if (this.auth) {
       this.auth.roles = ([] as string[]).concat(action.roles);
     }
