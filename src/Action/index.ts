@@ -5,6 +5,15 @@ import RequestParams from "../Router/RequestParams";
 export default abstract class Action {
   constructor(public readonly roles: Array<string> = new Array<string>()) {}
 
+  /** will be set before doing */
+  requestParams = RequestParams.empty;
+
+  /**docs of api action */
+  inputDocs?: ApiDocs;
+  outputDocs?: ApiDocs;
+
+  realPath?: string;
+
   protected readonly base = HttpResult.base;
   protected readonly ok = HttpResult.ok;
   protected readonly accepted = HttpResult.accepted;
@@ -20,13 +29,6 @@ export default abstract class Action {
   protected readonly errRequestMsg = HttpResult.errRequestMsg;
   protected readonly redirect = HttpResult.redirect;
   protected readonly created = HttpResult.created;
-
-  /** will be set before doing */
-  requestParams = RequestParams.empty;
-
-  /**docs of api action */
-  inputDocs?: ApiDocs;
-  outputDocs?: ApiDocs;
 
   abstract do(): Promise<HttpResult>;
 }
