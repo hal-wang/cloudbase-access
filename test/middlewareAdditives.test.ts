@@ -20,7 +20,6 @@ test("middleware additives", async function () {
   router.configure(new BeforeErrEndMdw());
 
   const result = (await router.do()).result;
-  console.log("r", result);
   expect(result.statusCode).toBe(200);
   expect(result.headers.beforeAction).toBe("ba");
   expect(result.headers.beforeStart).toBe("bs");
