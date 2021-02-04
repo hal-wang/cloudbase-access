@@ -1,3 +1,5 @@
+# cloudbase-access ( cba )
+
 利用 NodeJS 和 CloudBase 快速创建 Serverless RESTful Api
 
 ## 安装
@@ -6,14 +8,13 @@ npm i @hal-wang/cloudbase-access
 
 ## 示例
 
-示例请查看后面的 [#Demo](#Demo)
+示例请查看后面的 [#Demo](##Demo)
 
 或者查看本项目 `test` 文件夹中的一些单元测试。
 
-## 查看及使用提示
+## 建议
 
-1. 文档中 `cba` 部分为 `cloudbase-access` 的简称
-2. 强烈建议使用 `typescript` 并生成 `javascript`代码后上传，可参考 demo 项目。理论上 `javascript` 完全没问题，但作者并未进行测试。
+强烈建议使用 `typescript` 并生成 `javascript`代码后上传，可参考 [#Demo](##Demo)。理论上 `javascript` 完全没问题，但作者并未进行测试。
 
 ## Router
 
@@ -42,21 +43,88 @@ export const main = async (
 
 ### controllers 目录
 
-`Router` 第四个参数（可选）传入 `controllers` 目录名称，默认为 `controllers`。
+`Router` 第四个参数（可选）传入 `controllers` 目录名称，默认为 `controllers`，建议不传此参数，即 `controllers`。
 
-`controllers` 统一放在一个文件夹中，建议不传此参数，即 `controllers`。
+所有 `controllers` 统一放在这个文件夹中，在 `controllers` 目录中，建立各 `controller` 文件夹，再在 `controller` 文件夹中建 `action` 文件。详情后面 [##Action](##Action) 部分有介绍。
 
-在 `controllers` 目录中，建立各 `controller` 文件夹，再在 `controller` 文件夹中建 `action` 文件。详情后面 [##Action](##Action) 部分有介绍。
+### 路由匹配
 
-### isMethodNecessary
+在`cba`中，路由与文件系统匹配。
 
-如果有
+路由查询参数命名以 `^` 开头（文件系统中命名不允许出现字符 `:`），如果存在多个查询参数则后面的会覆盖前面的，如 `get user/^id/todo/^id`，则 `id` 值为 `todoId`。正确命名应如 `user/^userId/todo/^todoId`。
 
-```ts
-router.isMethodNecessary = true;
+如果限制 `httpMethod`, `action` 应以 `post.ts`、`get.ts`、`delete.ts`、`patch.ts`、`put.ts` （或 `.js` ）命名，否则任意 `httpMethod` 都可以访问。
+
+#### isMethodNecessary
+
+如果设置 `router.isMethodNecessary = true;`, 则所有 `Action` 必须严格使用 `httpMethod` 命名，与 RESTFul 规范相符。否则会找不到路由并返回 `404`。
+
+如果 `isMethodNecessary` 为 `false` 或不设置，则 RESTFul 规范的 API 可能会以非 RESTFul 方式调用。如路由 `user/login`，本应是 `get user/login`，但 `post user/login/get` 也能调用。因此如果使用 RESTFul，建议设置 `isMethodNecessary` 为 `true`。
+
+#### 例 1
+
+获取 todo list
+
+##### 方式 1
+
+目录结构如下：
+
+```
++-- controllers
+|   +-- todo
+|       +-- get.ts
 ```
 
-则所有路由均按照标准 RESTFul 来查找，详情查看后续 [##Action](##Action) <> 部分
+访问地址为 `get /todo`，
+
+##### 方式 2
+
+目录结构如下：
+
+```
++-- controllers
+|   +-- todo
+|       +-- getTodoList.ts
+```
+
+访问地址为 `get /todo/getTodoList` 、 `post /todo/getTodoList` 、 `put /todo/getTodoList` 等等，效果相同。
+
+#### 例 2
+
+获取单个 todo item
+
+##### 方式 1
+
+目录结构如下：
+
+```
++-- controllers
+|   +-- todo
+|       +-- ^id
+|           +-- get.ts
+```
+
+访问地址为 `get /todo/66`
+
+##### 方式 2
+
+目录结构如下：
+
+```
++-- controllers
+|   +-- todo
+|       +-- getTodoItem.ts
+```
+
+访问地址为 `get(post 等) /todo/getTodoItem`，需要在 `body` 、 `header` 或 `queryParams` 传入 `todoId` 参数
+
+#### 示例建议
+
+上述两个示例都给了两种定义方式。
+
+cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合规范，易读性也更好。
+
+因此建议设置 router.isMethodNecessary 为 true 。
 
 ## HttpResult
 
@@ -146,7 +214,7 @@ export default class extends Action {
 
 访问路径，如`POST https://domain.com/api/user/login`，path 值为`user/login`。
 
-_注意：在 event 中，path 实为斜杠开头，上例为 `/user/login`。但在 `cba` 中移除开头的 `/`_
+_注意：在 event 中，path 实为 `/` 开头，上例为 `/user/login`。但在 `cba` 中移除了开头的 `/`_
 
 ### headers
 
@@ -169,7 +237,7 @@ v0.9.0 中新增。
 RESTFul 规范的路径中查询参数。如 `user/:id` 调用时是 `user/66`，在 query 中即存在
 
 ```ts
-query.id == 66; // true;
+query.id == "66"; // true;
 ```
 
 ## Action
@@ -178,49 +246,12 @@ query.id == 66; // true;
 
 所有 `Action` 都应派生自 `Action` 类，并重写 `do` 函数。
 
-### 目录结构
-
-在 `cba` 中，路由需与文件路径相符。
-
-#### 传统模式
-
-路由与文件路径完全相符。
-
-如想调用 `post /todo/getTodoItem`，则文件目录应为：
-
-```
-+-- controllers
-|   +-- todo
-|       +-- getTodoItem
-```
-
-#### RESTFul
-
-action 文件名应为 httpMethod, `post.ts`、`get.ts`、`delete.ts`、`patch.ts`、`put.ts`。
-
-路径中的查询参数，在文件路径中的文件夹，命名应以 `^` 开头（文件系统中不允许出现字符 `:`）。
-
-如想调用 `get /todo/66`，则文件目录应为：
-
-```
-+-- controllers
-|   +-- todo
-|       +-- ^id
-|           +-- get.ts
-```
-
-#### isMethodNecessary
-
-如果设置 `router.isMethodNecessary = true;`, 则所有 `Action` 必须严格使用 httpMethod 命名，与 RESTFul 规范相符。否则会找不到路由。
-
-如果 `isMethodNecessary` 为 `false` 或不设置，则 RESTFul 规范的 API 可能会以非 RESTFul 方式调用。如路由 `user/login`，本应是 `get user/login`，但 `post user/login/get` 也能调用。因此如果使用 RESTFul，建议设置 `isMethodNecessary` 为 `true`。
-
 ### 创建一个 Action
 
-- 在云函数根目录（即与 index.ts 同级）创建名为`controllers`文件夹。也可以为其他，需要在 Router 构造函数第四个参数可以指定，默认为`controllers`
-- 根据各业务，创建不同 controller 文件夹，名称自定，但名称与路由名称对应。
-- 在 controller 文件夹中，创建`.ts`文件，每个`.ts`文件对应一个`action`
-- 在`.ts`文件中创建类，并继承 `Action`，重写 `do` 函数
+1. 在云函数根目录（即与 index.ts 同级）创建名为`controllers`文件夹。也可以为其他，需要在 Router 构造函数第四个参数可以指定，默认为`controllers`
+1. 根据各业务，创建不同 controller 文件夹，名称自定，但名称与路由名称对应。
+1. 在 controller 文件夹中，创建`.ts`文件，每个`.ts`文件对应一个`action`
+1. 在`.ts`文件中创建类，并继承 `Action`，重写 `do` 函数
 
 ```ts
 import { Action, HttpResult } from "@hal-wang/cloudbase-access";
@@ -294,11 +325,11 @@ export default class extends Action {
 
 在 `cba` 中，中间件有以下几种类别：
 
-1.  BeforeStart `Router` 初始化时就调用
-1.  BeforeAction `Action` 执行前调用
-1.  BeforeEnd `Action` 执行后调用
-1.  BeforeSuccessEnd `Action` 执行后，而且返回结果为 2xx 时调用
-1.  BeforeErrEnd `Action` 执行后，而且返回结果不为 2xx 时调用
+1.  BeforeStart： `Router` 初始化时就调用
+1.  BeforeAction： `Action` 执行前调用
+1.  BeforeEnd： `Action` 执行后调用
+1.  BeforeSuccessEnd： `Action` 执行后，而且返回结果为 2xx 时调用
+1.  BeforeErrEnd： `Action` 执行后，而且返回结果不为 2xx 时调用
 
 类型为 `BeforeStart` 的中间件执行时，`Action` 未被加载，因此无法获取 `query`, `roles` 等。
 
@@ -392,7 +423,7 @@ export const main = async (
 
 如果不使用`cba-map`，路由匹配方式是先遍历 `controllers` 中的各个 `action`，再进行匹配，如果项目较大可能会影响匹配速度。
 
-在 100 个 `action` 的项目中，经测试`cba-map`提升速度大概 20 倍左右（有 `cba-map` 耗时 1-2ms，无`cba-map`耗时 30-40ms）。因此在 `action` 数量较多时建议使用 `cba-map`。
+在 100 个 `action` 的项目中，经测试`cba-map`提升路由匹配速度大概 20 倍左右（有 `cba-map` 耗时 1-2ms，无`cba-map`耗时 30-40ms）。因此在 `action` 数量较多时建议使用 `cba-map`。
 
 ### 使用方式
 
@@ -404,7 +435,7 @@ export const main = async (
   },
 ```
 
-`dist/controllers` 应改为你的 js 文件的 `controllers` 目录路径，在 ts 项目中，应该是执行 tsc 生成的 js 目录。
+`dist/controllers` 应改为你的 js 文件的 `controllers` 目录路径。在 ts 项目中，应该是执行 tsc 生成的 js 目录。
 
 执行 `npm run cba-map` 会以`dist/controllers`目录，在项目目录下生成 `cba-map.json` 文件（建议将其加入 `.gitignore`文件）。
 
