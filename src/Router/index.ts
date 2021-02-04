@@ -4,6 +4,8 @@ import Middleware from "../Middleware";
 import MiddlewareType from "../Middleware/MiddlewareType";
 import RequestParams from "./RequestParams";
 import MapParser from "./MapParser";
+import MiddlewareResult from "../Middleware/MiddlewareResult";
+import { Action } from "..";
 
 export default class Router {
   private static _current: Router;
@@ -13,6 +15,8 @@ export default class Router {
 
   readonly requestParams: RequestParams;
   readonly middlewares = <Middleware[]>[];
+
+  private readonly mdwAdditives = <Record<string, string>>{};
 
   /**
    * is httpMethod necessary
@@ -41,8 +45,38 @@ export default class Router {
 
   async do(): Promise<HttpResult> {
     let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
-    if (mdwResult) return mdwResult;
+    if (!mdwResult.success) {
+      return this.getResultWithAdditives(mdwResult.failedResult);
+    }
 
+    const actionResult = this.getAction();
+    if (!actionResult.success) {
+      return this.getResultWithAdditives(
+        actionResult.failedResult as HttpResult
+      );
+    }
+    const action = actionResult.action as Action;
+
+    mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
+    if (!mdwResult.success) {
+      return this.getResultWithAdditives(mdwResult.failedResult);
+    }
+
+    const result = await action.do();
+
+    mdwResult = await this.ExecEndMdw(result);
+    if (!mdwResult.success) {
+      return this.getResultWithAdditives(mdwResult.failedResult);
+    }
+
+    return this.getResultWithAdditives(result);
+  }
+
+  private getAction(): {
+    success: boolean;
+    action?: Action;
+    failedResult?: HttpResult;
+  } {
     let action;
     try {
       const mapParser = new MapParser(
@@ -53,7 +87,10 @@ export default class Router {
       action = mapParser.action;
     } catch (err) {
       if (err.httpResult) {
-        return err.httpResult;
+        return {
+          success: false,
+          failedResult: err.httpResult,
+        };
       } else {
         throw err;
       }
@@ -62,29 +99,31 @@ export default class Router {
     if (this.auth) {
       this.auth.roles = ([] as string[]).concat(action.roles);
     }
+    return {
+      success: true,
+      action: action,
+    };
+  }
 
-    mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
-    if (mdwResult) return mdwResult;
-
-    const result = await action.do();
-
+  private async ExecEndMdw(result: HttpResult): Promise<MiddlewareResult> {
+    let mdwResult;
     if (result.isSuccess) {
       mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd, result);
     } else {
       mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd, result);
     }
-    if (mdwResult) return mdwResult;
+    if (!mdwResult.success) return mdwResult;
 
     mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd, result);
-    if (mdwResult) return mdwResult;
+    if (!mdwResult.success) return mdwResult;
 
-    return result;
+    return new MiddlewareResult(true);
   }
 
   private async ExecMdw(
     type: MiddlewareType,
     actionResult?: HttpResult
-  ): Promise<HttpResult | undefined> {
+  ): Promise<MiddlewareResult> {
     for (let i = 0; i < this.middlewares.length; i++) {
       const middleware = this.middlewares[i];
       if (middleware.type != type) continue;
@@ -92,7 +131,23 @@ export default class Router {
       middleware.requestParams = this.requestParams;
       middleware.actionResult = actionResult;
       const mdwResult = await middleware.do();
-      if (!mdwResult.success) return mdwResult.failedResult;
+
+      for (const key in mdwResult.additives) {
+        this.mdwAdditives[key] = mdwResult.additives[key];
+      }
+
+      if (!mdwResult.success) {
+        return new MiddlewareResult(false, mdwResult.failedResult);
+      }
     }
+
+    return new MiddlewareResult(true);
+  }
+
+  private getResultWithAdditives(result: HttpResult) {
+    for (const key in this.mdwAdditives) {
+      result.headers[key] = this.mdwAdditives[key];
+    }
+    return result;
   }
 }
