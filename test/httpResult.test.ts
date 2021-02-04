@@ -1,4 +1,4 @@
-import ErrorMessage from "../src/ErrorMessage";
+import ErrorMessage from "../src/HttpResult/ErrorMessage";
 import HttpResult from "../src/HttpResult";
 
 test("302 redirect test", async function () {
