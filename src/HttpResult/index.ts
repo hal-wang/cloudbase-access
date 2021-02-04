@@ -5,7 +5,7 @@ export default class HttpResult {
   constructor(
     public readonly statusCode: number,
     public readonly body: unknown = {},
-    public readonly headers = <Record<string, unknown>>{}
+    public readonly headers = <Record<string, string>>{}
   ) {}
 
   get result(): HttpResultStruct {
@@ -30,7 +30,7 @@ export default class HttpResult {
   static base = function (
     statusCode: number,
     body?: unknown,
-    headers?: Record<string, unknown>
+    headers?: Record<string, string>
   ): HttpResult {
     return new HttpResult(statusCode, body, headers);
   };
