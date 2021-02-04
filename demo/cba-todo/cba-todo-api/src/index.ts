@@ -22,7 +22,7 @@ export const main = async (
 
 function setHeaders(): void {
   const config = <Record<string, unknown>>require("./package.json");
-  HttpResult.baseHeaders.version = config.version;
+  HttpResult.baseHeaders.version = config.version as string;
 
   HttpResult.baseHeaders.demo = "cba-todo";
 }
