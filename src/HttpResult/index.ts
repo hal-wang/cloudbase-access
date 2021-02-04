@@ -4,8 +4,8 @@ import HttpResultStruct from "./HttpResultStruct";
 export default class HttpResult {
   constructor(
     public readonly statusCode: number,
-    public readonly body?: unknown,
-    public readonly headers?: Record<string, unknown>
+    public readonly body: unknown = {},
+    public readonly headers = <Record<string, unknown>>{}
   ) {}
 
   get result(): HttpResultStruct {
@@ -21,7 +21,7 @@ export default class HttpResult {
     return this.statusCode >= 200 && this.statusCode < 300;
   }
 
-  static readonly baseHeaders = <Record<string, unknown>>{
+  static readonly baseHeaders = <Record<string, string>>{
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
     "nodejs-api": "cloudbase-access",

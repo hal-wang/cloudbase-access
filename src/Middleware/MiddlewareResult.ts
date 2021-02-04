@@ -3,8 +3,10 @@ import HttpResult from "../HttpResult";
 class MiddlewareResult {
   constructor(
     public readonly success: boolean,
-    public readonly failedResult: HttpResult = HttpResult.errRequest()
+    public readonly failedResult: HttpResult = HttpResult.badRequestMsg()
   ) {}
+
+  readonly additives = <Record<string, string>>{};
 
   static getSuccessResult(): MiddlewareResult {
     return new MiddlewareResult(true);
