@@ -1,5 +1,6 @@
 import { CollectionReference, Query } from "@cloudbase/database";
 import { RequestParams } from ".";
+import RequestMethod from "./Router/RequestMethod";
 
 export default class DbHelper {
   static getResBadContent(res: Record<string, unknown>): string {
@@ -41,11 +42,7 @@ export default class DbHelper {
     requestParams: RequestParams,
     partQuery: Query | CollectionReference
   ): Promise<{ list: unknown[]; total: number }> {
-    let page = requestParams.data.page as number;
-    let pageSize = requestParams.data.pageSize as number;
-
-    if (!page) page = 1;
-    if (!pageSize) pageSize = 20;
+    const { page, pageSize } = DbHelper.getPageQuery(requestParams);
 
     const countRes = await (typeof partQuery == typeof CollectionReference
       ? (partQuery as CollectionReference)
@@ -63,6 +60,33 @@ export default class DbHelper {
     return {
       list: listRes.data,
       total: countRes.total,
+    };
+  }
+
+  private static getPageQuery(
+    requestParams: RequestParams
+  ): { page: number; pageSize: number } {
+    let page: number | undefined;
+    let pageSize: number | undefined;
+
+    if (requestParams.params && requestParams.params.page) {
+      page = Number(requestParams.params.page);
+    } else if (requestParams.data && requestParams.data.page) {
+      page = requestParams.data.page as number;
+    }
+
+    if (requestParams.params && requestParams.params.pageSize) {
+      pageSize = Number(requestParams.params.pageSize);
+    } else if (requestParams.data && requestParams.data.pageSize) {
+      pageSize = requestParams.data.pageSize as number;
+    }
+
+    if (!page) page = 1;
+    if (!pageSize) pageSize = 20;
+
+    return {
+      page: page,
+      pageSize: pageSize,
     };
   }
 }
