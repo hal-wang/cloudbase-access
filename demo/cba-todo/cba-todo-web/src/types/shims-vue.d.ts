@@ -8,7 +8,6 @@ declare module "*.vue" {
 
 declare module "vue/types/vue" {
   interface Vue {
-    $post: function;
     $store: any;
     $route: Route;
     $router: VueRouter;

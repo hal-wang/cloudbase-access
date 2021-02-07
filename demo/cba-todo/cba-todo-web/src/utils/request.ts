@@ -13,21 +13,20 @@ function getBaseUrl() {
 
 const service = axios.create({
   baseURL: getBaseUrl(),
-  timeout: 20000 // request timeout
+  timeout: 20000, // request timeout
 });
 
 service.interceptors.request.use(
-  async config => {
+  async (config) => {
     config.headers["content-type"] = "application/json";
-    const user = store.state.user as User;
+    const user = store.state.user.user as User;
     if (user && !config.headers["password"]) {
       config.headers["password"] = user.password;
     }
-    config.validateStatus = num => num >= 200 && num < 300;
+    config.validateStatus = (num) => num >= 200 && num < 300;
     return config;
   },
-  error => {
-    console.log("err" + error);
+  (error) => {
     return Promise.reject("request error");
   }
 );
@@ -43,18 +42,18 @@ function getErrText(error: any): string {
 }
 
 service.interceptors.response.use(
-  res => {
+  (res) => {
     return res;
   },
-  error => {
+  (error) => {
     const res = error.response;
     console.log("err", error.message, res);
     if (!res) {
       message.error("request error");
     } else {
       message.error(getErrText(res));
-      return Promise.reject(res.statusText);
     }
+    return Promise.reject(res);
   }
 );
 

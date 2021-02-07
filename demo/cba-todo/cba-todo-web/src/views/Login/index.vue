@@ -71,15 +71,32 @@ export default Vue.extend({
       form: this.$form.createForm(this, { name: "coordinated" }),
     };
   },
+  computed: {
+    user() {
+      return this.$store.state.user.user;
+    },
+  },
+  mounted() {
+    if (this.user) {
+      this.$router.replace({
+        path: "/",
+      });
+    }
+  },
   methods: {
     handleSubmit() {
-      this.form.validateFields((err, values) => {
+      this.form.validateFields(async (err, values) => {
         if (err) return;
 
-        this.$store.dispatch("user/login", {
+        const user = await this.$store.dispatch("user/login", {
           account: values.email,
           password: values.password,
         });
+        if (user) {
+          this.$router.replace({
+            path: "/",
+          });
+        }
       });
     },
   },
