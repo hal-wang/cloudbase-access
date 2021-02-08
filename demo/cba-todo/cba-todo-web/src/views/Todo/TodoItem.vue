@@ -20,18 +20,28 @@
       </a-col>
     </a-row>
 
-    <a-button
-      type="link"
-      icon="delete"
-      class="delete-btn"
-      @click.stop="handleDelete"
-    />
+    <a-popconfirm
+      title="Are you sure delete this todo?"
+      ok-text="Yes"
+      cancel-text="No"
+      @confirm="ondeleteConfirm"
+    >
+      <a-button
+        :loading="deleteLoading"
+        type="link"
+        icon="delete"
+        class="delete-btn"
+        @click.stop=""
+      />
+    </a-popconfirm>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import moment from "moment";
+import request from "@/utils/request";
+import User from "@/models/User";
 
 export default Vue.extend({
   props: {
@@ -40,17 +50,31 @@ export default Vue.extend({
       required: true,
     },
   },
+  data() {
+    return {
+      deleteLoading: false,
+    };
+  },
   computed: {
-    updateAt() {
+    user(): User {
+      return this.$store.state.user.user;
+    },
+    updateAt(): string {
       return moment(this.todo.update_at).format("YYYY-MM-DD HH:mm:ss");
     },
-    schedule() {
+    schedule(): string {
       return moment(this.todo.schedule).format("YYYY-MM-DD HH:mm:ss");
     },
   },
   methods: {
-    async handleDelete() {
-      this.$emit("delete");
+    async ondeleteConfirm() {
+      this.deleteLoading = true;
+      try {
+        await request.delete(`user/${this.user._id}/todo/${this.todo._id}`);
+        this.$emit("delete");
+      } finally {
+        this.deleteLoading = false;
+      }
     },
   },
 });

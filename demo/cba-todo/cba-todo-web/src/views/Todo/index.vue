@@ -9,7 +9,7 @@
             shape="circle"
             icon="plus"
             size="large"
-            @click="handleLogout"
+            @click="handleAddTodo"
           />
           <a-button
             type="danger"
@@ -29,14 +29,17 @@
             :key="todo._id"
             :todo="todo"
             @delete="onDelete(todo)"
+            @click.native.stop="handleEditTodo(todo)"
           ></TodoItem>
         </div>
         <div class="pagination">
           <a-pagination
+            :loading="true"
             show-size-changer
             show-quick-jumper
             :default-current="page"
             :total="total"
+            :pageSize="pageSize"
             @change="onPageChange"
             @showSizeChange="onShowSizeChange"
           />
@@ -46,6 +49,8 @@
     <a-layout-footer style="text-align: center">
       cba-todo ©2021 Created by hal.wang
     </a-layout-footer>
+
+    <TodoEditDialog ref="todoEditDialog" @add="onTodoAdd" @edit="onTodoEdit" />
   </a-layout>
 </template>
 
@@ -58,13 +63,14 @@ import User from "@/models/User";
 export default Vue.extend({
   components: {
     TodoItem: () => import("./TodoItem.vue"),
+    TodoEditDialog: () => import("./TodoEditDialog.vue"),
   },
   data() {
     return {
       list: [] as Todo[],
       total: 0,
       page: 1,
-      pageSize: 20,
+      pageSize: 10,
     };
   },
   computed: {
@@ -100,13 +106,32 @@ export default Vue.extend({
     },
     onPageChange(page: number) {
       this.page = page;
+      this.getData();
     },
     onShowSizeChange(page: number, pageSize: number) {
       this.page = page;
       this.pageSize = pageSize;
+      this.getData();
     },
     onDelete(item: Todo) {
       this.list.splice(this.list.indexOf(item), 1);
+      if (!this.list.length) {
+        this.getData();
+      }
+    },
+    handleAddTodo() {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this.$refs.todoEditDialog as any).$init();
+    },
+    handleEditTodo(todo: Todo) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this.$refs.todoEditDialog as any).$init(todo);
+    },
+    onTodoAdd(todo: Todo) {
+      this.list.splice(0, 0, todo);
+    },
+    onTodoEdit(todo: Todo, oldTodo: Todo) {
+      this.list.splice(this.list.indexOf(oldTodo), 1, todo);
     },
   },
 });
