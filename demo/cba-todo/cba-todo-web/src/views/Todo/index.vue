@@ -1,5 +1,5 @@
 <template>
-  <a-layout class="layout todo-container">
+  <a-layout v-if="user" class="layout todo-container">
     <a-layout-header>
       <Header @add="handleAddTodo" />
     </a-layout-header>
