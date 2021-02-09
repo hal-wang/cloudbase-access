@@ -76,7 +76,6 @@ export default Vue.extend({
           pageSize: this.pageSize,
         },
       });
-      console.log("res", res);
 
       this.list = res.data.list;
       this.total = res.data.total;
@@ -108,7 +107,8 @@ export default Vue.extend({
       this.list.splice(0, 0, todo);
     },
     onTodoEdit(todo: Todo, oldTodo: Todo) {
-      this.list.splice(this.list.indexOf(oldTodo), 1, todo);
+      this.list.splice(this.list.indexOf(oldTodo), 1);
+      this.list.splice(0, 0, todo);
     },
   },
 });

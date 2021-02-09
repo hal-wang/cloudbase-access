@@ -1,5 +1,5 @@
 import { Action, HttpResult } from "@hal-wang/cloudbase-access";
-import Collections from "../../../../../lib/Collections";
+import Collections from "../../../../lib/Collections";
 import moment = require("moment");
 
 export default class extends Action {

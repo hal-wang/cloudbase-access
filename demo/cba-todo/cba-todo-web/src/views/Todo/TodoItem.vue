@@ -70,7 +70,7 @@ export default Vue.extend({
     async ondeleteConfirm() {
       this.deleteLoading = true;
       try {
-        await request.delete(`user/${this.user._id}/todo/${this.todo._id}`);
+        await request.delete(`todo/${this.user._id}/${this.todo._id}`);
         this.$emit("delete");
       } finally {
         this.deleteLoading = false;

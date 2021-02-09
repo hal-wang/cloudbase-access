@@ -103,8 +103,8 @@ export default Vue.extend({
       this.submitLoading = true;
       try {
         if (this.todo) {
-          const res = await request.put(
-            `user/${this.user._id}/todo/${this.todo._id}`,
+          const res = await request.patch(
+            `todo/${this.user._id}/${this.todo._id}`,
             formObj
           );
           this.$emit("edit", res.data, this.todo);

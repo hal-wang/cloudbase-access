@@ -1,4 +1,4 @@
-PUT https://cb-api.hal.wang/cba-todo/user/test@hal.wang/todo/28ee4e3e601a0b73029d46076e7f2401
+PATCH https://cb-api.hal.wang/cba-todo/todo/test@hal.wang/28ee4e3e60228fc104166c872ae04bde
 content-type:application/json
 password:123456
 
