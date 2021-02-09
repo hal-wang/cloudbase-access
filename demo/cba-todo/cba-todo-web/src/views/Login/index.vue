@@ -1,10 +1,12 @@
 <template>
-  <div class="login-container">
-    <div class="title">
-      <h1>CBA-TODO</h1>
-    </div>
-
+  <div
+    class="login-container"
+    :style="{ backgroundImage: `url(${background})` }"
+  >
     <a-form :form="form" class="login-form" @submit="handleSubmit">
+      <div class="title">
+        <h1>CBA-TODO</h1>
+      </div>
       <a-form-item>
         <a-input
           v-decorator="[
@@ -59,22 +61,34 @@
         <a-button type="default" html-type="submit"> Signup </a-button>
       </div>
     </a-form>
+
+    <div class="bing">from bing</div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import request from "@/utils/request";
 
 export default Vue.extend({
   data() {
     return {
       form: this.$form.createForm(this, { name: "coordinated" }),
+      background: "",
     };
   },
   computed: {
     user() {
       return this.$store.state.user.user;
     },
+  },
+  async created() {
+    const res = await request.get(`bing`);
+    const img = res.data;
+
+    const bingUrl = "https://www.bing.com";
+    this.background = "".startsWith(bingUrl) ? img.url : `${bingUrl}${img.url}`;
+    console.log("bg", this.background);
   },
   mounted() {
     if (this.user) {
@@ -111,17 +125,21 @@ export default Vue.extend({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  .title {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  background-size: cover;
+  background-position: center;
+  position: relative;
 
   .login-form {
-    flex: 1;
-    width: 360px;
+    width: 400px;
+    background-color: white;
+    padding: 20px 40px 30px 40px;
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
 
     .btns {
       display: flex;
@@ -130,6 +148,24 @@ export default Vue.extend({
         flex: 1;
         margin-right: 10px;
       }
+    }
+  }
+
+  .bing {
+    position: absolute;
+    right: 8px;
+    bottom: 10px;
+    background: #fff9;
+    padding: 4px 10px;
+    font-size: 14px;
+    line-height: 14px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .login-form {
+      width: 100%;
+      padding: 20px 20px 30px 20px;
+      min-width: 300px;
     }
   }
 }

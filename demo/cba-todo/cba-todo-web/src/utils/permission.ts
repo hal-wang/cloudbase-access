@@ -15,7 +15,6 @@ function getPageTitle(pageTitle: string) {
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
 router.beforeEach(async (to: any, from: any, next: any) => {
-  console.log("beforeEach", to, from, next);
   NProgress.start(); // start progress bar
   document.title = getPageTitle(to.meta.title); // set page title
 
