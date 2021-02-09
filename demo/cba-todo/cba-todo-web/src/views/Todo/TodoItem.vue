@@ -84,6 +84,7 @@ export default Vue.extend({
 .todo-item-container {
   background-color: white;
   width: 600px;
+  min-width: 340px;
   padding: 10px;
   font-weight: 300;
   position: relative;
@@ -105,6 +106,12 @@ export default Vue.extend({
     right: 1px;
     top: 1px;
     color: red;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .todo-item-container {
+    width: 100%;
   }
 }
 </style>

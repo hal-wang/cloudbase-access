@@ -21,7 +21,7 @@
         </a-space>
       </div>
     </a-layout-header>
-    <a-layout-content style="padding: 0 50px">
+    <a-layout-content>
       <div>
         <div class="todo-items">
           <TodoItem
@@ -163,6 +163,12 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .ant-layout-header {
+    padding: 0 10px;
+  }
 }
 </style>
 
