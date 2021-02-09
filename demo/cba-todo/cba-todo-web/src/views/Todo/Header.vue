@@ -13,14 +13,9 @@
 
       <a-popover :title="user._id" trigger="click">
         <div slot="content">
-          <a-popconfirm
-            title="Are you sure you want to log out?"
-            ok-text="Yes"
-            cancel-text="No"
-            @confirm="handleLogout"
-          >
-            <a-button type="danger" block @click.stop=""> Logout </a-button>
-          </a-popconfirm>
+          <a-button type="danger" block @click.stop="handleLogout">
+            Logout
+          </a-button>
         </div>
         <a-button
           type="primary"

@@ -31,6 +31,22 @@ const actions = {
       return;
     }
   },
+  async signup(param: StoreActionParam, userInfo: any) {
+    const { account, password } = userInfo;
+    try {
+      const res = await request.post(`user`, {
+        account,
+        password,
+      });
+
+      param.commit("SET_USER", res.data);
+      AuthCookie.setAccount(account);
+      AuthCookie.setPassword(password);
+      return res.data;
+    } catch (res) {
+      return;
+    }
+  },
   logout(param: StoreActionParam) {
     AuthCookie.removePassword();
     param.commit("SET_USER", null);

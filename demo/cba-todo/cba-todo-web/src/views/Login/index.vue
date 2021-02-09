@@ -3,7 +3,7 @@
     class="login-container"
     :style="{ backgroundImage: `url(${background})` }"
   >
-    <a-form :form="form" class="login-form" @submit="handleSubmit">
+    <a-form :form="form" class="login-form">
       <div class="title">
         <h1>CBA-TODO</h1>
       </div>
@@ -55,10 +55,23 @@
       </a-form-item>
 
       <div class="btns">
-        <a-button type="primary" html-type="submit" class="login-btn">
+        <a-button
+          type="primary"
+          html-type="submit"
+          class="login-btn"
+          :loading="loginLoading"
+          @click="handleLogin"
+        >
           Login
         </a-button>
-        <a-button type="default" html-type="submit"> Signup </a-button>
+        <a-button
+          type="default"
+          html-type="submit"
+          :loading="signupLoading"
+          @click="handleSignup"
+        >
+          Signup
+        </a-button>
       </div>
     </a-form>
 
@@ -75,6 +88,8 @@ export default Vue.extend({
     return {
       form: this.$form.createForm(this, { name: "coordinated" }),
       background: "",
+      loginLoading: false,
+      signupLoading: false,
     };
   },
   computed: {
@@ -98,18 +113,33 @@ export default Vue.extend({
     }
   },
   methods: {
-    handleSubmit() {
+    handleLogin() {
+      this.login("login");
+    },
+    handleSignup() {
+      this.login("signup");
+    },
+    login(loginType: "login" | "signup") {
       this.form.validateFields(async (err, values) => {
         if (err) return;
 
-        const user = await this.$store.dispatch("user/login", {
-          account: values.email,
-          password: values.password,
-        });
-        if (user) {
-          this.$router.replace({
-            path: "/",
+        const loading = `${loginType}Loading` as
+          | "loginLoading"
+          | "signupLoading";
+        this[loading] = true;
+        try {
+          const user = await this.$store.dispatch(`user/${loginType}`, {
+            account: values.email,
+            password: values.password,
           });
+
+          if (user) {
+            this.$router.replace({
+              path: "/",
+            });
+          }
+        } finally {
+          this[loading] = false;
         }
       });
     },
@@ -133,6 +163,7 @@ export default Vue.extend({
     width: 400px;
     background-color: white;
     padding: 20px 40px 30px 40px;
+    border-radius: 4px;
 
     .title {
       display: flex;
@@ -166,6 +197,7 @@ export default Vue.extend({
       width: 100%;
       padding: 20px 20px 30px 20px;
       min-width: 300px;
+      border-radius: 0;
     }
   }
 }
