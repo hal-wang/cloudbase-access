@@ -1,25 +1,7 @@
 <template>
   <a-layout class="layout todo-container">
     <a-layout-header>
-      <div class="header">
-        <div class="logo">CBA-TODO</div>
-        <a-space size="large">
-          <a-button
-            type="primary"
-            shape="circle"
-            icon="plus"
-            size="large"
-            @click="handleAddTodo"
-          />
-          <a-button
-            type="danger"
-            shape="circle"
-            icon="logout"
-            size="large"
-            @click="handleLogout"
-          />
-        </a-space>
-      </div>
+      <Header @add="handleAddTodo" />
     </a-layout-header>
     <a-layout-content>
       <div>
@@ -64,6 +46,7 @@ export default Vue.extend({
   components: {
     TodoItem: () => import("./TodoItem.vue"),
     TodoEditDialog: () => import("./TodoEditDialog.vue"),
+    Header: () => import("./Header.vue"),
   },
   data() {
     return {
@@ -82,12 +65,6 @@ export default Vue.extend({
     this.getData();
   },
   methods: {
-    handleLogout() {
-      this.$store.dispatch("user/logout");
-      this.$router.replace({
-        path: "/login",
-      });
-    },
     async getData() {
       if (!this.user) return;
 
@@ -138,20 +115,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  color: white;
-  font-weight: 300;
-  letter-spacing: 8px;
-  font-size: 22px;
-}
-
 .todo-items {
   display: flex;
   flex-direction: column;
@@ -163,23 +126,5 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@media only screen and (max-width: 600px) {
-  .ant-layout-header {
-    padding: 0 10px;
-  }
-}
-</style>
-
-<style lang="scss">
-.todo-container {
-  .header {
-    .ant-btn {
-      .anticon {
-        margin-top: -2px;
-      }
-    }
-  }
 }
 </style>
