@@ -1,4 +1,4 @@
-GET https://cb-api.hal.wang/cba-todo/other/version
+GET https://cba-todo-api.hal.wang/cba-todo/other/version
 content-type:application/json
 
 {

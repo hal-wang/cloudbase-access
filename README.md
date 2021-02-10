@@ -10,11 +10,11 @@ npm i @hal-wang/cloudbase-access
 
 你可以体验线上 demo: <https://cba-todo.hal.wang>
 
-也可以一键部署到自己的 `cloudbase`，但需要另外配置云函数的 HTTP 访问服务，详情请查看后面的 [#Demo](##Demo)
+也可以一键部署到自己的 `cloudbase`
 
 [![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fcba-todo&branch=main)
 
-此示例项目是一个简易的 todo 项目，包含后端和前端
+此示例项目是一个简易的 todo 项目，包含后端和前端，详情请查看后面的 [#Demo](##Demo)
 
 也可以查看本项目 `test` 文件夹中的一些单元测试
 
@@ -457,54 +457,17 @@ API 使用了 `cloudbase-access` 符合 `RESTFul` 规范的 API 格式，并且�
 
 测试账号为 `test@hal.wang` 并且无法更改，管理员账号为 `support@hal.wang`。
 
-Fork 本项目后，可以在 `cba-todo-api/src/Global.ts` 中修改以上账号。
+### 一键部署
 
-### 发布
+你可以一键部署到自己的 `cloudbase`
 
-本示例的后端是使用 `ts` 写的，前端使用 `vue` 写的，均需编译后发布至自己的 cloudbase
+[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fcba-todo&branch=main)
 
-不过本示例已编写了批处理，首次发布按照以下步骤操作，后续只需操作第 4 步：
+### Fork
 
-1. 修改 `/.env` 文件，将 `ENV_ID` 值改为你自己的 cloudbase 环境 id.
+你也可以 Fork 本项目后，修改示例项目中的 `.env` 文件中的 `ENV_ID`，值为你的 cloudbase 环境 id 如 `your_name-***`
 
-```
-ENV_ID=env-***
-```
-
-2. 修改 `/cba-todo-web/.env` 文件，将 `VUE_APP_BASE_API` 值改为你自己的 `HTTP 访问服务` 中的地址，如
-
-```
-VUE_APP_BASE_API = 'https://yourdomain.com/cba-todo'
-# 或
-VUE_APP_BASE_API = 'https://env-***-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo'
-```
-
-3. 修改 `/cba-todo-web/deploy.sh` 文件中的 github pages 发布地址，并配置 github pages 访问
-
-```
-git remote add origin git@github.com:hal-wang/cba-todo-web.git
-```
-
-或修改此文件发布至其他位置，例如发布至 cloudbase 静态网站，在 deploy.sh 中应有以下语句：
-
-```
-cd dist
-tcb login
-tcb hosting deploy ./ -e env-***
-cd ..
-```
-
-4. 运行以下命令发布：
-
-```shell
-cd demo/cba-todo
-npm run install
-npm run deploy
-```
-
-首次发布需要登录。
-
-5. 发布成功后，在 `CloudaBase` 云函数控制台，配置 HTTP 访问服务，并且开启安全访问。
+在示例项目目录下（`demo/cba-todo`），执行以下语句发布 `tcb framework deploy`
 
 ### build 生成的内容
 
@@ -531,13 +494,13 @@ web 编译后会生成 `cba-todo-web/dist` 目录，发布的 web 是此文件�
 如
 
 ```txt
-GET https://cb-api.hal.wang/cba-todo/user/test@hal.wang
+GET https://cba-todo-api.hal.wang/cba-todo/user/test@hal.wang
 content-type:application/json
 password:123456
 ```
 
 ```txt
-POST https://cb-api.hal.wang/cba-todo/user
+POST https://cba-todo-api.hal.wang/cba-todo/user
 content-type:application/json
 
 {

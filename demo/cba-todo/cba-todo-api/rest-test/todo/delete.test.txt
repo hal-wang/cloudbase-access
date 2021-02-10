@@ -1,4 +1,4 @@
-DELETE https://cb-api.hal.wang/cba-todo/todo/test@hal.wang/b00064a760228f6903e46ee240175979
+DELETE https://cba-todo-api.hal.wang/cba-todo/todo/test@hal.wang/b00064a760228f6903e46ee240175979
 content-type:application/json
 password:123456
 

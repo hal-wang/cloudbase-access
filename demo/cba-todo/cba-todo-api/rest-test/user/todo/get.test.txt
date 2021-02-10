@@ -1,4 +1,4 @@
-GET https://cb-api.hal.wang/cba-todo/user/test@hal.wang/todo
+GET https://cba-todo-api.hal.wang/cba-todo/user/test@hal.wang/todo
 content-type:application/json
 password:123456
 
