@@ -3,30 +3,15 @@
   "envId": "{{env.ENV_ID}}",
   "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
   "functionRoot": "./functions",
-  "functions": [
-    {
-      "name": "cba-todo",
-      "timeout": 5,
-      "envVariables": {},
-      "runtime": "Nodejs10.15",
-      "memorySize": 128,
-      "handler": "index.main"
-    },
-    {
-      "name": "test",
-      "timeout": 5,
-      "envVariables": {},
-      "runtime": "Nodejs10.15",
-      "memorySize": 128,
-      "handler": "index.main"
-    }
-  ],
   "framework": {
     "name": "cba-todo",
     "hooks": {
       "preDeploy": {
         "type": "execCommand",
-        "commands": ["npm install -g typescript", "npm run framework"]
+        "commands": [
+          "npm install -g typescript",
+          "cd cba-todo-api && npm install && npm run build"
+        ]
       }
     },
     "plugins": {
@@ -37,6 +22,33 @@
           "functions": [
             {
               "name": "cba-todo"
+            }
+          ],
+          "servicePaths": {
+            "cba-todo": "/cba-todo"
+          }
+        }
+      },
+      "web": {
+        "use": "@cloudbase/framework-plugin-website",
+        "inputs": {
+          "installCommand": "cd cba-todo-web && npm install --prefer-offline --no-audit --progress=false",
+          "buildCommand": "cd cba-todo-web && npm run build",
+          "outputPath": "cba-todo-web/dist",
+          "envVariables": {
+            "API_NAME": "cba-todo"
+          }
+        }
+      },
+      "db": {
+        "use": "@cloudbase/framework-plugin-database",
+        "inputs": {
+          "collections": [
+            {
+              "collectionName": "cba-user"
+            },
+            {
+              "collectionName": "cba-todo"
             }
           ]
         }

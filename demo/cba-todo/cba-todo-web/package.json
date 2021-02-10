@@ -4,8 +4,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
-    "deploy": "vue-cli-service build && bash deploy.sh"
+    "lint": "vue-cli-service lint"
   },
   "author": "hal-wang",
   "license": "MIT",
@@ -13,6 +12,7 @@
     "ant-design-vue": "^1.7.2",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "js-cookie": "^2.2.1",
     "nprogress": "^0.2.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
@@ -39,7 +39,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^6.2.2",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.14.1",
     "prettier": "^1.19.1",
     "sass-loader": "^8.0.2",
     "typescript": "^3.9.7",
