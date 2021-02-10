@@ -1,8 +1,5 @@
 {
-  "name": "cba-todo",
-  "version": "0.2.1",
-  "description": "a demo of cloudbase-access",
-  "main": "index.js",
+  "name": "cba-todo-api",
   "scripts": {
     "build:test": "bash build.sh test",
     "build": "bash build.sh cba-todo",

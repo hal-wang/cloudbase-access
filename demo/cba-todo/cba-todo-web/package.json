@@ -1,14 +1,14 @@
 {
   "name": "cba-todo-web",
-  "version": "0.1.0",
-  "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "deploy":"vue-cli-service build && bash deploy.sh"
+    "deploy": "vue-cli-service build && bash deploy.sh"
   },
+  "author": "hal-wang",
+  "license": "MIT",
   "dependencies": {
     "ant-design-vue": "^1.7.2",
     "axios": "^0.21.1",
