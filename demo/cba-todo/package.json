@@ -1,9 +1,7 @@
 {
   "name": "cba-todo",
   "scripts": {
-    "install": "cd cba-todo-api && npm install && cd ../cba-todo-web && npm install && cd ..",
-    "deploy": "cd cba-todo-api && npm run deploy && cd ../cba-todo-web && npm run deploy && cd ..",
-    "framework": "cd cba-todo-api && npm install && npm run build && cd .."
+    "deploy": "tcb login && tcb framework deploy"
   },
   "keywords": [],
   "author": "hal-wang",

@@ -7,7 +7,8 @@ function getBaseUrl() {
   if (process.env.NODE_ENV == "development") {
     return process.env.VUE_APP_PROXY_URL;
   } else {
-    return process.env.VUE_APP_BASE_API;
+    const tcbEnv = (window as any)._tcbEnv;
+    return `https://${tcbEnv.TCB_SERVICE_DOMAIN}/${tcbEnv.API_NAME}`;
   }
 }
 
