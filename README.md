@@ -12,7 +12,7 @@ npm i @hal-wang/cloudbase-access
 
 也可以一键部署到自己的 `cloudbase`
 
-[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fcba-todo&branch=main)
+[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fcba-todo&branch=dev)
 
 此示例项目是一个简易的 todo 项目，包含后端和前端，详情请查看后面的 [#Demo](##Demo)
 
