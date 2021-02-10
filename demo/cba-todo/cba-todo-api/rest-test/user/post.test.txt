@@ -1,4 +1,4 @@
-POST https://cb-api.hal.wang/cba-todo/user
+POST https://cba-todo-api.hal.wang/cba-todo/user
 content-type:application/json
 
 {

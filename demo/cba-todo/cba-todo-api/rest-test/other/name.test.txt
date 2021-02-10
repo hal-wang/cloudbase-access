@@ -1,4 +1,4 @@
-GET https://cb-api.hal.wang/cba-todo/other/name
+GET https://cba-todo-api.hal.wang/cba-todo/other/name
 content-type:application/json
 
 {

@@ -12,7 +12,7 @@ export class AppInstanceMiddleware extends Middleware {
 
   async do(): Promise<MiddlewareResult> {
     AppInstance.init({
-      env: this.requestParams.event.namespace as string,
+      env: this.requestParams.context.namespace as string,
     });
 
     return MiddlewareResult.getSuccessResult();
