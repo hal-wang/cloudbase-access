@@ -73,6 +73,19 @@
           Signup
         </a-button>
       </div>
+      <div class="tips">
+        <span>
+          A demo of
+          <a
+            href="https://github.com/hal-wang/cloudbase-access"
+            target="_blank"
+          >
+            cloudbase-access
+          </a>
+          ,
+        </span>
+        <span>data persistence is not guaranteed!</span>
+      </div>
     </a-form>
 
     <div class="bing">from bing</div>
@@ -162,7 +175,7 @@ export default Vue.extend({
   .login-form {
     width: 400px;
     background-color: white;
-    padding: 20px 40px 30px 40px;
+    padding: 20px 40px;
     border-radius: 4px;
 
     .title {
@@ -180,6 +193,14 @@ export default Vue.extend({
         margin-right: 10px;
       }
     }
+
+    .tips {
+      display: flex;
+      flex-direction: column;
+      margin-top: 6px;
+      font-size: 14px;
+      font-weight: 300;
+    }
   }
 
   .bing {
@@ -195,7 +216,7 @@ export default Vue.extend({
   @media only screen and (max-width: 600px) {
     .login-form {
       width: 100%;
-      padding: 20px 20px 30px 20px;
+      padding: 20px;
       min-width: 300px;
       border-radius: 0;
     }
