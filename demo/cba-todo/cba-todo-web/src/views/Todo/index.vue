@@ -91,6 +91,7 @@ export default Vue.extend({
     },
     onDelete(item: Todo) {
       this.list.splice(this.list.indexOf(item), 1);
+      this.total--;
       if (!this.list.length) {
         this.getData();
       }
@@ -105,6 +106,7 @@ export default Vue.extend({
     },
     onTodoAdd(todo: Todo) {
       this.list.splice(0, 0, todo);
+      this.total++;
     },
     onTodoEdit(todo: Todo, oldTodo: Todo) {
       this.list.splice(this.list.indexOf(oldTodo), 1);
