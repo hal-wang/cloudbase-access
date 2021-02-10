@@ -8,13 +8,15 @@ npm i @hal-wang/cloudbase-access
 
 ## 示例
 
-示例请查看后面的 [#Demo](##Demo)
+本项目包含一个简易的 todo 项目，包含后端和前端，详情请查看后面的 [#Demo](##Demo)
 
 或者查看本项目 `test` 文件夹中的一些单元测试。
 
 ## 建议
 
-强烈建议使用 `typescript` 并生成 `javascript`代码后上传，可参考 [#Demo](##Demo)。理论上 `javascript` 完全没问题，但作者并未进行测试。
+强烈建议使用 `typescript` 并生成 `javascript` 代码后上传，可参考 [#Demo](##Demo)，做法是 ts 生成 js 文件，并删除 `.d.ts` 文件。
+
+理论上 `javascript` 完全没问题，但作者并未进行测试。
 
 ## Router
 
@@ -441,65 +443,99 @@ export const main = async (
 
 ## Demo
 
-Demo 内容在本项目 `demo` 文件夹，用于演示 `cba` 用法。
+Demo 内容在本项目 `demo/cba-todo` 文件夹，用于演示 `cba` 用法。
 
-### 一个简单的 todo API
-
-使用了 `RESTFul` 规范的 API 格式，并且设置 `router.isMethodNecessary = true;`。
+API 使用了 `cloudbase-access` 符合 `RESTFul` 规范的 API 格式，并且设置 `router.isMethodNecessary = true;`。
 
 使用了数据库两个文档：`cba-user`, `cba-todo`。
 
-测试账号为 `test@hal.wang` 并且无法更改，管理员账号为 `support@hal.wang`。您可以在`Global.ts`中修改以上账号。
+测试账号为 `test@hal.wang` 并且无法更改，管理员账号为 `support@hal.wang`。
+
+Fork 本项目后，可以在 `cba-todo-api/src/Global.ts` 中修改以上账号。
 
 ### 发布
 
-本示例是使用 `ts` 写的，需要编译后发布至自己的 cloudbase。
+本示例的后端是使用 `ts` 写的，前端使用 `vue` 写的，均需编译后发布至自己的 cloudbase
 
-修改 `/.env` 文件，将 `ENV_ID` 值改为你自己的 cloudbase 环境 id.
+不过本示例已编写了批处理，首次发布按照以下步骤操作，后续只需操作第 4 步：
+
+1. 修改 `/.env` 文件，将 `ENV_ID` 值改为你自己的 cloudbase 环境 id.
 
 ```
 ENV_ID=env-***
 ```
 
-运行以下命令发布：
+2. 修改 `/cba-todo-web/.env` 文件，将 `VUE_APP_BASE_API` 值改为你自己的 `HTTP 访问服务` 中的地址，如
 
-```shell
-cd demo/cba-todo/cba-todo-api
-npm install
-npm run build
+```
+VUE_APP_BASE_API = 'https://yourdomain.com/cba-todo'
+# 或
+VUE_APP_BASE_API = 'https://env-***-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo'
 ```
 
-首次发布需要登录。发布成功后，在 `CloudaBase` 云函数控制台，配置 HTTP 访问服务。
+3. 修改 `/cba-todo-web/deploy.sh` 文件中的 github pages 发布地址，并配置 github pages 访问
 
-#### 生成的内容
+```
+git remote add origin git@github.com:hal-wang/cba-todo-web.git
+```
 
-编译后会在云函数目录 `functions` 生成文件夹 `cba-todo`，
+或修改此文件发布至其他位置，例如发布至 cloudbase 静态网站，在 deploy.sh 中应有以下语句：
+
+```
+cd dist
+tcb login
+tcb hosting deploy ./ -e env-***
+cd ..
+```
+
+4. 运行以下命令发布：
+
+```shell
+cd demo/cba-todo
+npm run install
+npm run deploy
+```
+
+首次发布需要登录。
+
+5. 发布成功后，在 `CloudaBase` 云函数控制台，配置 HTTP 访问服务，并且开启安全访问。
+
+### build 生成的内容
+
+API 编译后会在云函数目录 `functions` 生成文件夹 `cba-todo`，
 
 在 `cba-todo` 文件夹中包含以下内容：
 
 - controllers：符合 `cba` 规则的 `controllers` 目录
 - lib：除 `controllers` 外的其他帮助类
 - models: ts model
+- middlewares: 中间件
 - index.js：入口函数
+
+web 编译后会生成 `cba-todo-web/dist` 目录，发布的 web 是此文件夹中的内容
 
 ### 调用 API 测试
 
-测试文件位于 `rest-test` 文件夹中
+测试文件都在 `cba-todo-api/rest-test`文件夹中，并且以 `.test.txt` 结尾
 
-使用 `vscode` 插件 `REST Client` 测试，测试文件都是以 `.test.txt` 结尾
+使用 `vscode` 插件 `REST Client` 测试，安装插件后，打开 `.test.txt` 文件，快捷键 `Ctrl + Alt + R` 可测试调用
 
-`vscode` 安装插件后，打开 `.test.txt` 文件，快捷键 `Ctrl + Alt + R` 可测试
-
-目前测试的 API，环境是本人免费 `cloudbase` 环境，不保证长期有效。使用前请将 `cloudbase` 环境改为你自己的。
+目前测试的 API，环境是本人免费 `cloudbase` 环境，不保证长期有效。使用前请将 `cloudbase` 环境改为你自己的
 
 如
 
 ```txt
-POST https://env-***.service.tcloudbase.com/cba-todo/user/login
+GET https://cb-api.hal.wang/cba-todo/user/test@hal.wang
+content-type:application/json
+password:123456
+```
+
+```txt
+POST https://cb-api.hal.wang/cba-todo/user
 content-type:application/json
 
 {
-  "account":"abc",
+  "account": "test@hal.wang",
   "password":"123456"
 }
 ```
