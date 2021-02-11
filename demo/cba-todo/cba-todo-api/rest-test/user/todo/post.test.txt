@@ -1,4 +1,4 @@
-POST https://cba-todo-api.hal.wang/cba-todo/user/test@hal.wang/todo
+POST https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/user/test@hal.wang/todo
 content-type:application/json
 password:123456
 

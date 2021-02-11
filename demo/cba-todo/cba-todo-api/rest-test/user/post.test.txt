@@ -1,4 +1,4 @@
-POST https://cba-todo-api.hal.wang/cba-todo/user
+POST https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/user
 content-type:application/json
 
 {

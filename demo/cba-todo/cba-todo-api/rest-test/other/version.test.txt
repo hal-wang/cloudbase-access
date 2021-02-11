@@ -1,4 +1,4 @@
-GET https://cba-todo-api.hal.wang/cba-todo/other/version
+GET https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/other/version
 content-type:application/json
 
 {
