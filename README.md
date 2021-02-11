@@ -494,13 +494,13 @@ web 编译后会生成 `cba-todo-web/dist` 目录，发布的 web 是此文件�
 如
 
 ```txt
-GET https://cba-todo-api.hal.wang/cba-todo/user/test@hal.wang
+GET https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/user/test@hal.wang
 content-type:application/json
 password:123456
 ```
 
 ```txt
-POST https://cba-todo-api.hal.wang/cba-todo/user
+POST https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/user
 content-type:application/json
 
 {

@@ -1,4 +1,4 @@
-DELETE https://cba-todo-api.hal.wang/cba-todo/todo/test@hal.wang/b00064a760228f6903e46ee240175979
+DELETE https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/todo/test@hal.wang/b00064a760228f6903e46ee240175979
 content-type:application/json
 password:123456
 

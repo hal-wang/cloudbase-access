@@ -1,4 +1,4 @@
-GET https://cba-todo-api.hal.wang/cba-todo/user
+GET https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/user
 content-type:application/json
 account:test@hal.wang
 password:123456
