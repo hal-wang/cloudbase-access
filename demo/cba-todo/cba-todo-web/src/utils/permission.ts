@@ -32,12 +32,11 @@ router.beforeEach(async (to: any, from: any, next: any) => {
     return;
   }
 
-  try {
-    await store.dispatch("user/login", { account, password });
-
+  const user = await store.dispatch("user/login", { account, password });
+  if (user) {
     NProgress.done();
     next({ ...to, replace: true } as any);
-  } catch (err) {
+  } else {
     await store.dispatch("user/logout");
     NProgress.done();
     next(`/login`);
