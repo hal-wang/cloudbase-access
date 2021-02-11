@@ -1,5 +1,6 @@
 {
   "name": "cba-todo-api",
+  "version": "1.0.1",
   "scripts": {
     "build:test": "bash build.sh test",
     "build": "bash build.sh cba-todo",
