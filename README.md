@@ -35,7 +35,7 @@ import { Router } from "@hal-wang/cloudbase-access";
 export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
-) => {
+): Promise<unknown> => {
   const router = new Router(event, context);
   return (await router.do()).result;
 };
@@ -333,13 +333,13 @@ export default class extends Action {
 
 在 `cba` 中，中间件有以下几种类别：
 
-1.  BeforeStart： `Router` 初始化时就调用
+1.  BeforeStart： `Action` 初始化前调用
 1.  BeforeAction： `Action` 执行前调用
 1.  BeforeEnd： `Action` 执行后调用
 1.  BeforeSuccessEnd： `Action` 执行后，而且返回结果为 2xx 时调用
 1.  BeforeErrEnd： `Action` 执行后，而且返回结果不为 2xx 时调用
 
-类型为 `BeforeStart` 的中间件执行时，`Action` 未被加载，因此无法获取 `query`, `roles` 等。
+类型为 `BeforeStart` 的中间件执行时，`Action` 未被加载，也未进行路由匹配，因此无法获取 `query`, `roles` 等。
 
 类型为 `BeforeStart` 和 `BeforeAction` 的中间件执行时，`Action` 未执行，因此无法获取 `Action` 执行结果。
 
@@ -373,10 +373,9 @@ import { Router } from "@hal-wang/cloudbase-access";
 export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
-) => {
+): Promise<unknown> => {
   const router = new Router(event, context);
   router.configure(new YourMiddleware());
-
   return (await router.do()).result;
 };
 ```
@@ -417,7 +416,7 @@ class Auth extends Authority {
 export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
-) => {
+): Promise<unknown> => {
   const router = new Router(event, context, new Auth());
   return (await router.do()).result;
 };
