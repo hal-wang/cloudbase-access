@@ -18,7 +18,7 @@ export const main = async (
     if (err.httpResult) {
       return err.httpResult.result;
     } else {
-      return HttpResult.errRequest(err.message).result;
+      return HttpResult.errRequestMsg({ message: err.message }).result;
     }
   }
 };
