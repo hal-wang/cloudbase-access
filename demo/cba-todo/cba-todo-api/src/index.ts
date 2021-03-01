@@ -6,7 +6,7 @@ export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
 ): Promise<unknown> => {
-  console.log("event", event);
+  console.log("event", event, context);
   setHeaders();
 
   const router = new Router(event, context, new Auth());
@@ -15,8 +15,11 @@ export const main = async (
   try {
     return (await router.do()).result;
   } catch (err) {
-    console.log("err", err);
-    return HttpResult.errRequest(err.message).result;
+    if (err.httpResult) {
+      return err.httpResult.result;
+    } else {
+      return HttpResult.errRequest(err.message).result;
+    }
   }
 };
 
