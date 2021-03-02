@@ -21,7 +21,16 @@ export default class extends Action {
         ],
       },
       output: {
-        code: 200,
+        codes: [
+          {
+            code: 200,
+            desc: "success",
+          },
+          {
+            code: 400,
+            desc: "bad request",
+          },
+        ],
         body: [
           {
             name: "test",
