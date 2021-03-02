@@ -1,10 +1,16 @@
 import { Action, HttpResult } from "../../../src";
 
+/**
+ * a docs test named get
+ *
+ * @action get docs
+ */
 export default class extends Action {
   constructor() {
     super([]);
 
     this.docs = {
+      name: "get docs",
       desc: "a docs test named get",
       input: {
         headers: [
