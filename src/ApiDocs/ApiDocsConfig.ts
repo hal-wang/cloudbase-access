@@ -1,6 +1,7 @@
-import ApiParam from "./ApiParam";
+import ApiDocsParam from "./ApiDocsParam";
 
 export default interface ApiDocsConfig {
-  baseHeaders?: ApiParam[];
-  baseParams?: ApiParam[];
+  baseInputHeaders?: ApiDocsParam[];
+  baseOutputHeaders?: ApiDocsParam[];
+  baseParams?: ApiDocsParam[];
 }
