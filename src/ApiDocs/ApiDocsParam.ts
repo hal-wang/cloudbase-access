@@ -1,5 +1,5 @@
 export default interface ApiParam {
-  name?: string;
+  name: string;
   type?: string;
   desc?: string;
   children?: ApiParam[];

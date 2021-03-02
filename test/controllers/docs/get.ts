@@ -48,7 +48,15 @@ export default class extends Action {
         ],
       },
       output: {
-        code: 200,
+        codes: [
+          {
+            code: 200,
+            desc: "success",
+          },
+          {
+            code: 404,
+          },
+        ],
         body: [
           {
             name: "method",

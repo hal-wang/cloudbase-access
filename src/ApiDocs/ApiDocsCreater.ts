@@ -8,6 +8,7 @@ import ApiDocsConfig from "./ApiDocsConfig";
 import ApiDocsInputParams from "./ApiDocsInputParams";
 import ApiDocsOutputParams from "./ApiDocsOutputParams";
 import ApiDocsParamsBase from "./ApiDocsParamsBase";
+import ApiDocsStateCode from "./ApiDocsStateCode";
 
 export default class ApiDocsCreater {
   constructor(
@@ -116,13 +117,11 @@ export default class ApiDocsCreater {
     result += "\n\n";
 
     if (docs.input) {
-      result += "### Input\n\n";
       result += this.getInputParams(docs.input);
       result += "\n\n";
     }
 
     if (docs.output) {
-      result += "### Output\n\n";
       result += this.getOutputParams(docs.output);
     }
 
@@ -158,7 +157,7 @@ export default class ApiDocsCreater {
       return result;
     }
 
-    result = this.getBaseParams(input, this.config.baseInputHeaders);
+    result += this.getBaseParams(input, this.config.baseInputHeaders);
     result += "\n\n";
 
     const params = <ApiDocsParam[]>[];
@@ -186,8 +185,24 @@ export default class ApiDocsCreater {
       return result;
     }
 
-    result += `Status Code: ${output.code}\n\n`;
-    result = this.getBaseParams(output, this.config.baseOutputHeaders);
+    const codes = <ApiDocsStateCode[]>[];
+    codes.push(...(this.config.baseCodes || <ApiDocsStateCode[]>[]));
+    codes.push(...(output.codes || <ApiDocsStateCode[]>[]));
+    console.log("codes", codes);
+    if (codes && codes.length) {
+      result += `#### Status Code\n\n`;
+      for (let i = 0; i < codes.length; i++) {
+        const code = codes[i];
+        result += `- ${code.code}`;
+        if (code.desc) {
+          result += `: ${code.desc}`;
+        }
+        result += "\n";
+      }
+      result += "\n";
+    }
+
+    result += this.getBaseParams(output, this.config.baseOutputHeaders);
     return result;
   }
 

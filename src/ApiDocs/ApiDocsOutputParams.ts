@@ -1,5 +1,6 @@
 import ApiDocsParamsBase from "./ApiDocsParamsBase";
+import ApiDocsStateCode from "./ApiDocsStateCode";
 
 export default interface ApiDocsOutputParams extends ApiDocsParamsBase {
-  code: number;
+  codes?: ApiDocsStateCode[];
 }
