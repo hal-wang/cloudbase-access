@@ -31,16 +31,16 @@ export default class PathParser {
       return RequestMethod.get;
     }
     if (fileNameWithoutExtension.toUpperCase() == RequestMethod.post) {
-      return RequestMethod.get;
+      return RequestMethod.post;
     }
     if (fileNameWithoutExtension.toUpperCase() == RequestMethod.delete) {
-      return RequestMethod.get;
+      return RequestMethod.delete;
     }
     if (fileNameWithoutExtension.toUpperCase() == RequestMethod.patch) {
-      return RequestMethod.get;
+      return RequestMethod.patch;
     }
     if (fileNameWithoutExtension.toUpperCase() == RequestMethod.put) {
-      return RequestMethod.get;
+      return RequestMethod.put;
     }
 
     return undefined;
@@ -58,7 +58,7 @@ export default class PathParser {
     if (!this.httpMethod) return path;
     else {
       const index = path.lastIndexOf("/");
-      return path.substr(0, index - 1);
+      return path.substr(0, index);
     }
   }
 }

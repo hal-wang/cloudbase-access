@@ -4,4 +4,6 @@ export default interface ApiDocsConfig {
   baseInputHeaders?: ApiDocsParam[];
   baseOutputHeaders?: ApiDocsParam[];
   baseParams?: ApiDocsParam[];
+  title?: string;
+  subTitle?: string;
 }
