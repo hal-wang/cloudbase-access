@@ -3,11 +3,39 @@ import { Action, HttpResult } from "../../../src";
 export default class extends Action {
   constructor() {
     super([]);
+
+    this.docs = {
+      desc: "a docs test named test",
+      input: {
+        headers: [
+          {
+            name: "test-header1",
+            desc: "a test header of test docs NO.1",
+            type: "string",
+          },
+          {
+            name: "test-header2",
+            desc: "a test header of test docs NO.2",
+            type: "number",
+          },
+        ],
+      },
+      output: {
+        code: 200,
+        body: [
+          {
+            name: "test",
+            desc: "body test prop",
+            type: "string",
+          },
+        ],
+      },
+    };
   }
 
   async do(): Promise<HttpResult> {
     return this.ok({
-      method: "GET",
+      test: "test",
     });
   }
 }
