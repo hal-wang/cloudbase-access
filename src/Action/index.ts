@@ -8,9 +8,8 @@ export default abstract class Action {
   /** will be set before doing */
   requestParams = RequestParams.empty;
 
-  /**docs of api action */
-  inputDocs?: ApiDocs;
-  outputDocs?: ApiDocs;
+  /**docs of action */
+  docs?: ApiDocs;
 
   realPath?: string;
 
