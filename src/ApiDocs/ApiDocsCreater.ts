@@ -110,7 +110,7 @@ export default class ApiDocsCreater {
   }
 
   private docsToMd(relativePath: string, docs: ApiDocs): string {
-    let result = this.getTitle(relativePath);
+    let result = this.getTitle(relativePath, docs);
     result += "\n\n";
     result += this.getDesc(docs);
     result += "\n\n";
@@ -129,14 +129,18 @@ export default class ApiDocsCreater {
     return result.trimEnd();
   }
 
-  private getTitle(relativePath: string): string {
+  private getTitle(relativePath: string, docs: ApiDocs): string {
     const pathParser = new PathParser(relativePath);
     const httpMethod = pathParser.httpMethod;
 
     let result = `## `;
     result += `${httpMethod ? httpMethod : "ANY"}`;
     result += ` `;
-    result += `${pathParser.pathWithoutHttpMethodAndExtension}`;
+    if (docs.name) {
+      result += `${docs.name}`;
+      result += `\n>`;
+    }
+    result += `/${pathParser.pathWithoutHttpMethodAndExtension}`;
     return result;
   }
 
@@ -225,13 +229,15 @@ export default class ApiDocsCreater {
   }
 
   private getParam(param: ApiDocsParam, depth = 0, index?: number): string {
+    if (!param.name) return "";
+
     let result = this.padLeft(depth);
 
     if (index) {
       result += index;
       result += ". ";
     }
-    result += param.name || "no-name";
+    result += param.name;
 
     if (param.type) {
       result += "\n";
