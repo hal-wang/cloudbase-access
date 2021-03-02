@@ -3,7 +3,7 @@ import HttpResult from "../HttpResult";
 import Middleware from "../Middleware";
 import MiddlewareType from "../Middleware/MiddlewareType";
 import RequestParams from "./RequestParams";
-import MapParser from "./MapParser";
+import MapParser from "../Map/MapParser";
 import MiddlewareResult from "../Middleware/MiddlewareResult";
 import { Action } from "..";
 

@@ -1,4 +1,4 @@
-import RequestParams from "./RequestParams";
+import RequestParams from "../Router/RequestParams";
 import { existsSync } from "fs";
 import path = require("path");
 import MapCreater from "./MapCreater";
@@ -6,7 +6,7 @@ import Action from "../Action";
 import linq = require("linq");
 import HttpResultError from "../HttpResult/HttpResultError";
 import { HttpResult } from "..";
-import RequestMethod from "./RequestMethod";
+import RequestMethod from "../Router/RequestMethod";
 
 export default class MapParser {
   public readonly realPath: string;
