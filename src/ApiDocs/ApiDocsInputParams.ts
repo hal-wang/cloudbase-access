@@ -1,6 +1,7 @@
-import ApiParam from "./ApiParam";
-import ApiDocsOutputParams from "./ApiDocsOutputParams";
+import ApiDocsParam from "./ApiDocsParam";
+import ApiDocsParamsBase from "./ApiDocsParamsBase";
 
-export default interface ApiDocsInputParams extends ApiDocsOutputParams {
-  query?: ApiParam[];
+export default interface ApiDocsInputParams extends ApiDocsParamsBase {
+  query?: ApiDocsParam[];
+  params?: ApiDocsParam[];
 }

@@ -1,7 +1,5 @@
-import ApiParam from "./ApiParam";
+import ApiDocsParamsBase from "./ApiDocsParamsBase";
 
-export default interface ApiDocsOutputParams {
-  headers?: ApiParam[];
-  params?: ApiParam[];
-  body?: ApiParam;
+export default interface ApiDocsOutputParams extends ApiDocsParamsBase {
+  code: number;
 }

@@ -16,7 +16,7 @@ import Authority from "./Authority";
 import AppInstance from "./AppInstance";
 import DbHelper from "./DbHelper";
 import ApiDocs from "./ApiDocs";
-import ApiParam from "./ApiDocs/ApiParam";
+import ApiDocsParam from "./ApiDocs/ApiDocsParam";
 
 export {
   HttpResult,
@@ -34,5 +34,5 @@ export {
   AppInstance,
   DbHelper,
   ApiDocs,
-  ApiParam,
+  ApiDocsParam,
 };

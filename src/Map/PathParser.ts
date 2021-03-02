@@ -4,7 +4,7 @@ export default class PathParser {
   private readonly relativePath: string;
   private readonly relativePathWithoutExtension: string;
   constructor(relativePath: string) {
-    this.relativePath = relativePath.replaceAll("\\", "/");
+    this.relativePath = relativePath.replace(/\\/g, "/");
 
     const dotIndex = this.relativePath.lastIndexOf(".");
     this.relativePathWithoutExtension =
@@ -21,23 +21,29 @@ export default class PathParser {
 
   private getFileName(path: string) {
     const index = path.lastIndexOf("/");
-    return path.substring(index + 1, path.length - 1);
+    return path.substr(index + 1, path.length - index - 1);
   }
 
-  public get isHttpMethodFile(): boolean {
+  public get httpMethod(): RequestMethod | undefined {
     const fileNameWithoutExtension = this.fileNameWithoutExtension;
 
-    if (
-      fileNameWithoutExtension.toUpperCase() == RequestMethod.get ||
-      fileNameWithoutExtension.toUpperCase() == RequestMethod.post ||
-      fileNameWithoutExtension.toUpperCase() == RequestMethod.delete ||
-      fileNameWithoutExtension.toUpperCase() == RequestMethod.patch ||
-      fileNameWithoutExtension.toUpperCase() == RequestMethod.put
-    ) {
-      return true;
+    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.get) {
+      return RequestMethod.get;
+    }
+    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.post) {
+      return RequestMethod.get;
+    }
+    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.delete) {
+      return RequestMethod.get;
+    }
+    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.patch) {
+      return RequestMethod.get;
+    }
+    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.put) {
+      return RequestMethod.get;
     }
 
-    return false;
+    return undefined;
   }
 
   public get pathWithoutHttpMethod(): string {
@@ -49,7 +55,7 @@ export default class PathParser {
   }
 
   private getPathWithoutHttpMethod(path: string) {
-    if (!this.isHttpMethodFile) return path;
+    if (!this.httpMethod) return path;
     else {
       const index = path.lastIndexOf("/");
       return path.substr(0, index - 1);
