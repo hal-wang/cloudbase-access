@@ -42,7 +42,6 @@ export default class extends Action {
           },
         ],
         body: {
-          name: "",
           type: "string",
           desc: "http method",
         },
