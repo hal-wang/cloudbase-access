@@ -6,5 +6,4 @@ yarn.lock
 
 demo/*/functions
 cba-map.json
-cba-doc-test.md
 test.*

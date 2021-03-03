@@ -6,6 +6,7 @@
     "build": "bash build.sh cba-todo",
     "deploy:test": "bash deploy.sh test",
     "deploy": "bash deploy.sh cba-todo",
+    "doc": "cba-doc src/controllers doc.config.json doc.md",
     "eslint": "eslint . --ext .ts",
     "test": "jest"
   },
@@ -13,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.5.0",
-    "@hal-wang/cloudbase-access": "^1.0.2",
+    "@hal-wang/cloudbase-access": "^1.1.0-beta.1",
     "linq": "^3.2.3",
     "moment": "^2.29.1",
     "request": "^2.88.2"
