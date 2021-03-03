@@ -1,5 +1,5 @@
 export default interface ApiDocsParam {
-  name: string;
+  name?: string;
   type?: string;
   desc?: string;
   children?: ApiDocsParam[];

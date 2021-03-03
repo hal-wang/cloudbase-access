@@ -64,23 +64,11 @@ export default class ApiDocsNoteParser {
                   }
                   break;
                 case "body":
-                  if (cStruct.subtitle) {
-                    input.body = this.structToParams({
-                      children: cStruct.children,
-                      title: "bbb",
-                      subtitle: cStruct.subtitle,
-                      content: cStruct.content,
-                    });
-                    console.log(
-                      "body",
-                      {
-                        children: cStruct.children,
-                        title: "bbb",
-                        subtitle: cStruct.subtitle,
-                        content: cStruct.content,
-                      },
-                      input.body
-                    );
+                  if (
+                    cStruct.subtitle &&
+                    /^\{[\S]{1,}\}/.test(cStruct.subtitle)
+                  ) {
+                    input.body = this.structToParams(cStruct);
                   } else if (cStruct.children) {
                     input.body = this.structsToParams(cStruct.children);
                   }

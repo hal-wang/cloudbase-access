@@ -41,7 +41,7 @@ export default class ApiDocsMdCreater {
     result += ` `;
     if (this.docs.name) {
       result += `${this.docs.name}`;
-      result += `\n>`;
+      result += `\n\n> `;
     }
     result += `/${pathParser.pathWithoutHttpMethodAndExtension}`;
     return result;
@@ -161,38 +161,39 @@ export default class ApiDocsMdCreater {
   }
 
   private getParam(param: ApiDocsParam, depth = 0, index?: number): string {
-    if (!param.name) return "";
+    if (index && !param.name) return "";
 
     let result = this.padLeft(depth);
 
+    const nextDepth = index ? depth + 1 : depth;
     if (index) {
       result += index;
       result += ". ";
       result += param.name;
+      result += "\n";
     }
 
     if (param.type) {
-      result += "\n";
-      result += this.padLeft(depth + 1);
+      result += this.padLeft(nextDepth);
       result += "- Type: ";
       result += param.type;
+      result += "\n";
     }
 
     if (param.desc) {
-      result += "\n";
-      result += this.padLeft(depth + 1);
+      result += this.padLeft(nextDepth);
       result += "- Desc: ";
       result += param.desc;
+      result += "\n";
     }
 
     if (param.children) {
-      result += "\n";
-      result += this.padLeft(depth + 1);
+      result += this.padLeft(nextDepth);
       result += "- Children:";
       result += "\n";
 
       for (let i = 1; i <= param.children.length; i++) {
-        result += this.getParam(param.children[i - 1], depth + 1, i);
+        result += this.getParam(param.children[i - 1], nextDepth, i);
         result += "\n";
       }
     }

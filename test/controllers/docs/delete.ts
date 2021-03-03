@@ -14,7 +14,8 @@ import { Action, HttpResult } from "../../../src";
  * @@@@test-header32 {number} a test header of deleting docs NO.3.2
  * @@@test-header4 a test header of deleting docs NO.4
  * @@@test-header5 {number} a test header of deleting docs NO.5
- * @@body {string} http method
+ * @@body {object} ok result
+ * @@@method {string} http method
  * @output
  * @@codes
  * @@@200 success
