@@ -3,6 +3,7 @@
 
 const DocsCreater = require("../dist/ApiDocs/ApiDocsCreater").default;
 
-const cfPath = process.argv[2];
-const targetFile = process.argv[3];
-new DocsCreater(cfPath).write(targetFile);
+const controllers = process.argv[2];
+const config = process.argv[3];
+const target = process.argv[4];
+new DocsCreater(controllers, config).write(target);

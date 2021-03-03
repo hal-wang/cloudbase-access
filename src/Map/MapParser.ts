@@ -118,7 +118,7 @@ export default class MapParser {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       return require(mapPath);
     } else {
-      return new MapCreater(this.cfPath).map;
+      return new MapCreater(this.cFolder).map;
     }
   }
 

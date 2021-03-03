@@ -3,9 +3,9 @@ import linq = require("linq");
 import path = require("path");
 
 export default class MapCreater {
-  constructor(private readonly cfPath: string) {
+  constructor(private readonly cFolder: string) {
     if (
-      !this.cfPath ||
+      !this.cFolder ||
       !existsSync(this.cfPath) ||
       !lstatSync(this.cfPath).isDirectory()
     ) {
@@ -24,6 +24,10 @@ export default class MapCreater {
       path.join(process.cwd(), "cba-map.json"),
       JSON.stringify(this.map)
     );
+  }
+
+  private get cfPath(): string {
+    return path.join(process.cwd(), this.cFolder);
   }
 
   private readFilesFromFolder(folderRePath: string, result: Array<string>) {

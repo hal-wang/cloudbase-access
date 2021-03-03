@@ -1,0 +1,11 @@
+{
+  "title": "cba-title",
+  "subtitle": "cba-subtitle",
+  "baseInputHeaders": [
+    {
+      "name": "base-header",
+      "desc": "this is a base header",
+      "type": "string"
+    }
+  ]
+}
