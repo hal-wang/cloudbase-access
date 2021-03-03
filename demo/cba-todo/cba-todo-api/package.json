@@ -6,7 +6,7 @@
     "build": "bash build.sh cba-todo",
     "deploy:test": "bash deploy.sh test",
     "deploy": "bash deploy.sh cba-todo",
-    "doc": "cba-doc src/controllers doc.config.json doc.md",
+    "doc": "bash doc.sh",
     "eslint": "eslint . --ext .ts",
     "test": "jest"
   },
