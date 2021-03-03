@@ -1,9 +1,10 @@
 import { Action, HttpResult } from "../../../src";
 
 /**
+ * @action get docs
+ *
  * a docs test named get
  *
- * @action get docs
  * @input
  * @@headers
  * @@@test-header1 {string} a test header of getting docs NO.1

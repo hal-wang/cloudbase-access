@@ -106,7 +106,7 @@ export default class ApiDocsCreater {
     if (action.docs) {
       docs = action.docs;
     } else {
-      docs = new ApiDocsNoteParser(file, action).docs;
+      docs = new ApiDocsNoteParser(file).docs;
     }
     if (!docs) return "";
     else return new ApiDocsMdCreater(relativePath, docs, this.config).result;
