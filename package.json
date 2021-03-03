@@ -1,6 +1,6 @@
 {
   "name": "@hal-wang/cloudbase-access",
-  "version": "1.0.3",
+  "version": "1.1.0-beta.1",
   "description": "利用 NodeJS 和 CloudBase 快速创建 Serverless RESTful Api",
   "homepage": "https://github.com/hal-wang/cloudbase-access",
   "repository": {
@@ -62,7 +62,8 @@
     "typescript": "^4.1.3"
   },
   "bin": {
-    "cba-map": "bin/cba-map.js"
+    "cba-map": "bin/cba-map.js",
+    "cba-doc": "bin/cba-doc.js"
   },
   "files": [
     "dist/",
