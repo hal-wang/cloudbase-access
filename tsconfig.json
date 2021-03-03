@@ -3,7 +3,7 @@
     "lib": [
       "esnext"
     ],
-    "module": "commonjs",
+    "module": "esnext",
     "declaration": true,
     "outDir": "./dist",
     "target": "esnext",

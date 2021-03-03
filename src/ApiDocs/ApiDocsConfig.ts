@@ -7,5 +7,5 @@ export default interface ApiDocsConfig {
   baseParams?: ApiDocsParam[];
   baseCodes?: ApiDocsStateCode[];
   title?: string;
-  subTitle?: string;
+  subtitle?: string;
 }

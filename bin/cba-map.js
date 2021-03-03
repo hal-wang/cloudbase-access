@@ -3,5 +3,5 @@
 
 const MapCreater = require("../dist/Map/MapCreater").default;
 
-const cfPath = process.argv[2];
-new MapCreater(cfPath).write();
+const controllers = process.argv[2];
+new MapCreater(controllers).write();

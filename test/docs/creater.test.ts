@@ -1,15 +1,6 @@
 import ApiDocsCreater from "../../src/ApiDocs/ApiDocsCreater";
-import ApiDocsParam from "../../src/ApiDocs/ApiDocsParam";
 
-const creater = new ApiDocsCreater("test/controllers", {
-  baseInputHeaders: <ApiDocsParam[]>[
-    {
-      name: "base-header",
-      desc: "this is a base header",
-      type: "string",
-    },
-  ],
-});
+const creater = new ApiDocsCreater("test/controllers", "test/docs/config.json");
 
 test("api docs creater", async function () {
   const docs = creater.docs;
