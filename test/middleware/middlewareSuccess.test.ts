@@ -3,16 +3,16 @@ import {
   MiddlewareResult,
   Router,
   MiddlewareType,
-} from "../src/index";
+} from "../../src/index";
 
-test("middleware test err", async function () {
+test("middleware test success", async function () {
   const stepResult: Record<string, number> = {
     step: 0,
   };
 
   const event = {
     body: {},
-    path: "/simple/notExist",
+    path: "/simple/router",
     httpMethod: "POST",
   };
   const router = new Router(event, {}, undefined, "test/controllers");
@@ -23,8 +23,8 @@ test("middleware test err", async function () {
   router.configure(new BeforeErrEndMdw(stepResult));
 
   const result = (await router.do()).result;
-  expect(result.statusCode).toBe(404);
-  expect(stepResult.step).toBe(1);
+  expect(result.statusCode).toBe(200);
+  expect(stepResult.step).toBe(111);
 });
 
 class BeforeStartMdw extends Middleware {

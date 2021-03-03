@@ -3,7 +3,7 @@ import {
   MiddlewareResult,
   Router,
   MiddlewareType,
-} from "../src/index";
+} from "../../src/index";
 
 test("middleware additives", async function () {
   const event = {
