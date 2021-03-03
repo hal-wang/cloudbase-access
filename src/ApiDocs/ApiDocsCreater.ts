@@ -114,6 +114,7 @@ export default class ApiDocsCreater {
       action = new actionClass() as Action;
       if (!action) return "";
     } catch (err) {
+      console.log("require err", err.message);
       return "";
     }
 
