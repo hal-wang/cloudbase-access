@@ -1,5 +1,6 @@
 export default interface ApiDocsNoteParserStruct {
   title: string;
-  value: string;
-  children?: ApiDocsNoteParserStruct[] | null;
+  subtitle?: string;
+  content?: string;
+  children?: ApiDocsNoteParserStruct[];
 }

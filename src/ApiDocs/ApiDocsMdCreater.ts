@@ -61,8 +61,16 @@ export default class ApiDocsMdCreater {
       return result;
     }
 
-    result += this.getBaseParams(input, this.config.baseInputHeaders);
-    result += "\n\n";
+    if (input.desc) {
+      result += input.desc;
+      result += "\n\n";
+    }
+
+    const bpResult = this.getBaseParams(input, this.config.baseInputHeaders);
+    if (bpResult) {
+      result += bpResult;
+      result += "\n\n";
+    }
 
     const params = <ApiDocsParam[]>[];
     params.push(...(this.config.baseParams || <ApiDocsParam[]>[]));
@@ -89,10 +97,14 @@ export default class ApiDocsMdCreater {
       return result;
     }
 
+    if (output.desc) {
+      result += output.desc;
+      result += "\n\n";
+    }
+
     const codes = <ApiDocsStateCode[]>[];
     codes.push(...(this.config.baseCodes || <ApiDocsStateCode[]>[]));
     codes.push(...(output.codes || <ApiDocsStateCode[]>[]));
-    console.log("codes", codes);
     if (codes && codes.length) {
       result += `#### Status Code\n\n`;
       for (let i = 0; i < codes.length; i++) {
@@ -106,8 +118,12 @@ export default class ApiDocsMdCreater {
       result += "\n";
     }
 
-    result += this.getBaseParams(output, this.config.baseOutputHeaders);
-    return result;
+    const bpResult = this.getBaseParams(output, this.config.baseOutputHeaders);
+    if (bpResult) {
+      result += bpResult;
+    }
+
+    return result.trimEnd();
   }
 
   private getBaseParams(

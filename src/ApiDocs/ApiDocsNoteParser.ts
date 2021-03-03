@@ -1,27 +1,27 @@
 import ApiDocs from ".";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import ApiDocsNoteParserStruct from "./ApiDocsNoteParserStruct";
-import path = require("path");
+import ApiDocsInputParams from "./ApiDocsInputParams";
+import ApiParam from "./ApiDocsParam";
+import ApiDocsOutputParams from "./ApiDocsOutputParams";
+import ApiDocsStateCode from "./ApiDocsStateCode";
 
 export default class ApiDocsNoteParser {
   constructor(private readonly file: string) {}
 
-  public get docs(): ApiDocs | null {
+  public get docs(): ApiDocs | undefined {
     const note = this.note;
-    if (!note) return null;
+    if (!note) return;
     const parserResult = this.parser(note, 1);
-    console.log("parserResult", parserResult);
-    writeFileSync(
-      path.join(process.cwd(), "test.json"),
-      JSON.stringify(parserResult)
-    );
-    return null;
+    if (!parserResult) return;
+
+    return this.structsToDocs(parserResult);
   }
 
-  private get note(): string | null {
+  private get note(): string | undefined {
     const content = readFileSync(this.file, "utf-8");
     const regs = /(\/\*\*[\s]*\*[\s]*)(@action)([\s\S]*?\*\/)/gi.exec(content);
-    if (!regs || !regs.length) return null;
+    if (!regs || !regs.length) return;
 
     const note = regs[0]
       .replace(/^[\s]*\*[\s]*$/gm, "")
@@ -31,34 +31,164 @@ export default class ApiDocsNoteParser {
     return note;
   }
 
-  private parser(note: string, deep: number): ApiDocsNoteParserStruct[] | null {
+  private structsToDocs(structs: ApiDocsNoteParserStruct[]): ApiDocs {
+    const result = <ApiDocs>{};
+    structs.forEach((struct) => {
+      switch (struct.title.toLowerCase()) {
+        case "action":
+          result.name = struct.subtitle;
+          result.desc = struct.content;
+          break;
+        case "input":
+          const input = <ApiDocsInputParams>{};
+          result.input = input;
+          if (struct.subtitle) {
+            result.input.desc = struct.subtitle;
+          }
+          if (struct.children) {
+            struct.children.forEach((cStruct) => {
+              switch (cStruct.title.toLowerCase()) {
+                case "headers":
+                  if (cStruct.children) {
+                    input.headers = this.structsToParams(cStruct.children);
+                  }
+                  break;
+                case "params":
+                  if (cStruct.children) {
+                    input.params = this.structsToParams(cStruct.children);
+                  }
+                  break;
+                case "query":
+                  if (cStruct.children) {
+                    input.query = this.structsToParams(cStruct.children);
+                  }
+                  break;
+                case "body":
+                  if (cStruct.children) {
+                    input.body = this.structsToParams(cStruct.children);
+                  }
+                  break;
+              }
+            });
+          }
+          break;
+        case "output":
+          const output = <ApiDocsOutputParams>{};
+          result.output = output;
+          if (struct.subtitle) {
+            result.output.desc = struct.subtitle;
+          }
+          if (struct.children) {
+            struct.children.forEach((cStruct) => {
+              switch (cStruct.title.toLowerCase()) {
+                case "headers":
+                  if (cStruct.children) {
+                    output.headers = this.structsToParams(cStruct.children);
+                  }
+                  break;
+                case "body":
+                  if (cStruct.children) {
+                    output.body = this.structsToParams(cStruct.children);
+                  }
+                  break;
+                case "codes": {
+                  if (cStruct.children) {
+                    output.codes = this.structsToCodes(cStruct.children);
+                  }
+                }
+              }
+            });
+          }
+          break;
+      }
+    });
+    return result;
+  }
+
+  private structsToCodes(
+    structs: ApiDocsNoteParserStruct[]
+  ): ApiDocsStateCode[] {
+    const result = <ApiDocsStateCode[]>[];
+    structs.forEach((struct) => {
+      if (struct.title) {
+        result.push({
+          code: Number(struct.title),
+          desc: struct.subtitle,
+        });
+      }
+    });
+    return result;
+  }
+
+  private structsToParams(structs: ApiDocsNoteParserStruct[]): ApiParam[] {
+    const result = <ApiParam[]>[];
+    structs.forEach((struct) => {
+      result.push(this.structToParams(struct));
+    });
+    return result;
+  }
+
+  private structToParams(struct: ApiDocsNoteParserStruct): ApiParam {
+    let desc: undefined | string;
+    let type: undefined | string;
+
+    if (struct.subtitle && struct.subtitle.trim()) {
+      const onlyTypeReg = /\{([\S]*)\}$/;
+      const fullReg = /^\{([\S]{1,})\} ([\s\S]{1,})$/;
+      if (onlyTypeReg.test(struct.subtitle)) {
+        onlyTypeReg.exec(struct.subtitle);
+        type = RegExp.$1;
+      } else if (fullReg.test(struct.subtitle)) {
+        fullReg.exec(struct.subtitle);
+        type = RegExp.$1;
+        desc = RegExp.$2;
+      } else {
+        desc = struct.subtitle;
+      }
+    }
+
+    return {
+      name: struct.title,
+      type: type,
+      desc: desc,
+      children: struct.children
+        ? this.structsToParams(struct.children)
+        : undefined,
+    };
+  }
+
+  private parser(
+    note: string,
+    deep: number
+  ): ApiDocsNoteParserStruct[] | undefined {
     const reg = this.getRegExp(deep);
     const matchs = note.match(reg);
-    if (!matchs || !matchs.length) return null;
+    if (!matchs || !matchs.length) return;
     const splits = note.split(reg);
-    if (!splits || !splits.length) return null;
+    if (!splits || !splits.length) return;
     splits.splice(0, 1);
-    console.log("test2", matchs, splits);
-    if (matchs.length != splits.length) return null;
+    if (matchs.length != splits.length) return;
 
     const result = [] as ApiDocsNoteParserStruct[];
     for (let i = 0; i < matchs.length; i++) {
       const header = matchs[i];
       let title: string;
-      let value: string;
+      let subtitle: string;
       if (header.includes(" ")) {
         const headerStrs = header.split(" ");
         title = headerStrs[0];
-        value = header.replace(`${title} `, "");
+        subtitle = header.replace(`${title} `, "");
       } else {
         title = header;
-        value = "";
+        subtitle = "";
       }
+      title = this.removeProfix(title, deep);
 
       result.push({
         title: title,
-        value: value,
-        children: splits[i] ? this.parser(splits[i], deep + 1) : null,
+        subtitle: subtitle,
+        content: (splits[i] || "").trim(),
+        children: splits[i] ? this.parser(splits[i], deep + 1) : undefined,
       });
     }
     return result;
@@ -70,5 +200,13 @@ export default class ApiDocsNoteParser {
       chars += "@";
     }
     return RegExp(`^${chars}[^@].*$`, "gm");
+  }
+
+  private removeProfix(str: string, deep: number) {
+    let chars = "";
+    for (let i = 0; i < deep; i++) {
+      chars += "@";
+    }
+    return str.replace(chars, "");
   }
 }
