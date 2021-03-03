@@ -171,8 +171,8 @@ export default class ApiDocsMdCreater {
     if (index) {
       result += index;
       result += ". ";
+      result += param.name;
     }
-    result += param.name;
 
     if (param.type) {
       result += "\n";
