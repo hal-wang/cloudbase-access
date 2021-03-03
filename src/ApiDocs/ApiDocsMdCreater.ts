@@ -6,6 +6,8 @@ import ApiDocsOutputParams from "./ApiDocsOutputParams";
 import ApiDocsParam from "./ApiDocsParam";
 import ApiDocsIOParams from "./ApiDocsIOParams";
 import ApiDocsStateCode from "./ApiDocsStateCode";
+import ApiDocsBasePart from "./ApiDocsBasePart";
+import path = require("path");
 
 export default class ApiDocsMdCreater {
   constructor(
@@ -17,19 +19,40 @@ export default class ApiDocsMdCreater {
   public get result(): string {
     let result = this.getTitle();
     result += "\n\n";
-    result += this.getDesc(this.docs);
+    result += this.getDesc();
     result += "\n\n";
 
     if (this.docs.input) {
-      result += this.getInputParams(this.docs.input);
+      result += this.getInputParams();
       result += "\n\n";
     }
 
     if (this.docs.output) {
-      result += this.getOutputParams(this.docs.output);
+      result += this.getOutputParams();
     }
 
     return result.trimEnd();
+  }
+
+  private get partConfigs(): ApiDocsBasePart[] {
+    if (!this.config || !this.config.partConfigs) return [];
+    const result = <ApiDocsBasePart[]>[];
+    this.config.partConfigs.forEach((partConfig: ApiDocsBasePart | string) => {
+      if (typeof partConfig == "string") {
+        const configPath = path.join(process.cwd(), partConfig);
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const partConfigObj = require(configPath) as ApiDocsBasePart;
+        if (!partConfigObj.name) {
+          partConfigObj.name = new PathParser(
+            partConfig
+          ).fileNameWithoutExtension;
+        }
+        result.push(partConfigObj);
+      } else {
+        result.push(partConfig);
+      }
+    });
+    return result;
   }
 
   private getTitle(): string {
@@ -47,64 +70,73 @@ export default class ApiDocsMdCreater {
     return result;
   }
 
-  private getDesc(docs: ApiDocs) {
-    if (!docs.desc) return "";
+  private getDesc() {
+    if (!this.docs.desc) return "";
     let result = "### Desc \n\n";
-    result += docs.desc || "Empty";
+    result += this.docs.desc || "Empty";
     return result;
   }
 
-  private getInputParams(input?: ApiDocsInputParams): string {
+  private getInputParams(): string {
     let result = "### Input\n\n";
-    if (!input) {
+    if (!this.docs.input) {
       result += "No";
       return result;
     }
 
-    if (input.desc) {
-      result += input.desc;
+    if (this.docs.input.desc) {
+      result += this.docs.input.desc;
       result += "\n\n";
     }
 
-    const bpResult = this.getBaseParams(input, this.config.baseInputHeaders);
+    const bpResult = this.getBaseParams(
+      this.docs.input,
+      this.getBasePartParams("inputHeaders")
+    );
     if (bpResult) {
       result += bpResult;
       result += "\n\n";
     }
 
     const params = <ApiDocsParam[]>[];
-    params.push(...(this.config.baseParams || <ApiDocsParam[]>[]));
-    params.push(...(input.params || <ApiDocsParam[]>[]));
+    params.push(...(this.getBasePartParams("params") || <ApiDocsParam[]>[]));
+    params.push(...(this.docs.input.params || <ApiDocsParam[]>[]));
     if (params && params.length) {
       result += "#### Params\n\n";
       result += this.getParams(params);
       result += "\n\n";
     }
 
-    if (input.query) {
+    const query = <ApiDocsParam[]>[];
+    query.push(...(this.getBasePartParams("query") || <ApiDocsParam[]>[]));
+    query.push(...(this.docs.input.query || <ApiDocsParam[]>[]));
+    if (query && query.length) {
       result += "#### Query\n\n";
-      result += this.getParams(input.query);
+      result += this.getParams(query);
       result += "\n\n";
     }
 
     return result.trimEnd();
   }
 
-  private getOutputParams(output?: ApiDocsOutputParams): string {
+  private getOutputParams(): string {
     let result = "### Output\n\n";
-    if (!output) {
+    if (!this.docs.output) {
       result += "No";
       return result;
     }
 
-    if (output.desc) {
-      result += output.desc;
+    if (this.docs.output.desc) {
+      result += this.docs.output.desc;
       result += "\n\n";
     }
 
     const codes = <ApiDocsStateCode[]>[];
-    codes.push(...(this.config.baseCodes || <ApiDocsStateCode[]>[]));
-    codes.push(...(output.codes || <ApiDocsStateCode[]>[]));
+    codes.push(
+      ...(<ApiDocsStateCode[]>this.getBasePartParams("codes") ||
+        <ApiDocsStateCode[]>[])
+    );
+    codes.push(...(this.docs.output.codes || <ApiDocsStateCode[]>[]));
     if (codes && codes.length) {
       result += `#### Status Code\n\n`;
       for (let i = 0; i < codes.length; i++) {
@@ -118,12 +150,35 @@ export default class ApiDocsMdCreater {
       result += "\n";
     }
 
-    const bpResult = this.getBaseParams(output, this.config.baseOutputHeaders);
+    const bpResult = this.getBaseParams(
+      this.docs.output,
+      this.getBasePartParams("outputHeaders")
+    );
     if (bpResult) {
       result += bpResult;
     }
 
     return result.trimEnd();
+  }
+
+  private getBasePartParams(
+    prop: "inputHeaders" | "query" | "outputHeaders" | "params" | "codes"
+  ): (ApiDocsParam | ApiDocsStateCode)[] {
+    const partConfigs = this.partConfigs;
+    const result = <(ApiDocsParam | ApiDocsStateCode)[]>[];
+    if (this.docs.baseParts) {
+      this.docs.baseParts.forEach((basePart) => {
+        const mcs = partConfigs.filter((config) => config.name == basePart);
+        mcs.forEach((mcsItem) => {
+          if (mcsItem[prop]) {
+            result.push(
+              ...(mcsItem[prop] as (ApiDocsParam | ApiDocsStateCode)[])
+            );
+          }
+        });
+      });
+    }
+    return result;
   }
 
   private getBaseParams(params: ApiDocsIOParams, baseHeaders?: ApiDocsParam[]) {
