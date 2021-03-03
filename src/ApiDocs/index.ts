@@ -6,4 +6,5 @@ export default interface ApiDocs {
   output?: ApiDocsOutputParams;
   desc?: string;
   name?: string;
+  baseParts?: string[];
 }

@@ -1,11 +1,7 @@
-import ApiDocsParam from "./ApiDocsParam";
-import ApiDocsStateCode from "./ApiDocsStateCode";
+import ApiDocsConfigPart from "./ApiDocsBasePart";
 
-export default interface ApiDocsConfig {
-  baseInputHeaders?: ApiDocsParam[];
-  baseOutputHeaders?: ApiDocsParam[];
-  baseParams?: ApiDocsParam[];
-  baseCodes?: ApiDocsStateCode[];
+export default interface ApiDocsConfig extends ApiDocsConfigPart {
+  partConfigs?: ApiDocsConfigPart[] | string[];
   title?: string;
   subtitle?: string;
 }
