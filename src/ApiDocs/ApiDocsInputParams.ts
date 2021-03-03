@@ -1,7 +1,7 @@
 import ApiDocsParam from "./ApiDocsParam";
-import ApiDocsParamsBase from "./ApiDocsParamsBase";
+import ApiDocsIOParams from "./ApiDocsIOParams";
 
-export default interface ApiDocsInputParams extends ApiDocsParamsBase {
+export default interface ApiDocsInputParams extends ApiDocsIOParams {
   query?: ApiDocsParam[];
   params?: ApiDocsParam[];
 }
