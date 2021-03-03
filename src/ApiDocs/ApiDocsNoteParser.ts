@@ -2,7 +2,7 @@ import ApiDocs from ".";
 import { readFileSync } from "fs";
 import ApiDocsNoteParserStruct from "./ApiDocsNoteParserStruct";
 import ApiDocsInputParams from "./ApiDocsInputParams";
-import ApiParam from "./ApiDocsParam";
+import ApiDocsParam from "./ApiDocsParam";
 import ApiDocsOutputParams from "./ApiDocsOutputParams";
 import ApiDocsStateCode from "./ApiDocsStateCode";
 
@@ -137,15 +137,15 @@ export default class ApiDocsNoteParser {
     return result;
   }
 
-  private structsToParams(structs: ApiDocsNoteParserStruct[]): ApiParam[] {
-    const result = <ApiParam[]>[];
+  private structsToParams(structs: ApiDocsNoteParserStruct[]): ApiDocsParam[] {
+    const result = <ApiDocsParam[]>[];
     structs.forEach((struct) => {
       result.push(this.structToParams(struct));
     });
     return result;
   }
 
-  private structToParams(struct: ApiDocsNoteParserStruct): ApiParam {
+  private structToParams(struct: ApiDocsNoteParserStruct): ApiDocsParam {
     let desc: undefined | string;
     let type: undefined | string;
 
