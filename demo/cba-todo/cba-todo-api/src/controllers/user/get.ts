@@ -1,6 +1,16 @@
 import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../lib/Collections";
 
+/**
+ * @action get users
+ *
+ * get all users' info
+ *
+ * @output
+ * @@codes
+ * @@@200 success
+ * @@body {array} user list
+ */
 export default class extends Action {
   constructor() {
     super(["hl", "admin"]);

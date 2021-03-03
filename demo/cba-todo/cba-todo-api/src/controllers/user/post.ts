@@ -4,6 +4,21 @@ import Validate from "../../lib/Validate";
 import moment = require("moment");
 import User from "../../models/User";
 
+/**
+ * @action signup
+ *
+ * signup a account with email
+ *
+ * @input
+ * @@body
+ * @@@account {string} email
+ * @@@password {string} password
+ * @output
+ * @@codes
+ * @@@200 success
+ * @@@400 format error or the account is existing
+ * @@body {object} user info
+ */
 export default class extends Action {
   async do(): Promise<HttpResult> {
     const { account, password } = this.requestParams.data;
