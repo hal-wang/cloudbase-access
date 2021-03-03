@@ -1,6 +1,6 @@
 import ApiDocsParam from "./ApiDocsParam";
 
-export default interface ApiDocsParamsBase {
+export default interface ApiDocsIOParams {
   headers?: ApiDocsParam[];
   body?: ApiDocsParam | ApiDocsParam[];
   desc?: string;

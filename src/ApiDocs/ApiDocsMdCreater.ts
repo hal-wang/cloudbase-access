@@ -4,7 +4,7 @@ import ApiDocsConfig from "./ApiDocsConfig";
 import ApiDocsInputParams from "./ApiDocsInputParams";
 import ApiDocsOutputParams from "./ApiDocsOutputParams";
 import ApiDocsParam from "./ApiDocsParam";
-import ApiDocsParamsBase from "./ApiDocsParamsBase";
+import ApiDocsIOParams from "./ApiDocsIOParams";
 import ApiDocsStateCode from "./ApiDocsStateCode";
 
 export default class ApiDocsMdCreater {
@@ -126,10 +126,7 @@ export default class ApiDocsMdCreater {
     return result.trimEnd();
   }
 
-  private getBaseParams(
-    params: ApiDocsParamsBase,
-    baseHeaders?: ApiDocsParam[]
-  ) {
+  private getBaseParams(params: ApiDocsIOParams, baseHeaders?: ApiDocsParam[]) {
     let result = "";
 
     const headers = <ApiDocsParam[]>[];
