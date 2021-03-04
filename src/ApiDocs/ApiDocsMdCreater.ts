@@ -1,19 +1,19 @@
 import ApiDocs from ".";
 import PathParser from "../Map/PathParser";
 import ApiDocsConfig from "./ApiDocsConfig";
-import ApiDocsInputParams from "./ApiDocsInputParams";
-import ApiDocsOutputParams from "./ApiDocsOutputParams";
 import ApiDocsParam from "./ApiDocsParam";
 import ApiDocsIOParams from "./ApiDocsIOParams";
 import ApiDocsStateCode from "./ApiDocsStateCode";
 import ApiDocsBasePart from "./ApiDocsBasePart";
 import path = require("path");
+import Action from "../Action";
 
 export default class ApiDocsMdCreater {
   constructor(
-    private readonly relativePath: string,
+    private readonly rPath: string,
     private readonly docs: ApiDocs,
-    private readonly config: ApiDocsConfig
+    private readonly config: ApiDocsConfig,
+    private readonly action: Action
   ) {}
 
   public get result(): string {
@@ -56,7 +56,7 @@ export default class ApiDocsMdCreater {
   }
 
   private getTitle(): string {
-    const pathParser = new PathParser(this.relativePath);
+    const pathParser = new PathParser(this.rPath);
     const httpMethod = pathParser.httpMethod;
 
     let result = `## `;
@@ -78,11 +78,8 @@ export default class ApiDocsMdCreater {
   }
 
   private getInputParams(): string {
+    if (!this.docs.input) return "";
     let result = "### Input\n\n";
-    if (!this.docs.input) {
-      result += "No";
-      return result;
-    }
 
     if (this.docs.input.desc) {
       result += this.docs.input.desc;
@@ -120,11 +117,8 @@ export default class ApiDocsMdCreater {
   }
 
   private getOutputParams(): string {
+    if (!this.docs.output) return "";
     let result = "### Output\n\n";
-    if (!this.docs.output) {
-      result += "No";
-      return result;
-    }
 
     if (this.docs.output.desc) {
       result += this.docs.output.desc;
@@ -166,7 +160,14 @@ export default class ApiDocsMdCreater {
   ): (ApiDocsParam | ApiDocsStateCode)[] {
     const partConfigs = this.partConfigs;
     const result = <(ApiDocsParam | ApiDocsStateCode)[]>[];
-    if (this.docs.parts) {
+    if (
+      this.docs.parts == "@auth" &&
+      this.action.roles &&
+      this.action.roles.length
+    ) {
+      this.docs.parts = (<string[]>[]).concat(this.action.roles);
+    }
+    if (this.docs.parts && Array.isArray(this.docs.parts)) {
       this.docs.parts.forEach((part) => {
         const mcs = partConfigs.filter((config) => config.name == part);
         console.log("test", mcs, prop);
