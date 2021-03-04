@@ -2,8 +2,8 @@
   "name": "custom",
   "query": [
     {
-      "name": "base-query-header",
-      "desc": "this is a base query header",
+      "name": "base-query",
+      "desc": "this is a base query",
       "type": "string"
     }
   ]
