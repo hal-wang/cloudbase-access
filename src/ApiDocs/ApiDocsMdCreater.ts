@@ -35,9 +35,9 @@ export default class ApiDocsMdCreater {
   }
 
   private get partConfigs(): ApiDocsBasePart[] {
-    if (!this.config || !this.config.partConfigs) return [];
+    if (!this.config || !this.config.parts) return [];
     const result = <ApiDocsBasePart[]>[];
-    this.config.partConfigs.forEach((partConfig: ApiDocsBasePart | string) => {
+    this.config.parts.forEach((partConfig: ApiDocsBasePart | string) => {
       if (typeof partConfig == "string") {
         const configPath = path.join(process.cwd(), partConfig);
         // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -166,9 +166,10 @@ export default class ApiDocsMdCreater {
   ): (ApiDocsParam | ApiDocsStateCode)[] {
     const partConfigs = this.partConfigs;
     const result = <(ApiDocsParam | ApiDocsStateCode)[]>[];
-    if (this.docs.baseParts) {
-      this.docs.baseParts.forEach((basePart) => {
-        const mcs = partConfigs.filter((config) => config.name == basePart);
+    if (this.docs.parts) {
+      this.docs.parts.forEach((part) => {
+        const mcs = partConfigs.filter((config) => config.name == part);
+        console.log("test", mcs, prop);
         mcs.forEach((mcsItem) => {
           if (mcsItem[prop]) {
             result.push(

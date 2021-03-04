@@ -1,0 +1,10 @@
+{
+  "name": "custom",
+  "query": [
+    {
+      "name": "base-query-header",
+      "desc": "this is a base query header",
+      "type": "string"
+    }
+  ]
+}

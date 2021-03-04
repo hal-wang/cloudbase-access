@@ -1,7 +1,7 @@
 import ApiDocsConfigPart from "./ApiDocsBasePart";
 
 export default interface ApiDocsConfig extends ApiDocsConfigPart {
-  partConfigs?: ApiDocsConfigPart[] | string[];
+  parts?: ApiDocsConfigPart[] | string[];
   title?: string;
   subtitle?: string;
 }
