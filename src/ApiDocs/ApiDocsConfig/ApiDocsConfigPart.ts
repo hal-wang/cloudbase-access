@@ -1,5 +1,5 @@
 import ApiDocsParam from "../ApiDocsParam";
-import ApiDocsStateCode from "../ApiDocsStateCode";
+import ApiDocsStateCode from "../ApiDocsParam/ApiDocsStateCode";
 
 export default interface ApiDocsConfigPart {
   name?: string;
