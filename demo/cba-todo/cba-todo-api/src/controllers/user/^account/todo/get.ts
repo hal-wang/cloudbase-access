@@ -1,6 +1,16 @@
 import { Action, DbHelper, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../../../lib/Collections";
 
+/**
+ * @action get todos
+ *
+ * get todo list
+ *
+ * @output
+ * @@codes
+ * @@@200 success
+ * @body {array} todo list
+ */
 export default class extends Action {
   constructor() {
     super(["ql"]);

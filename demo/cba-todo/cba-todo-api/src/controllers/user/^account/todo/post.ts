@@ -3,6 +3,21 @@ import Collections from "../../../../lib/Collections";
 import Todo from "../../../../models/Todo";
 import moment = require("moment");
 
+/**
+ * @action add todo
+ *
+ * add a new todo item
+ *
+ * @input
+ * @body
+ * @@content {string} todo content
+ * @@schedule {number} the todo's schedule with timestamp
+ *
+ * @output
+ * @@codes
+ * @@@200 success
+ * @body {object} new todo item
+ */
 export default class extends Action {
   constructor() {
     super(["ql"]);

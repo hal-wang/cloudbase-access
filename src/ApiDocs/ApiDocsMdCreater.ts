@@ -171,7 +171,6 @@ export default class ApiDocsMdCreater {
     if (this.docs.parts && Array.isArray(this.docs.parts)) {
       this.docs.parts.forEach((part) => {
         const mcs = partConfigs.filter((config) => config.name == part);
-        console.log("test", mcs, prop);
         mcs.forEach((mcsItem) => {
           if (mcsItem[prop]) {
             result.push(

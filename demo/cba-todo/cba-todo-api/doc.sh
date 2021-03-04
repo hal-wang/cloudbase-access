@@ -9,5 +9,5 @@ tsc
 
 find dist -name "*.d.ts" |xargs rm -rf
 
-cba-doc dist/controllers doc.md docConfigs/base.json
+cba-doc dist/controllers test.md docConfigs/base.json
 rm -rf dist
