@@ -1,7 +1,7 @@
-import ApiDocsParam from "./ApiDocsParam";
-import ApiDocsStateCode from "./ApiDocsStateCode";
+import ApiDocsParam from "../ApiDocsParam";
+import ApiDocsStateCode from "../ApiDocsStateCode";
 
-export default interface ApiDocsBasePart {
+export default interface ApiDocsConfigPart {
   name?: string;
   inputHeaders?: ApiDocsParam[];
   outputHeaders?: ApiDocsParam[];

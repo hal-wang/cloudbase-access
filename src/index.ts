@@ -17,7 +17,7 @@ import ApiDocsInputParams from "./ApiDocs/ApiDocsInputParams";
 import ApiDocsOutputParams from "./ApiDocs/ApiDocsOutputParams";
 import ApiDocsStateCode from "./ApiDocs/ApiDocsStateCode";
 import ApiDocsIOParams from "./ApiDocs/ApiDocsIOParams";
-import ApiDocsBasePart from "./ApiDocs/ApiDocsBasePart";
+import ApiDocsConfigPart from "./ApiDocs/ApiDocsConfig/ApiDocsConfigPart";
 import ApiDocsConfig from "./ApiDocs/ApiDocsConfig";
 
 import Action from "./Action";
@@ -46,6 +46,6 @@ export {
   ApiDocsInputParams,
   ApiDocsOutputParams,
   ApiDocsStateCode,
-  ApiDocsBasePart,
+  ApiDocsConfigPart,
   ApiDocsConfig,
 };

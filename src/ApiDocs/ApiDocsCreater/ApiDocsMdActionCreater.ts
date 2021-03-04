@@ -4,7 +4,7 @@ import ApiDocsConfig from "../ApiDocsConfig";
 import ApiDocsParam from "../ApiDocsParam";
 import ApiDocsIOParams from "../ApiDocsIOParams";
 import ApiDocsStateCode from "../ApiDocsStateCode";
-import ApiDocsBasePart from "../ApiDocsBasePart";
+import ApiDocsConfigPart from "../ApiDocsConfig/ApiDocsConfigPart";
 import path = require("path");
 import Action from "../../Action";
 
@@ -34,14 +34,14 @@ export default class ApiDocsMdCreater {
     return result.trimEnd();
   }
 
-  private get partConfigs(): ApiDocsBasePart[] {
+  private get partConfigs(): ApiDocsConfigPart[] {
     if (!this.config || !this.config.parts) return [];
-    const result = <ApiDocsBasePart[]>[];
-    this.config.parts.forEach((partConfig: ApiDocsBasePart | string) => {
+    const result = <ApiDocsConfigPart[]>[];
+    this.config.parts.forEach((partConfig: ApiDocsConfigPart | string) => {
       if (typeof partConfig == "string") {
         const configPath = path.join(process.cwd(), partConfig);
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const partConfigObj = require(configPath) as ApiDocsBasePart;
+        const partConfigObj = require(configPath) as ApiDocsConfigPart;
         if (!partConfigObj.name) {
           partConfigObj.name = new PathParser(
             partConfig
