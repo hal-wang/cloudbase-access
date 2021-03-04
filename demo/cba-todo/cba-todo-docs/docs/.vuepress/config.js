@@ -21,8 +21,8 @@ module.exports = {
     nav: [
       { text: "Home", link: "/" },
       {
-        text: "Api",
-        ariaLabel: "Api",
+        text: "Docs",
+        ariaLabel: "Docs",
         items: [{ text: "Api", link: "/api/" }],
       },
       { text: "GitHub", link: "https://github.com/hal-wang/cloudbase-access" },
