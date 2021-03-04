@@ -5,6 +5,7 @@ import { Action, HttpResult } from "../../../src";
  *
  * a docs test named delete
  *
+ * @parts test1 test2 custom
  * @input
  * @@headers
  * @@@test-header1 {string} a test header of deleting docs NO.1

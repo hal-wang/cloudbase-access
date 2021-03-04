@@ -39,6 +39,11 @@ export default class ApiDocsNoteParser {
           result.name = struct.subtitle;
           result.desc = struct.content;
           break;
+        case "parts":
+          if (struct.subtitle) {
+            result.parts = struct.subtitle.split(" ");
+          }
+          break;
         case "input":
           const input = <ApiDocsInputParams>{};
           result.input = input;
