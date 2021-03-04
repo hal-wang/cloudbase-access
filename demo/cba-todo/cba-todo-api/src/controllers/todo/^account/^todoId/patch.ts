@@ -3,10 +3,11 @@ import Collections from "../../../../lib/Collections";
 import moment = require("moment");
 
 /**
- * @action update todo
+ * @action todo
  *
  * update a todo's info
  *
+ * @input
  * @output
  * @@codes
  * @@@200 success

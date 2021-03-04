@@ -2,10 +2,11 @@ import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../../lib/Collections";
 
 /**
- * @action get todo count
+ * @action todo count
  *
  * get the count of all todos
  *
+ * @input
  * @output
  * @@codes
  * @@@200 success

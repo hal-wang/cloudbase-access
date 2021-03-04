@@ -3,10 +3,11 @@ import Collections from "../../../lib/Collections";
 import Global from "../../../lib/Global";
 
 /**
- * @action delete user
+ * @action user
  *
  * delete a user
  *
+ * @input
  * @output
  * @@codes
  * @@@204 success

@@ -5,7 +5,7 @@ import moment = require("moment");
 import User from "../../models/User";
 
 /**
- * @action signup
+ * @action add user
  *
  * signup a account with email
  *
