@@ -445,3 +445,180 @@ export const main = async (
 `dist/controllers` 应改为你的 js 文件的 `controllers` 目录路径。在 ts 项目中，应该是执行 tsc 生成的 js 目录。
 
 执行 `npm run cba-map` 会以`dist/controllers`目录，在项目目录下生成 `cba-map.json` 文件（建议将其加入 `.gitignore`文件）。
+
+## cba-doc
+
+`cba` 支持自动化文档创建，目前已支持输出 `md` 格式文档。
+
+文档的编写支持两种方式：
+
+1. 给 `Action` 类实例对象的 docs 属性赋值
+2. 按特定格式注释 `Action` 定义文件
+
+### 使用方式
+
+在 package.json 文件中的 scripts 中添加
+
+```json
+  "scripts": {
+    "cba-doc": "cba-doc dist/controllers doc.md doc.config.json",
+  },
+```
+
+`cba-doc` 命令传入三个参数
+
+1. js 文件的 `controllers` 目录路径。在 ts 项目中，应该是执行 tsc 生成的 js 目录
+2. 目标文件相对路径
+3. 配置文件路径
+
+执行 `npm run cba-doc`
+
+### `action` 注释
+
+参考如下格式在文件任意处注释：
+
+```
+/**
+ * @action delete docs
+ *
+ * a docs test named delete
+ *
+ * @parts test1 test2 custom
+ * @input
+ * @@headers
+ * @@@test-header1 {string} a test header of deleting docs NO.1
+ * @@@test-header2 {number}
+ * @@@test-header3 {object} a test header of deleting docs NO.3
+ * @@@@test-header31 {string} a test header of deleting docs NO.3.1
+ * @@@@test-header32 {number} a test header of deleting docs NO.3.2
+ * @@@test-header4 a test header of deleting docs NO.4
+ * @@@test-header5 {number} a test header of deleting docs NO.5
+ * @@body {object} ok result
+ * @@@method {string} http method
+ * @@params
+ * @@query
+ * @output
+ * @@codes
+ * @@@200 success
+ * @@@404
+ * @@body
+ * @@@method {string} http method
+ */
+```
+
+`@` 的数量可对比 JSON 对象的深度，其中一级和二级是固定的，如 `@action`、`@parts`、`@input`、`@output`、`@@headers`、`@@query`、`@@body`、`@@params`、`@@code`，三级或以上不做限制
+
+只有 `@action` 是必须的，如果没有则不会生成文档。其他都可选
+
+#### @action
+
+作为自动化文档注释的标识，其后所带内容为该 `Action` 名称，新起一行的内容则为该 `Action` 介绍
+
+#### `@input`/`@output`
+
+输入/输出的参数
+
+`@input` 可选 `@@headers`、`@@query`、`@@body`、`@@params`
+
+`@output` 可选 `@@headers`、`@@body`、`@@code`
+
+1. `@@headers`: 头部参数
+
+2. `@@params`: 查询参数
+
+3. `@@query`: RESTFul 地址参数
+
+4. `@@body`: 内容参数
+
+`@@body` 与 `@@headers`、`@@query`、`@@params` 有些不同，其右侧内容可选，内容是对 body 做介绍的文档
+
+5. `@@code`: 返回状态码
+
+#### 参数
+
+参数格式统一为 `@*prop-name {type} desc`，`@`的数量表示深度，可无限递归
+
+#### parts
+
+parts 的内容较为复杂，参考 [parts](###parts) 部分
+
+### `docs` 属性赋值
+
+参考如下内容给`Action`实例对象的 `docs` 属性赋值：
+
+```TS
+    this.docs = {
+      name: "get docs",
+      desc: "a docs test named get",
+      input: {
+        headers: [
+          {
+            name: "test-header1",
+            desc: "a test header of getting docs NO.1",
+            type: "string",
+          },
+          {
+            name: "test-header2",
+            type: "number",
+          },
+          {
+            name: "test-header3",
+            desc: "a test header of getting docs NO.3",
+            type: "object",
+            children: [
+              {
+                name: "test-header31",
+                desc: "a test header of getting docs NO.3.1",
+                type: "string",
+              },
+              {
+                name: "test-header32",
+                desc: "a test header of getting docs NO.3.1",
+                type: "number",
+              },
+            ],
+          },
+          {
+            name: "test-header4",
+            desc: "a test header of getting docs NO.4",
+            type: "number",
+          },
+        ],
+        body: {
+          type: "string",
+          desc: "http method",
+        },
+      },
+      output: {
+        codes: [
+          {
+            code: 200,
+            desc: "success",
+          },
+          {
+            code: 404,
+          },
+        ],
+        body: [
+          {
+            name: "method",
+            type: "string",
+            desc: "http method",
+          },
+        ],
+      },
+      parts: ["test1", "test2", "custom"],
+    };
+```
+
+其实 [action 注释](###action注释) 的方式最终会编译为 `ApiDocs` 对象，如果编写内容相同，则二者最终生成的文档也相同。
+
+因此各属性的介绍与 [action 注释](###action注释) 的方式相同，此处不再赘述。
+
+### parts
+
+有些参数可能会被多个 API 使用，对于一个网站，可能大多数 API 都需要在头部传入`cookie`、`account`等。
+
+利用 `parts` 功能可以重复使用某些参数。
+
+对于 `ApiDocs`，parts 值为字符串数组，字符串是配置文件的相对路径
