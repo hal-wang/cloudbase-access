@@ -8,7 +8,7 @@ import ApiDocsConfigPart from "../ApiDocsConfig/ApiDocsConfigPart";
 import path = require("path");
 import Action from "../../Action";
 
-export default class ApiDocsMdCreater {
+export default class ApiDocsMdActionCreater {
   constructor(
     private readonly rPath: string,
     private readonly docs: ApiDocs,
