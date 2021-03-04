@@ -64,6 +64,7 @@ export default class extends Action {
           },
         ],
       },
+      parts: ["test1", "test2", "custom"],
     };
   }
 

@@ -2,7 +2,7 @@ import ApiDocsCreater from "../../src/ApiDocs/ApiDocsCreater";
 
 const creater = new ApiDocsCreater(
   "test/controllers",
-  "test/docs/doc.config.json"
+  "test/docs/configs/base.json"
 );
 
 test("api docs creater", async function () {

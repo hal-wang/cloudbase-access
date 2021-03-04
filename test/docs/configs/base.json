@@ -1,0 +1,9 @@
+{
+  "title": "cba-title",
+  "subtitle": "cba-subtitle",
+  "parts": [
+    "test/docs/configs/test1.json",
+    "test/docs/configs/test2.json",
+    "test/docs/configs/test3.json"
+  ]
+}

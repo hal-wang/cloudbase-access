@@ -1,0 +1,9 @@
+{
+  "inputHeaders": [
+    {
+      "name": "base-input-header",
+      "desc": "this is a base input header",
+      "type": "string"
+    }
+  ]
+}
