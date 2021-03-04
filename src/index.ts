@@ -13,12 +13,12 @@ import MiddlewareResult from "./Middleware/MiddlewareResult";
 
 import ApiDocs from "./ApiDocs";
 import ApiDocsParam from "./ApiDocs/ApiDocsParam";
-import ApiDocsInputParams from "./ApiDocs/ApiDocsInputParams";
-import ApiDocsOutputParams from "./ApiDocs/ApiDocsOutputParams";
-import ApiDocsStateCode from "./ApiDocs/ApiDocsStateCode";
-import ApiDocsIOParams from "./ApiDocs/ApiDocsIOParams";
-import ApiDocsConfigPart from "./ApiDocs/ApiDocsConfig/ApiDocsConfigPart";
+import ApiDocsIOParams from "./ApiDocs/ApiDocsParam/ApiDocsIOParams";
+import ApiDocsInputParams from "./ApiDocs/ApiDocsParam/ApiDocsInputParams";
+import ApiDocsOutputParams from "./ApiDocs/ApiDocsParam/ApiDocsOutputParams";
+import ApiDocsStateCode from "./ApiDocs/ApiDocsParam/ApiDocsStateCode";
 import ApiDocsConfig from "./ApiDocs/ApiDocsConfig";
+import ApiDocsConfigPart from "./ApiDocs/ApiDocsConfig/ApiDocsConfigPart";
 
 import Action from "./Action";
 import Authority from "./Authority";

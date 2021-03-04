@@ -1,4 +1,4 @@
-import ApiDocsParam from "./ApiDocsParam";
+import ApiDocsParam from ".";
 
 export default interface ApiDocsIOParams {
   headers?: ApiDocsParam[];

@@ -1,10 +1,10 @@
-import ApiDocs from ".";
+import ApiDocs from "..";
 import { readFileSync } from "fs";
 import ApiDocsNoteParserStruct from "./ApiDocsNoteParserStruct";
-import ApiDocsInputParams from "./ApiDocsInputParams";
-import ApiDocsParam from "./ApiDocsParam";
-import ApiDocsOutputParams from "./ApiDocsOutputParams";
-import ApiDocsStateCode from "./ApiDocsStateCode";
+import ApiDocsInputParams from "../ApiDocsParam/ApiDocsInputParams";
+import ApiDocsParam from "../ApiDocsParam";
+import ApiDocsOutputParams from "../ApiDocsParam/ApiDocsOutputParams";
+import ApiDocsStateCode from "../ApiDocsParam/ApiDocsStateCode";
 
 export default class ApiDocsNoteParser {
   constructor(private readonly file: string) {}

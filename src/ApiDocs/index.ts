@@ -1,5 +1,5 @@
-import ApiDocsInputParams from "./ApiDocsInputParams";
-import ApiDocsOutputParams from "./ApiDocsOutputParams";
+import ApiDocsInputParams from "./ApiDocsParam/ApiDocsInputParams";
+import ApiDocsOutputParams from "./ApiDocsParam/ApiDocsOutputParams";
 
 export default interface ApiDocs {
   input?: ApiDocsInputParams;
