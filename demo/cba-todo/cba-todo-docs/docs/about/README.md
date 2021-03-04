@@ -10,13 +10,13 @@ title: cba-todo
 
 ## docs
 
-<https://cba-todo.hal.wang/docs>
+[https://cba-todo.hal.wang](/docs)
 
 ## api
 
 the API documents are generated automatically by `cba`
 
-<https://cba-todo.hal.wang/docs/api>
+[https://cba-todo.hal.wang/docs/api](/docs/api)
 
 ## 一键部署
 
