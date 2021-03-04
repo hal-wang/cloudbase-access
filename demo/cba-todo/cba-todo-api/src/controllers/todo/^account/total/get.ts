@@ -1,6 +1,17 @@
 import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../../../lib/Collections";
 
+/**
+ * @action get user todo count
+ *
+ * get the count of user's all todos
+ *
+ * @output
+ * @@codes
+ * @@@200 success
+ * @body
+ * @@total {number} the count of user's all todos
+ */
 export default class extends Action {
   constructor() {
     super(["ql"]);

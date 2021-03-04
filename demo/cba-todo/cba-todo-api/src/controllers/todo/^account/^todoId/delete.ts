@@ -1,6 +1,15 @@
 import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../../../lib/Collections";
 
+/**
+ * @action delete todo
+ *
+ * delete a todo item
+ *
+ * @output
+ * @@codes
+ * @@@204 success
+ */
 export default class extends Action {
   constructor() {
     super(["ql", "todo"]);
