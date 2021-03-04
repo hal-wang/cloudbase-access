@@ -1,12 +1,12 @@
-import ApiDocs from ".";
-import PathParser from "../Map/PathParser";
-import ApiDocsConfig from "./ApiDocsConfig";
-import ApiDocsParam from "./ApiDocsParam";
-import ApiDocsIOParams from "./ApiDocsIOParams";
-import ApiDocsStateCode from "./ApiDocsStateCode";
-import ApiDocsBasePart from "./ApiDocsBasePart";
+import ApiDocs from "..";
+import PathParser from "../../Map/PathParser";
+import ApiDocsConfig from "../ApiDocsConfig";
+import ApiDocsParam from "../ApiDocsParam";
+import ApiDocsIOParams from "../ApiDocsIOParams";
+import ApiDocsStateCode from "../ApiDocsStateCode";
+import ApiDocsBasePart from "../ApiDocsBasePart";
 import path = require("path");
-import Action from "../Action";
+import Action from "../../Action";
 
 export default class ApiDocsMdCreater {
   constructor(
