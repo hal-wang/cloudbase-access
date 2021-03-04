@@ -2,6 +2,16 @@ import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../../../lib/Collections";
 import moment = require("moment");
 
+/**
+ * @action update todo
+ *
+ * update a todo's info
+ *
+ * @output
+ * @@codes
+ * @@@200 success
+ * @@body {object} new todo's info
+ */
 export default class extends Action {
   constructor() {
     super(["ql", "todo"]);

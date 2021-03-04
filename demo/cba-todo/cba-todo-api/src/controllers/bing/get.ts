@@ -1,6 +1,17 @@
 import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import request = require("request");
 
+/**
+ * @action get bing img
+ *
+ * get the bing image's url today
+ *
+ * @output
+ * @@codes
+ * @@@204 success
+ * @@@404 not found
+ * @@body {object} bing img's info
+ */
 export default class extends Action {
   async do(): Promise<HttpResult> {
     return new Promise<HttpResult>((resolve) => {

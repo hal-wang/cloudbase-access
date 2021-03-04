@@ -12,7 +12,7 @@ import Collections from "../../../lib/Collections";
  * @@@400 account format error
  * @@body {object} user info
  * @@headers
- * @@@ realPath {string} the action's real path
+ * @@@realPath {string} the action's real path
  */
 export default class extends Action {
   constructor() {
