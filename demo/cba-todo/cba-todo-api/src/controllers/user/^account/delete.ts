@@ -2,6 +2,16 @@ import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../../lib/Collections";
 import Global from "../../../lib/Global";
 
+/**
+ * @action delete user
+ *
+ * delete a user
+ *
+ * @output
+ * @@codes
+ * @@@204 success
+ * @@@404 can't delete the test user
+ */
 export default class extends Action {
   constructor() {
     super(["ql"]);
