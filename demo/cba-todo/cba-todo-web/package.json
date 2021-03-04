@@ -6,8 +6,6 @@
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
-  "author": "hal-wang",
-  "license": "MIT",
   "dependencies": {
     "ant-design-vue": "^1.7.2",
     "axios": "^0.21.1",
