@@ -67,8 +67,10 @@ export default class ApiDocsMdCreater {
       result += `\n\n> `;
     }
 
-    const pwhmae = pathParser.pathWithoutHttpMethodAndExtension;
-    result += `/${pwhmae.replace(/^\^/, ":")}`;
+    let pwhmae = pathParser.pathWithoutHttpMethodAndExtension;
+    pwhmae = pwhmae.replace(/\/\^/, "/:");
+    pwhmae = pwhmae.replace(/^\^/, ":");
+    result += `/${pwhmae}`;
     return result;
   }
 
