@@ -615,10 +615,80 @@ parts 的内容较为复杂，参考 [parts](###parts) 部分
 
 因此各属性的介绍与 [action 注释](###action注释) 的方式相同，此处不再赘述。
 
+### 配置文件
+
+前面所说 `cba-doc` 命令的第三个参数为配置文件路径，配置文件格式如下：
+
+```JSON
+{
+  "title": "cba-title",
+  "subtitle": "cba-subtitle",
+  "parts": [
+    "docs/configs/test1.json",
+    "docs/configs/test2.json",
+    "docs/configs/test3.json"
+  ],
+  "partsFromAuth": true
+}
+```
+
+1. title: 生成文档的标题
+2. subtitle: 生成文档的简介
+3. parts: 参考 [parts](###parts) 部分
+4. partsFromAuth: 参考 [parts](###parts) 部分
+
 ### parts
 
 有些参数可能会被多个 API 使用，对于一个网站，可能大多数 API 都需要在头部传入`cookie`、`account`等。
 
 利用 `parts` 功能可以重复使用某些参数。
 
-对于 `ApiDocs`，parts 值为字符串数组，字符串是配置文件的相对路径
+#### 配置
+
+前面配置文件的 `parts` 属性值为字符串数组，内容为重复部分的配置文件路径，每个文件都是一个可配置项。
+
+每个可配置项格式如下：
+
+```JSON
+{
+  "name": "custom",
+  "query": [
+    {
+      "name": "base-query",
+      "desc": "this is a base query",
+      "type": "string"
+    }
+  ],
+  "outputHeaders":[],
+  "inputHeaders":[],
+  "params":[],
+  "codes":[]
+}
+
+```
+
+其中 `name` 值为该配置项的标识。如果该值为空或未设置，则会使用该配置项的文件名。
+
+#### ApiDocs 对象
+
+对于 `ApiDocs`，其属性 parts 值为字符串数组，字符串是配置项的标识。
+
+如果 `ApiDocs.parts` 包含某个可配置项，则生成的文档会包含该可配置项的内容。
+
+优势 `parts` 与 `auth` 使用场景可能重复。为了简单化，属性 parts 值也可以为一个特殊值 `@auth`，此时这个 `Action` 的 `parts`属性值将取自 `auth` 属性值。
+
+更进一步，如果配置文件中的 `partsFromAuth` 属性值为 `true`，那么所有 `parts` 如果未设置值，都将取自 `auth` 属性值。（未写自动化文档 `Action `将被忽略，没有 `@input` 将忽略输入参数，没有 `@output` 将忽略输出参数 ）。
+
+#### 注释中的格式
+
+在注释中，格式如：
+
+```
+@parts part1 part2
+```
+
+或取自 `auth` 属性值：
+
+```
+@parts @auth
+```
