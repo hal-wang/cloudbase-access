@@ -5,5 +5,6 @@
     "test/docs/configs/test1.json",
     "test/docs/configs/test2.json",
     "test/docs/configs/test3.json"
-  ]
+  ],
+  "partsFromAuth": true
 }

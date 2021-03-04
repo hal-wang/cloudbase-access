@@ -5,7 +5,6 @@ import { Action, HttpResult } from "../../../src";
  *
  * a docs test named put
  *
- * @parts @auth
  * @input
  */
 export default class extends Action {

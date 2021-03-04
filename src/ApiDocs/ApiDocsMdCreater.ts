@@ -161,11 +161,12 @@ export default class ApiDocsMdCreater {
     const partConfigs = this.partConfigs;
     const result = <(ApiDocsParam | ApiDocsStateCode)[]>[];
     if (
-      this.docs.parts == "@auth" &&
-      this.action.roles &&
-      this.action.roles.length
+      this.docs.parts == "@auth" ||
+      (!this.docs.parts && this.config.partsFromAuth)
     ) {
-      this.docs.parts = (<string[]>[]).concat(this.action.roles);
+      if (this.action.roles && this.action.roles.length) {
+        this.docs.parts = (<string[]>[]).concat(this.action.roles);
+      }
     }
     if (this.docs.parts && Array.isArray(this.docs.parts)) {
       this.docs.parts.forEach((part) => {
