@@ -40,7 +40,9 @@ export default class ApiDocsNoteParser {
           result.desc = struct.content;
           break;
         case "parts":
-          if (struct.subtitle) {
+          if (struct.subtitle == "@auth") {
+            result.parts = "@auth";
+          } else if (struct.subtitle) {
             result.parts = struct.subtitle.split(" ");
           }
           break;

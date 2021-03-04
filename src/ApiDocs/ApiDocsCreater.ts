@@ -2,8 +2,6 @@ import { writeFileSync, existsSync, lstatSync, readdirSync } from "fs";
 import linq = require("linq");
 import path = require("path");
 import Action from "../Action";
-import PathParser from "../Map/PathParser";
-import ApiDocsBasePart from "./ApiDocsBasePart";
 import ApiDocsConfig from "./ApiDocsConfig";
 import ApiDocsMdCreater from "./ApiDocsMdCreater";
 import ApiDocsNoteParser from "./ApiDocsNoteParser";
@@ -68,11 +66,11 @@ export default class ApiDocsCreater {
     return path.join(process.cwd(), this.cFolder);
   }
 
-  private readFilesFromFolder(folderRePath: string): string {
+  private readFilesFromFolder(folderRPath: string): string {
     let result = "";
     const storageItems = linq
-      .from(readdirSync(path.join(this.cfPath, folderRePath)))
-      .select((item) => path.join(folderRePath, item))
+      .from(readdirSync(path.join(this.cfPath, folderRPath)))
+      .select((item) => path.join(folderRPath, item))
       .toArray();
 
     const files = linq
@@ -109,8 +107,8 @@ export default class ApiDocsCreater {
     return result.trimEnd();
   }
 
-  private readFile(relativePath: string): string {
-    const file = path.join(this.cfPath, relativePath);
+  private readFile(rPath: string): string {
+    const file = path.join(this.cfPath, rPath);
     let action;
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -129,6 +127,6 @@ export default class ApiDocsCreater {
       docs = new ApiDocsNoteParser(file).docs;
     }
     if (!docs) return "";
-    else return new ApiDocsMdCreater(relativePath, docs, this.config).result;
+    else return new ApiDocsMdCreater(rPath, docs, this.config, action).result;
   }
 }

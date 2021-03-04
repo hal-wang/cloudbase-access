@@ -6,5 +6,5 @@ export default interface ApiDocs {
   output?: ApiDocsOutputParams;
   desc?: string;
   name?: string;
-  parts?: string[];
+  parts?: string[] | "@auth";
 }
