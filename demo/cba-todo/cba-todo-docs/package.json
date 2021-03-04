@@ -1,0 +1,7 @@
+{
+  "name": "cba-todo-docs",
+  "scripts": {
+    "dev": "cd ../cba-todo-api && npm run doc && cd ../cba-todo-docs && vuepress dev docs",
+    "build": "cd ../cba-todo-api && npm run doc && cd ../cba-todo-docs && vuepress build docs && bash build.sh"
+  }
+}

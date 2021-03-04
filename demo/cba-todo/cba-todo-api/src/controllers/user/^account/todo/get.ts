@@ -2,10 +2,11 @@ import { Action, DbHelper, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../../../lib/Collections";
 
 /**
- * @action get todos
+ * @action todos
  *
  * get todo list
  *
+ * @input
  * @output
  * @@codes
  * @@@200 success

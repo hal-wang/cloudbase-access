@@ -1,0 +1,16 @@
+{
+  "name": "cba-todo",
+  "short_name": "cba-todo",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "description": "A demo of cloudbase-access",
+  "theme_color": "blue",
+  "icons": [
+    {
+      "src": "https://blog.hal.wang/imgs/cba.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
+}

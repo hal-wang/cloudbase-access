@@ -10,7 +10,8 @@
         "type": "execCommand",
         "commands": [
           "npm install -g typescript",
-          "cd cba-todo-api && npm install && npm run build"
+          "cd cba-todo-api && npm install --prefer-offline --no-audit --progress=false && npm run build && npm run doc",
+          "cd cba-todo-docs && npm run build"
         ]
       }
     },

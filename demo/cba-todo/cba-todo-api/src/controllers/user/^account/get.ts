@@ -2,10 +2,11 @@ import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../../lib/Collections";
 
 /**
- * @action get user info
+ * @action user info
  *
  * get a user info
  *
+ * @input
  * @output
  * @@codes
  * @@@200 success
