@@ -23,13 +23,16 @@ module.exports = {
       {
         text: "Docs",
         ariaLabel: "Docs",
-        items: [{ text: "Api", link: "/api/" }],
+        items: [
+          { text: "About", link: "/about/" },
+          { text: "Api", link: "/api/" },
+        ],
       },
       { text: "GitHub", link: "https://github.com/hal-wang/cloudbase-access" },
     ],
     sidebar: {
       "/api/": [""],
-      "/start/": [""],
+      "/about/": [""],
     },
   },
 };
