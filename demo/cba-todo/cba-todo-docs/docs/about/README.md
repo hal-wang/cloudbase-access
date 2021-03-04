@@ -10,7 +10,7 @@ title: cba-todo
 
 ## docs
 
-[https://cba-todo.hal.wang](/docs)
+[https://cba-todo.hal.wang/docs](/docs)
 
 ## api
 
