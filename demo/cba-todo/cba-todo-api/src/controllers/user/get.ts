@@ -6,6 +6,7 @@ import Collections from "../../lib/Collections";
  *
  * get all users' info
  *
+ * @part hl
  * @output
  * @@codes
  * @@@200 success

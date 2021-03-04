@@ -1,0 +1,14 @@
+{
+  "inputHeaders": [
+    {
+      "name": "password",
+      "desc": "the password for login",
+      "type": "string"
+    },
+    {
+      "name": "account",
+      "desc": "the email account for login",
+      "type": "string"
+    }
+  ]
+}
