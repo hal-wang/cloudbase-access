@@ -1,6 +1,6 @@
 {
   "name": "cba-todo-api",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "build:test": "bash build.sh test",
     "build": "bash build.sh cba-todo",
@@ -10,11 +10,9 @@
     "eslint": "eslint . --ext .ts",
     "test": "jest"
   },
-  "author": "hal-wang",
-  "license": "MIT",
   "dependencies": {
     "@cloudbase/node-sdk": "^2.5.0",
-    "@hal-wang/cloudbase-access": "^1.1.0-beta.9",
+    "@hal-wang/cloudbase-access": "^1.1.0",
     "linq": "^3.2.3",
     "moment": "^2.29.1",
     "request": "^2.88.2"
