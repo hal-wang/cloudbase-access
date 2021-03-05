@@ -31,6 +31,7 @@ export default class RequestParams {
     headers: Record<string, string | undefined>
   ): unknown {
     if (
+      body &&
       headers &&
       headers["content-type"] &&
       headers["content-type"].includes("application/json") &&
@@ -38,7 +39,7 @@ export default class RequestParams {
     ) {
       return <Record<string, unknown>>JSON.parse(body);
     } else {
-      return body;
+      return body || {};
     }
   }
 
