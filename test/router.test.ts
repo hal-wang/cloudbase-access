@@ -81,3 +81,15 @@ test("isMethodNecessary test", async function () {
   result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
 });
+
+test("null body test", async function () {
+  const event = {
+    path: "/nullbody",
+    httpMethod: "POST",
+  };
+  const router = new Router(event, {}, undefined, "test/controllers");
+
+  const result = (await router.do()).result;
+  console.log("r", result);
+  expect(result.statusCode).toBe(200);
+});
