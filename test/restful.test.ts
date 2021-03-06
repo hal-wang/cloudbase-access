@@ -1,6 +1,16 @@
-import { Router } from "../src/index";
+import { RequestMethod, Router } from "../src/index";
 
-const methods = ["GET", "POST", "DELETE", "PUT", "PATCH"];
+const methods = [
+  RequestMethod.get,
+  RequestMethod.connect,
+  RequestMethod.delete,
+  RequestMethod.post,
+  RequestMethod.head,
+  RequestMethod.options,
+  RequestMethod.patch,
+  RequestMethod.put,
+  RequestMethod.trace,
+];
 
 methods.forEach((method) => {
   test(`${method} restful test`, async function () {

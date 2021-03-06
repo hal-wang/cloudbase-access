@@ -7,6 +7,7 @@ import linq = require("linq");
 import HttpResultError from "../HttpResult/HttpResultError";
 import { HttpResult } from "..";
 import RequestMethod from "../Router/RequestMethod";
+import PathParser from "./PathParser";
 
 export default class MapParser {
   public readonly realPath: string;
@@ -59,16 +60,7 @@ export default class MapParser {
     const likePathsCount = linq
       .from(map)
       .where((item) => this.isPathMatched(item, false))
-      .where((item) => {
-        const name = this.removeExtension(item);
-        return (
-          name.endsWith(RequestMethod.delete.toLowerCase()) ||
-          name.endsWith(RequestMethod.get.toLowerCase()) ||
-          name.endsWith(RequestMethod.post.toLowerCase()) ||
-          name.endsWith(RequestMethod.patch.toLowerCase()) ||
-          name.endsWith(RequestMethod.put.toLowerCase())
-        );
-      })
+      .where((item) => !!new PathParser(item).httpMethod)
       .count();
 
     if (likePathsCount) throw this.methodNotAllowedErr;

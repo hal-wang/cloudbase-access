@@ -1,6 +1,5 @@
 import { CollectionReference, Query } from "@cloudbase/database";
 import { RequestParams } from ".";
-import RequestMethod from "./Router/RequestMethod";
 
 export default class DbHelper {
   static getResBadContent(res: Record<string, unknown>): string {

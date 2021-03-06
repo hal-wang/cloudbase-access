@@ -27,23 +27,28 @@ export default class PathParser {
   public get httpMethod(): RequestMethod | undefined {
     const fileNameWithoutExtension = this.fileNameWithoutExtension;
 
-    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.get) {
-      return RequestMethod.get;
+    switch (fileNameWithoutExtension.toUpperCase()) {
+      case RequestMethod.get:
+        return RequestMethod.get;
+      case RequestMethod.post:
+        return RequestMethod.post;
+      case RequestMethod.delete:
+        return RequestMethod.delete;
+      case RequestMethod.patch:
+        return RequestMethod.patch;
+      case RequestMethod.put:
+        return RequestMethod.put;
+      case RequestMethod.head:
+        return RequestMethod.head;
+      case RequestMethod.trace:
+        return RequestMethod.trace;
+      case RequestMethod.options:
+        return RequestMethod.options;
+      case RequestMethod.connect:
+        return RequestMethod.connect;
+      default:
+        return undefined;
     }
-    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.post) {
-      return RequestMethod.post;
-    }
-    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.delete) {
-      return RequestMethod.delete;
-    }
-    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.patch) {
-      return RequestMethod.patch;
-    }
-    if (fileNameWithoutExtension.toUpperCase() == RequestMethod.put) {
-      return RequestMethod.put;
-    }
-
-    return undefined;
   }
 
   public get pathWithoutHttpMethod(): string {

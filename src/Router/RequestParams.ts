@@ -16,7 +16,9 @@ export default class RequestParams {
     public readonly context: Record<string, unknown>
   ) {
     this.path = this.getPath(<string>event.path);
-    this.method = <RequestMethod>event.httpMethod;
+
+    if (!event.httpMethod) event.httpMethod = "";
+    this.method = <RequestMethod>(event.httpMethod as string).toUpperCase();
 
     this.headers = <Record<string, string | undefined>>event.headers;
     this.params = <Record<string, string | undefined>>(
@@ -48,15 +50,5 @@ export default class RequestParams {
     else return path.substr(1, path.length - 1);
   }
 
-  static get empty(): RequestParams {
-    return new RequestParams(
-      {
-        headers: {},
-        path: null,
-        params: {},
-        data: {},
-      },
-      {}
-    );
-  }
+  static empty = <RequestParams>(<unknown>undefined);
 }
