@@ -67,6 +67,21 @@ export default class HttpResult {
     return HttpResult.badRequest(msg);
   };
 
+  static unauthorized = function (body?: unknown): HttpResult {
+    return new HttpResult(401, body);
+  };
+  static unauthorizedMsg = function (
+    msg?: ErrorMessage & Record<string, unknown>
+  ): HttpResult {
+    if (!msg) {
+      msg = {
+        message: "Unauthorized",
+      };
+    }
+
+    return HttpResult.unauthorized(msg);
+  };
+
   static forbidden = function (body?: unknown): HttpResult {
     return new HttpResult(403, body);
   };
