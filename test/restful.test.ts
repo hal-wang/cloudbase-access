@@ -27,18 +27,6 @@ methods.forEach((method) => {
   });
 });
 
-test(`method not allowed restful test`, async function () {
-  const event = {
-    body: {},
-    path: "/restful",
-    httpMethod: "POST1",
-  };
-  const router = new Router(event, {}, undefined, "test/controllers");
-
-  const result = (await router.do()).result;
-  expect(result.statusCode).toBe(405);
-});
-
 test(`restful query test`, async function () {
   let event = {
     body: {},
@@ -61,4 +49,26 @@ test(`restful query test`, async function () {
   result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("11");
+});
+
+test(`method not allowed`, async function () {
+  const event = {
+    body: {},
+    path: "/restful",
+    httpMethod: "NO",
+  };
+  const router = new Router(event, {}, undefined, "test/controllers");
+  const result = (await router.do()).result;
+  expect(result.statusCode).toBe(405);
+});
+
+test(`action name error`, async function () {
+  const event = {
+    body: {},
+    path: "/err",
+    httpMethod: RequestMethod.post,
+  };
+  const router = new Router(event, {}, undefined, "test/controllers");
+  const result = (await router.do()).result;
+  expect(result.statusCode).toBe(404);
 });

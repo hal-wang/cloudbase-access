@@ -6,7 +6,6 @@ import Action from "../Action";
 import linq = require("linq");
 import HttpResultError from "../HttpResult/HttpResultError";
 import { HttpResult } from "..";
-import RequestMethod from "../Router/RequestMethod";
 import PathParser from "./PathParser";
 
 export default class MapParser {
