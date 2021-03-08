@@ -34,17 +34,34 @@ export default class MapCreater {
     const storageItems = linq
       .from(readdirSync(path.join(this.cfPath, folderRePath)))
       .select((item) => path.join(folderRePath, item));
-    storageItems.forEach((storageItem) => {
-      const stat = lstatSync(path.join(this.cfPath, storageItem));
-      if (stat.isDirectory()) {
-        this.readFilesFromFolder(storageItem, result);
-      } else if (
-        stat.isFile() &&
-        (storageItem.endsWith(".js") || storageItem.endsWith(".ts"))
-      ) {
-        result.push(storageItem.replace(/\\/g, "/"));
-      }
-    });
+
+    const files = linq
+      .from(storageItems)
+      .where((storageItem) => {
+        const stat = lstatSync(path.join(this.cfPath, storageItem));
+        return (
+          stat.isFile() &&
+          (storageItem.endsWith(".js") || storageItem.endsWith(".ts"))
+        );
+      })
+      .orderBy((item) => item)
+      .toArray();
+    for (let i = 0; i < files.length; i++) {
+      result.push(files[i].replace(/\\/g, "/"));
+    }
+
+    const folders = linq
+      .from(storageItems)
+      .where((storageItem) => {
+        const stat = lstatSync(path.join(this.cfPath, storageItem));
+        return stat.isDirectory();
+      })
+      .orderBy((item) => item)
+      .toArray();
+    for (let i = 0; i < folders.length; i++) {
+      this.readFilesFromFolder(folders[i], result);
+    }
+
     return result;
   }
 }
