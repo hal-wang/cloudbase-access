@@ -62,6 +62,17 @@ test(`method not allowed`, async function () {
   expect(result.statusCode).toBe(405);
 });
 
+test(`find next`, async function () {
+  const event = {
+    body: {},
+    path: "/restful/method",
+    httpMethod: "POST",
+  };
+  const router = new Router(event, {}, undefined, "test/controllers");
+  const result = (await router.do()).result;
+  expect(result.statusCode).toBe(200);
+});
+
 test(`action name error`, async function () {
   const event = {
     body: {},
