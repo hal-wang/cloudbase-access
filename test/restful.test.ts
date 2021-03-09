@@ -73,6 +73,30 @@ test(`find next`, async function () {
   expect(result.statusCode).toBe(200);
 });
 
+test(`find simple`, async function () {
+  const event = {
+    body: {},
+    path: "/restful/method/simple",
+    httpMethod: "POST",
+  };
+  const router = new Router(event, {}, undefined, "test/controllers");
+  const result = (await router.do()).result;
+  expect(result.statusCode).toBe(200);
+  expect((result.body as Record<string, string>).action).toBe("simple");
+});
+
+test(`find simple next`, async function () {
+  const event = {
+    body: {},
+    path: "/restful/method/simple1",
+    httpMethod: "POST",
+  };
+  const router = new Router(event, {}, undefined, "test/controllers");
+  const result = (await router.do()).result;
+  expect(result.statusCode).toBe(200);
+  expect((result.body as Record<string, string>).method).toBe("POST");
+});
+
 test(`action name error`, async function () {
   const event = {
     body: {},
