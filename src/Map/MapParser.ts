@@ -50,50 +50,69 @@ export default class MapParser {
   }
 
   private getRestfulMapPath(map: string[]): string {
-    const mapPath = linq
+    let mapPath;
+
+    if (!this.isMethodNecessary) {
+      mapPath = linq
+        .from(map)
+        .where((item) => this.isSimplePathMatched(item))
+        .firstOrDefault();
+      if (mapPath) return mapPath;
+    }
+
+    mapPath = linq
       .from(map)
-      .where((item) => this.isPathMatched(item, true))
+      .where((item) => this.isMethodPathMatched(item, true))
       .firstOrDefault();
     if (mapPath) return mapPath;
 
-    const likePathsCount = linq
+    const otherMethodPathCount = linq
       .from(map)
-      .where((item) => this.isPathMatched(item, false))
+      .where((item) => this.isMethodPathMatched(item, false))
       .where((item) => !!new PathParser(item).httpMethod)
       .count();
+    if (otherMethodPathCount) throw this.methodNotAllowedErr;
 
-    if (likePathsCount) throw this.methodNotAllowedErr;
-    else throw this.notFoundErr;
+    throw this.notFoundErr;
   }
 
-  private isPathMatched(path: string, methodIncluded: boolean): boolean {
+  private isSimplePathMatched(mapPath: string): boolean {
+    mapPath = this.removeExtension(mapPath);
     const reqUrlStrs = this.requestParams.path.toLowerCase().split("/");
-    const pathStrs = path.toLowerCase().split("/");
-    if (!pathStrs.length) return false;
+    const mapPathStrs = mapPath.toLowerCase().split("/");
+    if (!mapPathStrs.length || !reqUrlStrs.length) return false;
+    if (reqUrlStrs.length != mapPathStrs.length) return false;
 
-    // method action
-    if (pathStrs.length - 1 == reqUrlStrs.length) {
-      if (!this.requestParams.method) return false;
-      if (methodIncluded) {
-        reqUrlStrs.push(this.requestParams.method.toLowerCase());
-      } else {
-        pathStrs.splice(pathStrs.length - 1, 1);
-      }
-    } else if (this.isMethodNecessary) {
-      return false;
+    return this.isPathMatched(mapPathStrs, reqUrlStrs);
+  }
+
+  private isMethodPathMatched(
+    mapPath: string,
+    methodIncluded: boolean
+  ): boolean {
+    mapPath = this.removeExtension(mapPath);
+    const reqUrlStrs = this.requestParams.path.toLowerCase().split("/");
+    const mapPathStrs = mapPath.toLowerCase().split("/");
+    if (!mapPathStrs.length || !reqUrlStrs.length) return false;
+    if (reqUrlStrs.length != mapPathStrs.length - 1) return false;
+    if (!this.requestParams.method) return false;
+
+    if (methodIncluded) {
+      reqUrlStrs.push(this.requestParams.method.toLowerCase());
+    } else {
+      mapPathStrs.splice(mapPathStrs.length - 1, 1);
     }
 
-    if (pathStrs.length != reqUrlStrs.length) return false;
+    return this.isPathMatched(mapPathStrs, reqUrlStrs);
+  }
 
-    for (let i = 0; i < pathStrs.length - 1; i++) {
-      if (pathStrs[i] != reqUrlStrs[i] && !pathStrs[i].startsWith("^")) {
+  private isPathMatched(mapPathStrs: string[], reqUrlStrs: string[]): boolean {
+    if (mapPathStrs.length != reqUrlStrs.length) return false;
+
+    for (let i = 0; i < mapPathStrs.length; i++) {
+      if (mapPathStrs[i] != reqUrlStrs[i] && !mapPathStrs[i].startsWith("^")) {
         return false;
       }
-    }
-
-    const actionName = pathStrs[pathStrs.length - 1];
-    if (this.removeExtension(actionName) != reqUrlStrs[reqUrlStrs.length - 1]) {
-      return false;
     }
 
     return true;
