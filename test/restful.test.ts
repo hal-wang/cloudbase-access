@@ -1,15 +1,15 @@
-import { RequestMethod, Router } from "../src/index";
+import { HttpMethod, Router } from "../src/index";
 
 const methods = [
-  RequestMethod.get,
-  RequestMethod.connect,
-  RequestMethod.delete,
-  RequestMethod.post,
-  RequestMethod.head,
-  RequestMethod.options,
-  RequestMethod.patch,
-  RequestMethod.put,
-  RequestMethod.trace,
+  HttpMethod.get,
+  HttpMethod.connect,
+  HttpMethod.delete,
+  HttpMethod.post,
+  HttpMethod.head,
+  HttpMethod.options,
+  HttpMethod.patch,
+  HttpMethod.put,
+  HttpMethod.trace,
 ];
 
 methods.forEach((method) => {
@@ -101,7 +101,7 @@ test(`action name error`, async function () {
   const event = {
     body: {},
     path: "/err",
-    httpMethod: RequestMethod.post,
+    httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
   const result = (await router.do()).result;

@@ -1,4 +1,4 @@
-import { RequestMethod, Router, RequestParams } from "../src/index";
+import { HttpMethod, Router, RequestParams } from "../src/index";
 
 test("method override", async function () {
   const event = {
@@ -8,8 +8,8 @@ test("method override", async function () {
     },
   };
   const rParams = new RequestParams(event, {});
-  expect(rParams.method).toBe(RequestMethod.post);
-  expect(rParams.method).not.toBe(RequestMethod.patch);
+  expect(rParams.method).toBe(HttpMethod.post);
+  expect(rParams.method).not.toBe(HttpMethod.patch);
 });
 
 test("method override upper case", async function () {
@@ -20,8 +20,8 @@ test("method override upper case", async function () {
     },
   };
   const rParams = new RequestParams(event, {});
-  expect(rParams.method).toBe(RequestMethod.post);
-  expect(rParams.method).not.toBe(RequestMethod.patch);
+  expect(rParams.method).toBe(HttpMethod.post);
+  expect(rParams.method).not.toBe(HttpMethod.patch);
 });
 
 test(`method override request`, async function () {
@@ -37,6 +37,6 @@ test(`method override request`, async function () {
   const result = (await router.do()).result;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).method).toBe(
-    RequestMethod.get
+    HttpMethod.get
   );
 });

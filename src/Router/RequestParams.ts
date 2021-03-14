@@ -1,4 +1,4 @@
-import RequestMethod from "./RequestMethod";
+import HttpMethod from "./HttpMethod";
 import linq = require("linq");
 
 export default class RequestParams {
@@ -8,7 +8,7 @@ export default class RequestParams {
   readonly data: any;
 
   readonly path: string;
-  readonly method: RequestMethod;
+  readonly method: HttpMethod;
 
   readonly query = <Record<string, string>>{};
 
@@ -47,19 +47,21 @@ export default class RequestParams {
     else return path.substr(1, path.length - 1);
   }
 
-  private getMethod(httpMethod: string | undefined): RequestMethod {
-    const ovrdHeaderKey = "X-HTTP-Method-Override";
-    const ovrdKey = linq
-      .from(Object.keys(this.headers))
-      .where((h) => h.toUpperCase() == ovrdHeaderKey.toUpperCase())
-      .firstOrDefault();
-    if (ovrdKey) {
-      const ovrdValue = this.headers[ovrdKey];
-      if (ovrdValue) return <RequestMethod>ovrdValue.toUpperCase();
+  private getMethod(httpMethod: string | undefined): HttpMethod {
+    if (this.headers) {
+      const ovrdHeaderKey = "X-HTTP-Method-Override";
+      const ovrdKey = linq
+        .from(Object.keys(this.headers))
+        .where((h) => h.toUpperCase() == ovrdHeaderKey.toUpperCase())
+        .firstOrDefault();
+      if (ovrdKey) {
+        const ovrdValue = this.headers[ovrdKey];
+        if (ovrdValue) return <HttpMethod>ovrdValue.toUpperCase();
+      }
     }
 
-    if (!httpMethod) return RequestMethod.post;
-    return <RequestMethod>httpMethod.toUpperCase();
+    if (!httpMethod) return HttpMethod.post;
+    return <HttpMethod>httpMethod.toUpperCase();
   }
 
   static empty = <RequestParams>(<unknown>undefined);
