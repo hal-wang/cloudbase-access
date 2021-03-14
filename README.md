@@ -63,6 +63,18 @@ export const main = async (
 
 如果限制 `httpMethod`, `action` 应以 `post.ts`、`get.ts`、`delete.ts`、`patch.ts`、`put.ts` （或 `.js` ）命名，否则任意 `httpMethod` 都可以访问。
 
+#### X-HTTP-Method-Override
+
+如果请求头部包含 `X-HTTP-Method-Override` 参数，则访问方法以 `X-HTTP-Method-Override` 值为准
+
+比如 Action 要求 `PATCH` 请求，但微信小程序不支持 `PATCH`，那么可以使用 `POST` 访问，并在头部加上此参数，值为 `PATCH`
+
+```JSON
+"headers":{
+  "X-HTTP-Method-Override":"PATCH"
+}
+```
+
 #### isMethodNecessary
 
 如果设置 `router.isMethodNecessary = true;`, 则所有 `Action` 必须严格使用 `httpMethod` 命名，与 RESTFul 规范相符。否则会找不到路由并返回 `404`。
