@@ -1,4 +1,4 @@
-const enum RequestMethod {
+const enum HttpMethod {
   get = "GET",
   post = "POST",
   put = "PUT",
@@ -10,4 +10,4 @@ const enum RequestMethod {
   connect = "CONNECT",
 }
 
-export default RequestMethod;
+export default HttpMethod;

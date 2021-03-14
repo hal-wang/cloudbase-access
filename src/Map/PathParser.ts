@@ -1,4 +1,4 @@
-import RequestMethod from "../Router/RequestMethod";
+import HttpMethod from "../Router/HttpMethod";
 
 export default class PathParser {
   private readonly relativePath: string;
@@ -24,28 +24,28 @@ export default class PathParser {
     return path.substr(index + 1, path.length - index - 1);
   }
 
-  public get httpMethod(): RequestMethod | undefined {
+  public get httpMethod(): HttpMethod | undefined {
     const fileNameWithoutExtension = this.fileNameWithoutExtension;
 
     switch (fileNameWithoutExtension.toUpperCase()) {
-      case RequestMethod.get:
-        return RequestMethod.get;
-      case RequestMethod.post:
-        return RequestMethod.post;
-      case RequestMethod.delete:
-        return RequestMethod.delete;
-      case RequestMethod.patch:
-        return RequestMethod.patch;
-      case RequestMethod.put:
-        return RequestMethod.put;
-      case RequestMethod.head:
-        return RequestMethod.head;
-      case RequestMethod.trace:
-        return RequestMethod.trace;
-      case RequestMethod.options:
-        return RequestMethod.options;
-      case RequestMethod.connect:
-        return RequestMethod.connect;
+      case HttpMethod.get:
+        return HttpMethod.get;
+      case HttpMethod.post:
+        return HttpMethod.post;
+      case HttpMethod.delete:
+        return HttpMethod.delete;
+      case HttpMethod.patch:
+        return HttpMethod.patch;
+      case HttpMethod.put:
+        return HttpMethod.put;
+      case HttpMethod.head:
+        return HttpMethod.head;
+      case HttpMethod.trace:
+        return HttpMethod.trace;
+      case HttpMethod.options:
+        return HttpMethod.options;
+      case HttpMethod.connect:
+        return HttpMethod.connect;
       default:
         return undefined;
     }
