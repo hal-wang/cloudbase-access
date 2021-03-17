@@ -5,10 +5,12 @@ import RequestParams from "../Router/RequestParams";
 export default abstract class Action {
   constructor(public readonly roles: Array<string> = new Array<string>()) {}
 
-  /** will be set before doing */
-  requestParams = RequestParams.empty;
+  //#region will be set before doing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly requestParams: RequestParams = <any>undefined;
+  //#endregion
 
-  /**docs of action */
+  /** docs of action */
   docs?: ApiDocs;
 
   realPath?: string;
