@@ -63,6 +63,4 @@ export default class RequestParams {
     if (!httpMethod) return HttpMethod.post;
     return <HttpMethod>httpMethod.toUpperCase();
   }
-
-  static empty = <RequestParams>(<unknown>undefined);
 }

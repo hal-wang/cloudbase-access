@@ -57,14 +57,14 @@ export default class Router {
     }
     const action = actionResult.action as Action;
 
-    mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction);
+    mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction, action);
     if (!mdwResult.success) {
       return this.getResultWithAdditives(mdwResult.failedResult);
     }
 
     const result = await action.do();
 
-    mdwResult = await this.ExecEndMdw(result);
+    mdwResult = await this.ExecEndMdw(result, action);
     if (!mdwResult.success) {
       return this.getResultWithAdditives(mdwResult.failedResult);
     }
@@ -104,16 +104,31 @@ export default class Router {
     };
   }
 
-  private async ExecEndMdw(result: HttpResult): Promise<MiddlewareResult> {
+  private async ExecEndMdw(
+    actionResult: HttpResult,
+    action?: Action
+  ): Promise<MiddlewareResult> {
     let mdwResult;
-    if (result.isSuccess) {
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeSuccessEnd, result);
+    if (actionResult.isSuccess) {
+      mdwResult = await this.ExecMdw(
+        MiddlewareType.BeforeSuccessEnd,
+        action,
+        actionResult
+      );
     } else {
-      mdwResult = await this.ExecMdw(MiddlewareType.BeforeErrEnd, result);
+      mdwResult = await this.ExecMdw(
+        MiddlewareType.BeforeErrEnd,
+        action,
+        actionResult
+      );
     }
     if (!mdwResult.success) return mdwResult;
 
-    mdwResult = await this.ExecMdw(MiddlewareType.BeforeEnd, result);
+    mdwResult = await this.ExecMdw(
+      MiddlewareType.BeforeEnd,
+      action,
+      actionResult
+    );
     if (!mdwResult.success) return mdwResult;
 
     return new MiddlewareResult(true);
@@ -121,13 +136,17 @@ export default class Router {
 
   private async ExecMdw(
     type: MiddlewareType,
+    action?: Action,
     actionResult?: HttpResult
   ): Promise<MiddlewareResult> {
     for (let i = 0; i < this.middlewares.length; i++) {
       const middleware = this.middlewares[i];
       if (middleware.type != type) continue;
 
-      middleware.requestParams = this.requestParams;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (middleware as any).requestParams = this.requestParams;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (middleware as any).action = action;
       middleware.actionResult = actionResult;
       const mdwResult = await middleware.do();
 
