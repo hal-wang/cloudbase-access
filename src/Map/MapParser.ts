@@ -28,7 +28,8 @@ export default class MapParser {
     const actionClass = require(filePath).default;
     const action = new actionClass() as Action;
     action.realPath = this.realPath;
-    action.requestParams = this.requestParams;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (action as any).requestParams = this.requestParams;
     return action;
   }
 
