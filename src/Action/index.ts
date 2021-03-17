@@ -8,12 +8,13 @@ export default abstract class Action {
   //#region will be set before doing
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly requestParams: RequestParams = <any>undefined;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly realPath: string = <any>undefined;
   //#endregion
 
   /** docs of action */
   docs?: ApiDocs;
-
-  realPath?: string;
 
   protected readonly base = HttpResult.base;
   protected readonly ok = HttpResult.ok;

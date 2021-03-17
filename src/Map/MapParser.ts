@@ -27,7 +27,8 @@ export default class MapParser {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const actionClass = require(filePath).default;
     const action = new actionClass() as Action;
-    action.realPath = this.realPath;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (action as any).realPath = this.realPath;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (action as any).requestParams = this.requestParams;
     return action;
@@ -54,17 +55,19 @@ export default class MapParser {
     let mapPath;
 
     if (!this.isMethodNecessary) {
-      mapPath = linq
+      const matchedPaths = linq
         .from(map)
         .where((item) => this.isSimplePathMatched(item))
-        .firstOrDefault();
+        .toArray();
+      mapPath = this.getMostLikePath(matchedPaths);
       if (mapPath) return mapPath;
     }
 
-    mapPath = linq
+    const matchedPaths = linq
       .from(map)
       .where((item) => this.isMethodPathMatched(item, true))
-      .firstOrDefault();
+      .toArray();
+    mapPath = this.getMostLikePath(matchedPaths);
     if (mapPath) return mapPath;
 
     const otherMethodPathCount = linq
@@ -117,6 +120,53 @@ export default class MapParser {
     }
 
     return true;
+  }
+
+  private getMostLikePath(mapPaths: string[]): string | undefined {
+    if (!mapPaths || !mapPaths.length) return;
+    if (mapPaths.length == 1) return mapPaths[0];
+
+    const pathsParts = <{ path: string; parts: string[] }[]>[];
+    mapPaths.forEach((path) => {
+      pathsParts.push({
+        path: path,
+        parts: path.toLowerCase().split("/"),
+      });
+    });
+
+    const minPartsCount = Math.min(
+      ...linq
+        .from(pathsParts)
+        .select((pp) => pp.parts.length)
+        .toArray()
+    );
+    for (let i = 0; i < minPartsCount; i++) {
+      const notLikePaths = linq
+        .from(pathsParts)
+        .select((pp) => ({ part: pp.parts[i], path: pp.path }))
+        .where((p) => p.part.includes("^"))
+        .toArray();
+      if (notLikePaths.length > 0 && notLikePaths.length < pathsParts.length) {
+        notLikePaths.forEach((mlp) => {
+          const ppToRemove = linq
+            .from(pathsParts)
+            .where((p) => p.path == mlp.path)
+            .firstOrDefault();
+          if (ppToRemove) {
+            pathsParts.splice(pathsParts.indexOf(ppToRemove), 1);
+          }
+        });
+      }
+
+      if (pathsParts.length == 1) return pathsParts[0].path;
+    }
+
+    const mostLikePathParts = linq
+      .from(pathsParts)
+      .orderBy((pp) => pp.parts.length)
+      .firstOrDefault();
+    if (!mostLikePathParts) return;
+    return mostLikePathParts.path;
   }
 
   private get cfPath(): string {
