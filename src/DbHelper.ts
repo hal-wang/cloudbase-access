@@ -1,4 +1,4 @@
-import { CollectionReference, Query } from "@cloudbase/database";
+import { Database } from "@cloudbase/node-sdk";
 import { RequestParams } from ".";
 
 export default class DbHelper {
@@ -8,7 +8,7 @@ export default class DbHelper {
   }
 
   static async getScalar(
-    collection: CollectionReference,
+    collection: Database.CollectionReference,
     doc: string,
     field: string
   ): Promise<unknown | undefined> {
@@ -21,11 +21,11 @@ export default class DbHelper {
   }
 
   static async updateScalar(
-    collection: CollectionReference,
+    collection: Database.CollectionReference,
     doc: string,
     field: string,
     value: unknown
-  ): Promise<number> {
+  ): Promise<number | undefined> {
     const fieldObj: Record<string, unknown> = {};
     fieldObj[field] = value;
 
@@ -39,19 +39,13 @@ export default class DbHelper {
    */
   static async getPageList(
     requestParams: RequestParams,
-    partQuery: Query | CollectionReference
-  ): Promise<{ list: unknown[]; total: number }> {
+    partQuery: Database.Query | Database.CollectionReference
+  ): Promise<{ list: unknown[]; total: number | undefined }> {
     const { page, pageSize } = DbHelper.getPageQuery(requestParams);
 
-    const countRes = await (typeof partQuery == typeof CollectionReference
-      ? (partQuery as CollectionReference)
-      : (partQuery as Query)
-    ).count();
+    const countRes = await partQuery.count();
 
-    const listRes = await (typeof partQuery == typeof CollectionReference
-      ? (partQuery as CollectionReference)
-      : (partQuery as Query)
-    )
+    const listRes = await partQuery
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .get();
