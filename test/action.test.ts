@@ -15,7 +15,8 @@ class Login extends Action {
 
 test("action test", async function () {
   const loginAction = new Login();
-  loginAction.requestParams = new RequestParams(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (loginAction as any).requestParams = new RequestParams(
     {
       body: {
         account: "abc",

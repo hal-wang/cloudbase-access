@@ -6,6 +6,7 @@ export default abstract class Authority extends Middleware {
     super(MiddlewareType.BeforeAction);
   }
 
-  /**will be set before doing*/
-  public roles: Array<string> = new Array<string>();
+  //#region will be set before doing
+  public readonly roles!: Array<string>;
+  //#endregion
 }

@@ -96,7 +96,8 @@ export default class Router {
       }
     }
     if (this.auth) {
-      this.auth.roles = ([] as string[]).concat(action.roles);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this.auth as any).roles = ([] as string[]).concat(action.roles);
     }
     return {
       success: true,

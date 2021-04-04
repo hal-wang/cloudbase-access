@@ -7,11 +7,8 @@ export default abstract class Middleware {
   constructor(public readonly type: MiddlewareType) {}
 
   //#region will be set before doing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly requestParams: RequestParams = <any>undefined;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly action?: Action = <any>undefined;
+  readonly requestParams!: RequestParams;
+  readonly action?: Action;
   //#endregion
 
   actionResult?: HttpResult;
