@@ -79,7 +79,7 @@ export default class Auth extends Authority {
         password,
       })
       .count();
-    return countRes.total > 0;
+    return !!countRes.total;
   }
 
   private async todoIdAuth(): Promise<boolean> {
@@ -90,6 +90,6 @@ export default class Auth extends Authority {
         uid: account,
       })
       .count();
-    return countRes.total > 0;
+    return !!countRes.total;
   }
 }
