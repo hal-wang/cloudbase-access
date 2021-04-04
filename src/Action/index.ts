@@ -6,11 +6,8 @@ export default abstract class Action {
   constructor(public readonly roles: Array<string> = new Array<string>()) {}
 
   //#region will be set before doing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly requestParams: RequestParams = <any>undefined;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly realPath: string = <any>undefined;
+  readonly requestParams!: RequestParams;
+  readonly realPath!: string;
   //#endregion
 
   /** docs of action */
