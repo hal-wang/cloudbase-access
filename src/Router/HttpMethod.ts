@@ -1,4 +1,5 @@
 const enum HttpMethod {
+  any = "ANY",
   get = "GET",
   post = "POST",
   put = "PUT",

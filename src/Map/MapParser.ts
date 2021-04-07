@@ -7,6 +7,7 @@ import linq = require("linq");
 import HttpResultError from "../HttpResult/HttpResultError";
 import { HttpResult } from "..";
 import PathParser from "./PathParser";
+import HttpMethod from "../Router/HttpMethod";
 
 export default class MapParser {
   public readonly realPath: string;
@@ -68,6 +69,14 @@ export default class MapParser {
       .where((item) => this.isMethodPathMatched(item, true))
       .toArray();
     mapPath = this.getMostLikePath(matchedPaths);
+    if (mapPath) return mapPath;
+
+    const anyMethodPaths = linq
+      .from(map)
+      .where((item) => this.isMethodPathMatched(item, false))
+      .where((item) => new PathParser(item).httpMethod == HttpMethod.any)
+      .toArray();
+    mapPath = this.getMostLikePath(anyMethodPaths);
     if (mapPath) return mapPath;
 
     const otherMethodPathCount = linq

@@ -28,6 +28,8 @@ export default class PathParser {
     const fileNameWithoutExtension = this.fileNameWithoutExtension;
 
     switch (fileNameWithoutExtension.toUpperCase()) {
+      case HttpMethod.any:
+        return HttpMethod.any;
       case HttpMethod.get:
         return HttpMethod.get;
       case HttpMethod.post:
