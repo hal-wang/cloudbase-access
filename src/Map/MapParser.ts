@@ -66,6 +66,7 @@ export default class MapParser {
 
     const matchedPaths = linq
       .from(map)
+      .where((item) => !!new PathParser(item).httpMethod)
       .where((item) => this.isMethodPathMatched(item, true))
       .toArray();
     mapPath = this.getMostLikePath(matchedPaths);
@@ -73,16 +74,16 @@ export default class MapParser {
 
     const anyMethodPaths = linq
       .from(map)
-      .where((item) => this.isMethodPathMatched(item, false))
       .where((item) => new PathParser(item).httpMethod == HttpMethod.any)
+      .where((item) => this.isMethodPathMatched(item, false))
       .toArray();
     mapPath = this.getMostLikePath(anyMethodPaths);
     if (mapPath) return mapPath;
 
     const otherMethodPathCount = linq
       .from(map)
-      .where((item) => this.isMethodPathMatched(item, false))
       .where((item) => !!new PathParser(item).httpMethod)
+      .where((item) => this.isMethodPathMatched(item, false))
       .count();
     if (otherMethodPathCount) throw this.methodNotAllowedErr;
 
