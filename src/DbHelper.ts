@@ -34,20 +34,20 @@ export default class DbHelper {
   }
 
   /**
-   * @param requestParams data: { page, pageSize }
+   * @param requestParams data: { page, limit }
    * @param partQuery part of query, like where(...)
    */
   static async getPageList(
     requestParams: RequestParams,
     partQuery: Database.Query | Database.CollectionReference
   ): Promise<{ list: unknown[]; total: number | undefined }> {
-    const { page, pageSize } = DbHelper.getPageQuery(requestParams);
+    const { page, limit } = DbHelper.getPageQuery(requestParams);
 
     const countRes = await partQuery.count();
 
     const listRes = await partQuery
-      .skip((page - 1) * pageSize)
-      .limit(pageSize)
+      .skip((page - 1) * limit)
+      .limit(limit)
       .get();
 
     return {
@@ -58,9 +58,9 @@ export default class DbHelper {
 
   private static getPageQuery(
     requestParams: RequestParams
-  ): { page: number; pageSize: number } {
+  ): { page: number; limit: number } {
     let page: number | undefined;
-    let pageSize: number | undefined;
+    let limit: number | undefined;
 
     if (requestParams.params && requestParams.params.page) {
       page = Number(requestParams.params.page);
@@ -68,18 +68,22 @@ export default class DbHelper {
       page = requestParams.data.page as number;
     }
 
-    if (requestParams.params && requestParams.params.pageSize) {
-      pageSize = Number(requestParams.params.pageSize);
+    if (requestParams.params && requestParams.params.limit) {
+      limit = Number(requestParams.params.limit);
+    } else if (requestParams.params && requestParams.params.pageSize) {
+      limit = Number(requestParams.params.pageSize);
+    } else if (requestParams.data && requestParams.data.limit) {
+      limit = requestParams.data.limit as number;
     } else if (requestParams.data && requestParams.data.pageSize) {
-      pageSize = requestParams.data.pageSize as number;
+      limit = requestParams.data.pageSize as number;
     }
 
     if (!page) page = 1;
-    if (!pageSize) pageSize = 20;
+    if (!limit) limit = 20;
 
     return {
       page: page,
-      pageSize: pageSize,
+      limit: limit,
     };
   }
 }
