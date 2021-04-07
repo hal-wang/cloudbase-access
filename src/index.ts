@@ -6,6 +6,7 @@ import HttpResultError from "./HttpResult/HttpResultError";
 import Router from "./Router";
 import RequestParams from "./Router/RequestParams";
 import HttpMethod from "./Router/HttpMethod";
+console.log("HttpMethod", HttpMethod);
 
 import Middleware from "./Middleware";
 import MiddlewareType from "./Middleware/MiddlewareType";

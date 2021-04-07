@@ -14,6 +14,8 @@ methods.forEach((method) => {
     const result = (await router.do()).result;
     expect(result.statusCode).toBe(200);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(!!(result.body as any).method).toBe(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((result.body as any).method).toBe(HttpMethod.any);
   });
 });

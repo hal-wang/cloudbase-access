@@ -25,32 +25,8 @@ export default class PathParser {
   }
 
   public get httpMethod(): HttpMethod | undefined {
-    const fileNameWithoutExtension = this.fileNameWithoutExtension;
-
-    switch (fileNameWithoutExtension.toUpperCase()) {
-      case HttpMethod.any:
-        return HttpMethod.any;
-      case HttpMethod.get:
-        return HttpMethod.get;
-      case HttpMethod.post:
-        return HttpMethod.post;
-      case HttpMethod.delete:
-        return HttpMethod.delete;
-      case HttpMethod.patch:
-        return HttpMethod.patch;
-      case HttpMethod.put:
-        return HttpMethod.put;
-      case HttpMethod.head:
-        return HttpMethod.head;
-      case HttpMethod.trace:
-        return HttpMethod.trace;
-      case HttpMethod.options:
-        return HttpMethod.options;
-      case HttpMethod.connect:
-        return HttpMethod.connect;
-      default:
-        return undefined;
-    }
+    const fnwe = this.fileNameWithoutExtension;
+    return HttpMethod.matched(fnwe);
   }
 
   public get pathWithoutHttpMethod(): string {
