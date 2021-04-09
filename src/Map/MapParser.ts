@@ -94,7 +94,6 @@ export default class MapParser {
     mapPath = this.removeExtension(mapPath);
     const reqUrlStrs = this.requestParams.path.toLowerCase().split("/");
     const mapPathStrs = mapPath.toLowerCase().split("/");
-    if (!mapPathStrs.length || !reqUrlStrs.length) return false;
     if (reqUrlStrs.length != mapPathStrs.length) return false;
 
     return this.isPathMatched(mapPathStrs, reqUrlStrs);
@@ -105,14 +104,15 @@ export default class MapParser {
     methodIncluded: boolean
   ): boolean {
     mapPath = this.removeExtension(mapPath);
-    const reqUrlStrs = this.requestParams.path.toLowerCase().split("/");
+    const reqUrlStrs = this.requestParams.path
+      ? this.requestParams.path.toLowerCase().split("/")
+      : [];
     const mapPathStrs = mapPath.toLowerCase().split("/");
-    if (!mapPathStrs.length || !reqUrlStrs.length) return false;
     if (reqUrlStrs.length != mapPathStrs.length - 1) return false;
     if (!this.requestParams.method) return false;
 
     if (methodIncluded) {
-      reqUrlStrs.push(this.requestParams.method.toLowerCase());
+      reqUrlStrs.push(String(this.requestParams.method).toLowerCase());
     } else {
       mapPathStrs.splice(mapPathStrs.length - 1, 1);
     }
