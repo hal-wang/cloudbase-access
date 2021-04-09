@@ -43,6 +43,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import Validate from "@/utils/Validate";
 import request from "@/utils/request";
+import moment from "moment";
 
 @Component
 export default class extends Vue {
@@ -84,7 +85,12 @@ export default class extends Vue {
       this.creating = true;
       try {
         const res = await request.get("", {
-          params: this.form,
+          params: {
+            url: this.form.url,
+            custom: this.form.custom,
+            limit: this.form.limit,
+            expire: moment(this.form.expire).valueOf(),
+          },
         });
         url = res.data.url;
       } finally {
@@ -120,7 +126,6 @@ export default class extends Vue {
         );
       },
       key,
-      onClose: close,
     });
   }
 

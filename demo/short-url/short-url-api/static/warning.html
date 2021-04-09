@@ -1,0 +1,35 @@
+<style>
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .warning-box {
+    padding: 16px 30px;
+    background-color: #fff1f0;
+    border: 1px solid #ffa39e;
+    border-radius: 4px;
+    margin-top: 10vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .warning-icon {
+    font-size: 30px;
+    color: #f5222d;
+    margin-right: 20px;
+  }
+
+  .warning-text {
+    font-size: 22px;
+  }
+</style>
+
+<div class="warning-box">
+  <span class="warning-icon">!</span>
+  <span class="warning-text"> {{warning-msg}}</span>
+</div>

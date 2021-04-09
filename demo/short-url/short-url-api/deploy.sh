@@ -3,7 +3,7 @@
 
 set -e
 
-bash build.sh $1
+sh build.sh $1
 
 cd ..
 
