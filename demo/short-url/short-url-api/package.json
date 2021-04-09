@@ -2,16 +2,17 @@
   "name": "short-url-api",
   "version": "0.0.1",
   "scripts": {
-    "build:test": "bash build.sh test",
-    "build": "bash build.sh v1",
-    "deploy:test": "bash deploy.sh test",
-    "deploy": "bash deploy.sh v1",
+    "build:test": "sh build.sh test",
+    "build": "sh build.sh v1",
+    "deploy:test": "sh deploy.sh test",
+    "deploy": "sh deploy.sh v1",
     "eslint": "eslint . --ext .ts",
     "test": "jest"
   },
   "dependencies": {
     "@cloudbase/node-sdk": "^2.5.0",
     "@hal-wang/cloudbase-access": "^1.2.3",
+    "fs": "0.0.1-security",
     "moment": "^2.29.1",
     "nanoid": "^3.1.22"
   },

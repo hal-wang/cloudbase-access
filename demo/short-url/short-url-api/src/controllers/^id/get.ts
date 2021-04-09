@@ -1,6 +1,7 @@
 import { Action, HttpResult } from "@hal-wang/cloudbase-access";
 import Collections from "../../lib/Collections";
 import UrlItem from "../../models/UrlItem";
+import { readFileSync } from "fs";
 
 /**
  * @action long-url
@@ -49,7 +50,10 @@ export default class extends Action {
   }
 
   errMsg(code: number, msg: string): HttpResult {
-    return new HttpResult(code, `alert("${msg}")`, {
+    let html = readFileSync(`${process.cwd()}/static/warning.html`, "utf-8");
+    html = html.replace("{{warning-msg}}", msg);
+
+    return new HttpResult(code, html, {
       "content-type": "text/html",
     });
   }

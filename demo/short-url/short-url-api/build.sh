@@ -9,6 +9,7 @@ tsc
 
 find dist -name "*.d.ts" |xargs rm -rf
 cp package.json dist/package.json
+cp -R static dist/static
 touch dist/build-time_$(date "+%Y-%m-%d_%H.%M.%S")
 
 cba-map dist/controllers
