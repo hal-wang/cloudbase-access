@@ -1,6 +1,6 @@
 {
   "name": "short-url-api",
-  "version": "1.0.2",
+  "version": "0.0.1",
   "scripts": {
     "build:test": "bash build.sh test",
     "build": "bash build.sh v1",
@@ -12,7 +12,6 @@
   "dependencies": {
     "@cloudbase/node-sdk": "^2.5.0",
     "@hal-wang/cloudbase-access": "^1.2.3",
-    "linq": "^3.2.3",
     "moment": "^2.29.1",
     "nanoid": "^3.1.22"
   },
