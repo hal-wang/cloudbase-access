@@ -25,10 +25,9 @@ export default class extends Action {
     const custom = this.requestParams.params.custom;
     const expire = Number(this.requestParams.params.expire);
     const limit = Number(this.requestParams.params.limit);
-    const host = this.requestParams.headers.host || "";
 
     if (!url || !Validate.isUrl(url)) {
-      return this.redirect(`${host}/w`, 302);
+      return this.redirect(`/w`, 302);
       // return this.badRequestMsg({ message: "Incorrect url format" });
     }
 
@@ -58,8 +57,12 @@ export default class extends Action {
     }
     await Collections.url.doc(id).set(obj);
 
+    const origin = this.requestParams.headers.origin;
+    if (!origin) {
+      return this.badRequestMsg({ message: "no origin" });
+    }
     return this.ok({
-      url: `${host}/${id}`,
+      url: `${origin}/${id}`,
     });
   }
 
