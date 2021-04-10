@@ -21,10 +21,7 @@
           "functionRootPath": "functions",
           "functions": [
             {
-              "name": "v1",
-              "envVariables": {
-                "shortUrl": "{{env.SHORT_URL}}"
-              }
+              "name": "v1"
             }
           ],
           "servicePaths": {
