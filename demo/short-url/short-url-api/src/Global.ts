@@ -1,11 +1,3 @@
-import { Router } from "@hal-wang/cloudbase-access";
+export const isTest = process.env.SCF_FUNCTIONNAME == "test";
 
-export default {
-  get isTest(): boolean {
-    if (Router.current && Router.current.requestParams.context) {
-      return Router.current.requestParams.context.function_name == "test";
-    } else {
-      return false;
-    }
-  },
-};
+export default {};
