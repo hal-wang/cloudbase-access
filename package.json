@@ -1,6 +1,6 @@
 {
   "name": "@hal-wang/cloudbase-access",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "利用 NodeJS 和 CloudBase 快速创建 Serverless RESTful Api",
   "homepage": "https://github.com/hal-wang/cloudbase-access",
   "repository": {
@@ -31,9 +31,9 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build": "bash build.sh",
-    "deploy": "bash build.sh && npm publish --access=public",
-    "deploy:beta": "bash build.sh && npm publish --tag=beta --access=public",
+    "build": "sh build.sh",
+    "deploy": "sh build.sh && npm publish --access=public",
+    "deploy:beta": "sh build.sh && npm publish --tag=beta --access=public",
     "test": "jest",
     "eslint": "eslint src --ext .ts"
   },
