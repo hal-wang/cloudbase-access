@@ -1,0 +1,21 @@
+# short-url
+
+能够使用自己的域名，简化 url
+
+如 `https://zhuanlan.zhihu.com/p/91947139` -> `https://s.hal.wang/zhihu`
+
+## 你需要做的
+
+### 一键部署
+
+[![](https://main.qcloudimg.com/raw/95b6b680ef97026ae10809dbd6516117.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fshort-url&branch=main)
+
+### 配置 HTTP 访问服务
+
+1. 添加自定义域名，如 `s.hal.wang`
+2. 添加触发路径 `/w`，关联资源为静态托管，以开启网站功能，如 `s.hal.wang/w`
+
+## 注意事项
+
+1. API 生成短链接中的域名，是根据调用 API 时头部的 origin。因此如果不使用网站，而是直接调用 API，需要注意头部参数。
+2. 跳转使用 302，因为可能存在限制访问次数的短链接。如果使用 301 则无法正确统计。
