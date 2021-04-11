@@ -12,12 +12,13 @@ import Validate from "../lib/Validate";
  * @@params
  * @@@url {string} long url
  * @@@expire {number} expire time
+ * @@@custom {string} custom url
+ * @@@limit {number} the limit of short url
  * @output
  * @@codes
  * @@@200 success
  * @@body
- * @@@short-url {string} short url
- * @@@long-url {string} long url
+ * @@@url {string} short url
  */
 export default class extends Action {
   async do(): Promise<HttpResult> {
