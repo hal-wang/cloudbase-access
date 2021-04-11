@@ -1,1 +1,0 @@
-GET https://s.hal.wang/test
