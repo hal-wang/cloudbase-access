@@ -2,9 +2,18 @@
 
 能够使用自己的域名，简化 url
 
-如 <https://s.hal.wang/zhihu> -> `https://zhuanlan.zhihu.com/p/91947139`
+示例网站：<https://s.hal.wang>
 
-## 你需要做的
+例如
+
+1. 知乎任意一个详情页
+   - 短地址： <https://s.hal.wang/zhihu>
+   - 原地址： `https://zhuanlan.zhihu.com/p/91947139`
+2. 一键部署地址
+   - 短地址： <https://s.hal.wang/sud>
+   - 原地址： `https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fshort-url&branch=main`
+
+## 改用自己的域名，你需要做：
 
 ### 一键部署
 
@@ -12,8 +21,8 @@
 
 ### 配置 HTTP 访问服务
 
-1. 添加触发路径 `/w`，关联资源为静态托管，以开启网站功能，如 `s.hal.wang/w`
-2. 添加自定义域名，如 `s.hal.wang`
+1. 添加自定义域名，如 `s.hal.wang`
+2. 添加触发路径 `/w`，关联资源为静态托管，以开启网站功能，如 `s.hal.wang/w` 。（可选，不设置则不使用网站）
 
 ## 注意事项
 
