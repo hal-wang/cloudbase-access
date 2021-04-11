@@ -19,7 +19,7 @@ service.interceptors.request.use(
   async (config) => {
     config.headers["content-type"] = "application/json";
     config.headers[
-      "origin"
+      "short-url-origin"
     ] = `${window.location.protocol}//${window.location.host}`;
     config.validateStatus = (num) => num >= 200 && num < 300;
     return config;

@@ -58,9 +58,9 @@ export default class extends Action {
     }
     await Collections.url.doc(id).set(obj);
 
-    const origin = this.requestParams.headers.origin;
+    const origin = this.requestParams.headers["short-url-origin"];
     if (!origin) {
-      return this.badRequestMsg({ message: "no origin" });
+      return this.badRequestMsg({ message: "no short-url-origin" });
     }
     return this.ok({
       url: `${origin}/${id}`,
