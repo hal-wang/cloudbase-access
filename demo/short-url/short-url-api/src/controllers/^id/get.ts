@@ -13,9 +13,7 @@ import { readFileSync } from "fs";
  * @@@id {string} short url id
  * @output
  * @@codes
- * @@@200 success
- * @@body
- * @@@url {string} long url
+ * @@@302 success
  */
 export default class extends Action {
   async do(): Promise<HttpResult> {
