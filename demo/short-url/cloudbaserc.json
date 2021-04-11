@@ -34,8 +34,7 @@
         "inputs": {
           "installCommand": "cd short-url-web && npm install --prefer-offline --no-audit --progress=false",
           "buildCommand": "cd short-url-web && npm run build",
-          "outputPath": "short-url-web/dist",
-          "servicePath": "/w1"
+          "outputPath": "short-url-web/dist"
         }
       },
       "db": {
