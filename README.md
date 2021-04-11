@@ -8,15 +8,27 @@ npm i @hal-wang/cloudbase-access
 
 ## 示例
 
+### cba-todo
+
 一个简易的 todo 项目，包含后端和前端，详情请查看 `demo/cba-todo` (<https://cba-todo.hal.wang/docs>)
 
-你可以体验线上示例: <https://cba-todo.hal.wang>
+线上示例：<https://cba-todo.hal.wang>
 
-也可以一键部署到自己的 `cloudbase`
-
+一键部署：
 [![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fcba-todo&branch=main)
 
-或者你也可以查看本项目 `test` 文件夹中的一些单元测试
+### short-url
+
+使用自己的域名简化链接，详情请查看 `demo/short-url` (<https://github.com/hal-wang/cloudbase-access/tree/dev/demo/short-url>)
+
+线上示例：<https://s.hal.wang>
+
+一键部署：
+[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fshort-url&branch=main)
+
+### 单元测试
+
+你也可以查看本项目 `test` 文件夹中的一些单元测试
 
 ## 建议
 
