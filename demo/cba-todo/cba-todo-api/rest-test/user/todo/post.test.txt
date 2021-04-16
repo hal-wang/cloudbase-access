@@ -1,8 +1,0 @@
-POST https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/user/test@hal.wang/todo
-content-type:application/json
-password:123456
-
-{
-  "content":"content_test",
-  "schedule":1612317715096
-}
