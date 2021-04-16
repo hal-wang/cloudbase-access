@@ -1,9 +1,0 @@
-{
-  "name": "cba-todo",
-  "scripts": {
-    "deploy": "tcb login && tcb framework deploy"
-  },
-  "keywords": [],
-  "author": "hal-wang",
-  "license": "MIT"
-}

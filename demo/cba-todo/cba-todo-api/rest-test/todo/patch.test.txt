@@ -1,8 +1,0 @@
-PATCH https://cba-todo-1g7uooof7a2578d7-1253337886.ap-shanghai.app.tcloudbase.com/cba-todo/todo/test@hal.wang/28ee4e3e60228fc104166c872ae04bde
-content-type:application/json
-password:123456
-
-{
-  "content":"content_test",
-  "schedule":1612317715096
-}

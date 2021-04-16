@@ -10,12 +10,12 @@ npm i @hal-wang/cloudbase-access
 
 ### cba-todo
 
-一个简易的 todo 项目，包含后端和前端，详情请查看 `demo/cba-todo` (<https://cba-todo.hal.wang/docs>)
+一个简易的 todo 项目，包含后端和前端，详情请查看 <https://todo.hal.wang/docs>
 
-线上示例：<https://cba-todo.hal.wang>
+线上示例：<https://todo.hal.wang>
 
 一键部署：
-[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fcloudbase-access&workDir=demo%2Fcba-todo&branch=main)
+[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Ftodo&branch=main)
 
 ### short-url
 
@@ -32,7 +32,7 @@ npm i @hal-wang/cloudbase-access
 
 ## 建议
 
-强烈建议使用 `typescript` 并生成 `javascript` 代码后上传，可参考 `demo/cba-todo` (<https://cba-todo.hal.wang/docs>)，做法是 ts 生成 js 文件，并删除 `.d.ts` 文件。
+强烈建议使用 `typescript` 并生成 `javascript` 代码后上传，可参考 <https://cba-todo.hal.wang/docs>，做法是 ts 生成 js 文件，并删除 `.d.ts` 文件。
 
 理论上 `javascript` 完全没问题，但作者并未进行测试。
 

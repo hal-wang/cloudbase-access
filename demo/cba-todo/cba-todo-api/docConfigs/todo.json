@@ -1,9 +1,0 @@
-{
-  "query": [
-    {
-      "name": "todoId",
-      "desc": "the id of todo item",
-      "type": "string"
-    }
-  ]
-}
