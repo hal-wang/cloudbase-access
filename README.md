@@ -19,7 +19,7 @@ npm i @hal-wang/cloudbase-access
 
 ### short-url
 
-使用自己的域名简化链接，详情请查看 <https://github.com/hal-wang/cloudbase-access/tree/dev/demo/short-url>
+使用自己的域名简化链接，详情请查看 <https://github.com/hal-wang/short-url>
 
 线上示例：<https://s.hal.wang>
 
