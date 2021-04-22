@@ -14,8 +14,7 @@ npm i @hal-wang/cloudbase-access
 
 线上示例：<https://todo.hal.wang>
 
-一键部署：
-[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Ftodo&branch=main)
+一键部署：[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Ftodo&branch=main)
 
 ### short-url
 
@@ -23,16 +22,19 @@ npm i @hal-wang/cloudbase-access
 
 线上示例：<https://s.hal.wang>
 
-一键部署：
-[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fshort-url&branch=main)
+一键部署：[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fwedding-card&branch=main)
 
-### 单元测试
+### wedding-card
 
-你也可以查看本项目 `test` 文件夹中的一些单元测试
+网络喜帖，能够生成邀请二维码。详情请查看 <https://github.com/hal-wang/wedding-card>
 
-## 建议
+线上示例：<https://wedding.hal.wang>
 
-强烈建议使用 `typescript` 并生成 `javascript` 代码后上传，可参考 <https://todo.hal.wang/docs>，做法是 ts 生成 js 文件，并删除 `.d.ts` 文件。
+一键部署：[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Fhal-wang%2Fshort-url&branch=main)
+
+## 关于 CBA 的建议
+
+强烈建议使用 `typescript` 并生成 `javascript` 代码后上传，可参考以上示例，做法是 ts 生成 js 文件，并用脚本删除 `.d.ts` 文件。
 
 理论上 `javascript` 完全没问题，但作者并未进行测试。
 
