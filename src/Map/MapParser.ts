@@ -47,7 +47,7 @@ export default class MapParser {
       const reqPathStr = reqPathStrs[i];
 
       const key = mapPathStr.substr(1, mapPathStr.length - 1);
-      const value = reqPathStr;
+      const value = decodeURIComponent(reqPathStr);
       this.requestParams.query[key] = value;
     }
   }
