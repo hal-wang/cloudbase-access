@@ -144,7 +144,7 @@ export default class HttpResult {
 
   static redirect = function (
     location: string,
-    code: 301 | 302 | 303 | 307 | 308 = 302
+    code: 301 | 302 | 303 | 307 | 308 | number = 302
   ): HttpResult {
     return new HttpResult(code, {}, { location });
   };
