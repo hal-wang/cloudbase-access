@@ -13,7 +13,7 @@ export default abstract class Action {
   /** docs of action */
   docs?: ApiDocs;
 
-  protected readonly base = HttpResult.base;
+  protected readonly httpResult = HttpResult.base;
   protected readonly ok = HttpResult.ok;
   protected readonly accepted = HttpResult.accepted;
   protected readonly noContent = HttpResult.noContent;
