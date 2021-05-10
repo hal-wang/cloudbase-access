@@ -74,7 +74,7 @@
     ".gitignore",
     "build.sh",
     "jest.config.js",
-    ".LICENSE",
+    "LICENSE",
     "package.json",
     "README.md",
     "tsconfig.json"
