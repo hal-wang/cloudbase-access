@@ -100,3 +100,13 @@ for (let i = 0; i < redirectCodes.length; i++) {
     expect(result.headers.location).toBe("/test");
   });
 }
+
+test("HttpResult: is base64", async function () {
+  const hr1 = HttpResult.base(200, undefined, undefined, true).result;
+  expect(hr1.statusCode).toBe(200);
+  expect(hr1.isBase64Encoded).toBe(true);
+
+  const hr2 = HttpResult.base(200, undefined, undefined, false).result;
+  expect(hr2.statusCode).toBe(200);
+  expect(hr2.isBase64Encoded).toBe(false);
+});

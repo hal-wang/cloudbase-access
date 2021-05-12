@@ -5,12 +5,13 @@ export default class HttpResult {
   constructor(
     public readonly statusCode: number,
     public readonly body: unknown = {},
-    public readonly headers = <Record<string, string>>{}
+    public readonly headers = <Record<string, string>>{},
+    public readonly isBase64 = false
   ) {}
 
   get result(): HttpResultStruct {
     return <HttpResultStruct>{
-      isBase64: false,
+      isBase64Encoded: this.isBase64,
       statusCode: this.statusCode,
       headers: Object.assign(HttpResult.baseHeaders, this.headers),
       body: this.body,
@@ -30,9 +31,10 @@ export default class HttpResult {
   static base = function (
     statusCode: number,
     body?: unknown,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
+    isBase64 = false
   ): HttpResult {
-    return new HttpResult(statusCode, body, headers);
+    return new HttpResult(statusCode, body, headers, isBase64);
   };
 
   //#region reserve
