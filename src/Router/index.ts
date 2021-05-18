@@ -49,13 +49,11 @@ export default class Router {
       return this.getResultWithAdditives(mdwResult.failedResult);
     }
 
-    const actionResult = this.getAction();
-    if (!actionResult.success) {
-      return this.getResultWithAdditives(
-        actionResult.failedResult as HttpResult
-      );
+    const httpResult = this.getAction();
+    if (!httpResult.success) {
+      return this.getResultWithAdditives(httpResult.failedResult as HttpResult);
     }
-    const action = actionResult.action as Action;
+    const action = httpResult.action as Action;
 
     mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction, action);
     if (!mdwResult.success) {
@@ -106,21 +104,21 @@ export default class Router {
   }
 
   private async ExecEndMdw(
-    actionResult: HttpResult,
+    httpResult: HttpResult,
     action?: Action
   ): Promise<MiddlewareResult> {
     let mdwResult;
-    if (actionResult.isSuccess) {
+    if (httpResult.isSuccess) {
       mdwResult = await this.ExecMdw(
         MiddlewareType.BeforeSuccessEnd,
         action,
-        actionResult
+        httpResult
       );
     } else {
       mdwResult = await this.ExecMdw(
         MiddlewareType.BeforeErrEnd,
         action,
-        actionResult
+        httpResult
       );
     }
     if (!mdwResult.success) return mdwResult;
@@ -128,7 +126,7 @@ export default class Router {
     mdwResult = await this.ExecMdw(
       MiddlewareType.BeforeEnd,
       action,
-      actionResult
+      httpResult
     );
     if (!mdwResult.success) return mdwResult;
 
@@ -138,7 +136,7 @@ export default class Router {
   private async ExecMdw(
     type: MiddlewareType,
     action?: Action,
-    actionResult?: HttpResult
+    httpResult?: HttpResult
   ): Promise<MiddlewareResult> {
     for (let i = 0; i < this.middlewares.length; i++) {
       const middleware = this.middlewares[i];
@@ -148,7 +146,7 @@ export default class Router {
       (middleware as any).requestParams = this.requestParams;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (middleware as any).action = action;
-      middleware.actionResult = actionResult;
+      middleware.httpResult = httpResult;
       const mdwResult = await middleware.do();
 
       for (const key in mdwResult.additives) {

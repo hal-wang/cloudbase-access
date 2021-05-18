@@ -11,7 +11,7 @@ export default abstract class Middleware {
   readonly action?: Action;
   //#endregion
 
-  actionResult?: HttpResult;
+  httpResult?: HttpResult;
 
   abstract do(): Promise<MiddlewareResult>;
 }
