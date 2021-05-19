@@ -4,7 +4,6 @@ import Middleware from "../Middleware";
 import RequestParams from "../RequestParams";
 import StatusCode from "../HttpResult/StatusCode";
 import MapParser from "../Map/MapParser";
-import Action from "../Action";
 
 export default class Router {
   private static _current: Router;
@@ -17,14 +16,6 @@ export default class Router {
 
   readonly response = new HttpResult(StatusCode.ok);
 
-  /**
-   * is httpMethod necessary
-   *
-   * if not, the path end with the httpMethod word will be matched.
-   * for example, the post request with path 'user/get' match 'user.ts'.
-   *
-   * if true, the action in definition must appoint method.
-   */
   constructor(
     event: Record<string, unknown>,
     context: Record<string, unknown>
@@ -53,32 +44,49 @@ export default class Router {
   public useAuth(auth: Authority): void {
     this.use(auth);
     this.auth = auth;
-    this.setActionAuth();
   }
 
-  private action?: Action;
-  public useRouter(cFolder = "controllers", isMethodNecessary = false): void {
+  /**
+   * isMethodNecessary
+   *
+   * if not, the path end with the httpMethod word will be matched.
+   * for example, the post request with path 'user/get' match 'user.ts'.
+   *
+   * if true, the action in definition must appoint method.
+   */
+  private isMethodNecessary!: boolean;
+  private controllerFolder: string | undefined;
+  public useRouter(
+    controllerFolder = "controllers",
+    isMethodNecessary = false
+  ): void {
+    this.controllerFolder = controllerFolder;
+    this.isMethodNecessary = isMethodNecessary;
+  }
+
+  private setRouter() {
+    if (!this.controllerFolder) return;
     const mapParser = new MapParser(
       this.requestParams,
-      cFolder,
-      isMethodNecessary
+      this.controllerFolder,
+      this.isMethodNecessary
     );
-    this.use(mapParser.action);
-    this.action = mapParser.action;
-    this.setActionAuth();
-  }
+    const action = mapParser.action;
+    this.use(action);
 
-  private setActionAuth() {
-    if (this.auth && this.action) {
+    if (this.auth) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this.auth as any).roles = ([] as string[]).concat(this.action.roles);
+      (this.auth as any).roles = ([] as string[]).concat(action.roles);
     }
   }
 
   async do(): Promise<void> {
     try {
+      this.setRouter();
       const firstMiddleware = this.middlewares[0];
-      await firstMiddleware.do();
+      if (firstMiddleware) {
+        await firstMiddleware.do();
+      }
     } catch (err) {
       if (err.httpResult) {
         this.response.update(err.httpResult);
