@@ -2,6 +2,7 @@ import HttpResult from "./HttpResult";
 import ErrorMessage from "./HttpResult/ErrorMessage";
 import HttpResultStruct from "./HttpResult/HttpResultStruct";
 import HttpResultError from "./HttpResult/HttpResultError";
+import StatusCode from "./HttpResult/StatusCode";
 
 import Router from "./Router";
 import RequestParams from "./Router/RequestParams";
@@ -29,6 +30,7 @@ export {
   ErrorMessage,
   HttpResultStruct,
   HttpResultError,
+  StatusCode,
   Action,
   Router,
   RequestParams,
