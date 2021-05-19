@@ -5,7 +5,7 @@ import HttpResultError from "./HttpResult/HttpResultError";
 import StatusCode from "./HttpResult/StatusCode";
 
 import Router from "./Router";
-import RequestParams from "./Router/RequestParams";
+import RequestParams from "./RequestParams";
 import HttpMethod from "./Router/HttpMethod";
 console.log("HttpMethod", HttpMethod);
 

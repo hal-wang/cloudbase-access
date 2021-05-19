@@ -1,4 +1,4 @@
-import RequestParams from "../Router/RequestParams";
+import RequestParams from "../RequestParams";
 import { existsSync } from "fs";
 import path = require("path");
 import MapCreater from "./MapCreater";

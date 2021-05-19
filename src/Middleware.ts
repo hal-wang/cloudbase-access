@@ -1,6 +1,6 @@
 import { ErrorMessage, HttpResult } from ".";
 import StatusCode from "./HttpResult/StatusCode";
-import RequestParams from "./Router/RequestParams";
+import RequestParams from "./RequestParams";
 
 export default abstract class Middleware {
   //#region will be set before doing
