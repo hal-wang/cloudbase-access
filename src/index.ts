@@ -21,8 +21,6 @@ import ApiDocsConfigPart from "./ApiDocs/ApiDocsConfig/ApiDocsConfigPart";
 
 import Action from "./Action";
 import Authority from "./Authority";
-import AppInstance from "./AppInstance";
-import DbHelper from "./DbHelper";
 
 export {
   Response,
@@ -36,8 +34,6 @@ export {
   HttpMethod,
   Middleware,
   Authority,
-  AppInstance,
-  DbHelper,
   ApiDocs,
   ApiDocsParam,
   ApiDocsIOParams,
