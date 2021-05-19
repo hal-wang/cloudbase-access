@@ -22,7 +22,7 @@ methods.forEach((method) => {
     const startup = new Startup(event, {});
     startup.useRouter("test/controllers");
 
-    await startup.do();
+    await startup.invoke();
     const result = startup.httpContext.response;
     expect(result.statusCode).toBe(200);
     expect((result.body as Record<string, unknown>).method).toBe(method);

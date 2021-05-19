@@ -9,7 +9,7 @@ test("startup test", async function () {
   const startup = new Startup(event, {});
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });
@@ -23,7 +23,7 @@ test("startup not exist", async function () {
   const startup = new Startup(event, {});
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(404);
 });
@@ -37,7 +37,7 @@ test("shallow startup test", async function () {
   const startup = new Startup(event, {});
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });
@@ -51,7 +51,7 @@ test("deep startup test", async function () {
   const startup = new Startup(event, {});
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });
@@ -65,13 +65,13 @@ test("isMethodNecessary test", async function () {
 
   let startup = new Startup(event, {});
   startup.useRouter("test/controllers", undefined, false);
-  await startup.do();
+  await startup.invoke();
   let result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
   startup.useRouter("test/controllers", undefined, true);
-  await startup.do();
+  await startup.invoke();
   result = startup.httpContext.response;
   expect(result.statusCode).toBe(404);
 
@@ -83,13 +83,13 @@ test("isMethodNecessary test", async function () {
 
   startup = new Startup(event, {});
   startup.useRouter("test/controllers", undefined, false);
-  await startup.do();
+  await startup.invoke();
   result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
   startup.useRouter("test/controllers", undefined, true);
-  await startup.do();
+  await startup.invoke();
   result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });
@@ -102,7 +102,7 @@ test("null body test", async function () {
   const startup = new Startup(event, {});
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });

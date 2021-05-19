@@ -18,7 +18,7 @@ test("middleware test success", async function () {
   startup.use(() => new Mdw4(stepResult));
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
   expect(stepResult.step).toBe(111);
@@ -30,7 +30,7 @@ class Mdw1 extends Middleware {
     super();
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.stepResult.step += 1;
     await this.next();
   }
@@ -41,7 +41,7 @@ class Mdw2 extends Middleware {
     super();
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.stepResult.step += 10;
     await this.next();
   }
@@ -52,7 +52,7 @@ class Mdw3 extends Middleware {
     super();
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.stepResult.step += 100;
     this.ok("middleware-success");
   }
@@ -63,7 +63,7 @@ class Mdw4 extends Middleware {
     super();
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.stepResult.step += 1000;
     await this.next();
   }

@@ -10,7 +10,7 @@ import { Action } from "../../../../src";
  * @output
  */
 export default class extends Action {
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.ok({
       method: "GET",
     });

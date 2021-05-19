@@ -27,7 +27,7 @@ import { Action } from "../../../src";
  * @@@method {string} http method
  */
 export default class extends Action {
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.ok({
       method: "DELETE",
     });

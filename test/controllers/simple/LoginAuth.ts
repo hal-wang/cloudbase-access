@@ -5,7 +5,7 @@ export default class extends Action {
     super(["login"]);
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     const { account, password } = this.httpContext.request.headers;
 
     this.ok({

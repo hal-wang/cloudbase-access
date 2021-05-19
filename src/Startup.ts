@@ -70,7 +70,7 @@ export default class Startup {
     });
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     try {
       const { delegate, middleware } = this.httpContext.middlewares[0];
       let mdw;
@@ -80,7 +80,7 @@ export default class Startup {
         mdw = delegate();
       }
       mdw.init(this.httpContext, 0);
-      await mdw.do();
+      await mdw.invoke();
     } catch (err) {
       if (err.response) {
         this.httpContext.response.update(err.response);

@@ -10,7 +10,7 @@ test("request method test", async function () {
   );
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
   let result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 
@@ -23,7 +23,7 @@ test("request method test", async function () {
   );
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
   result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });

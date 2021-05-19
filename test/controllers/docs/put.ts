@@ -12,7 +12,7 @@ export default class extends Action {
     super(["test1", "custom"]);
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.ok({
       method: "PUT",
     });

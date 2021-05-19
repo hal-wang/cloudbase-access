@@ -17,7 +17,7 @@ test("router test login access", async function () {
   );
   startup.useRouter("test/controllers", () => new Auth());
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });
@@ -36,7 +36,7 @@ test("router test login not access", async function () {
   );
   startup.useRouter("test/controllers", () => new Auth());
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(403);
 });
@@ -55,7 +55,7 @@ test("router test admin access", async function () {
   );
   startup.useRouter("test/controllers", () => new Auth());
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });
@@ -74,13 +74,13 @@ test("router test admin not access", async function () {
   );
   startup.useRouter("test/controllers", () => new Auth());
 
-  await startup.do();
+  await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(403);
 });
 
 class Auth extends Authority {
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     if (!this.roles || !this.roles.length) {
       await this.next();
       return;

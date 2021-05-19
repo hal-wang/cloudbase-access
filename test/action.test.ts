@@ -3,7 +3,7 @@ import StatusCode from "../src/Response/StatusCode";
 import { Action, Response, Request } from "../src/index";
 
 class Login extends Action {
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     const { account, password } = <Record<string, unknown>>(
       this.httpContext.request.data
     );
@@ -39,16 +39,16 @@ test("action test", async function () {
     0
   );
 
-  await loginAction.do();
+  await loginAction.invoke();
   expect(loginAction.httpContext.response.statusCode).toBe(StatusCode.ok);
 
   loginAction.httpContext.request.data.password = "12345";
-  await loginAction.do();
+  await loginAction.invoke();
   expect(loginAction.httpContext.response.statusCode).toBe(
     StatusCode.badRequest
   );
 
   loginAction.httpContext.request.data.account = "12";
-  await loginAction.do();
+  await loginAction.invoke();
   expect(loginAction.httpContext.response.statusCode).toBe(StatusCode.notFound);
 });

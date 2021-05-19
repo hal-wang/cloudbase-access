@@ -51,7 +51,7 @@ const normalMethod = [
 for (let i = 0; i < normalMethod.length; i++) {
   const methodItem = normalMethod[i];
   class TestAction extends Action {
-    async do(): Promise<void> {
+    async invoke(): Promise<void> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this as any)[methodItem.method]();
     }
@@ -64,7 +64,7 @@ for (let i = 0; i < normalMethod.length; i++) {
     }
   }
   const action = new TestAction();
-  action.do();
+  action.invoke();
   test(`http result ${methodItem.method}`, async function () {
     const result = action.httpContext.response;
     expect(result.statusCode).toBe(methodItem.code);
@@ -98,7 +98,7 @@ for (let i = 0; i < msgMethods.length; i++) {
   const errorMsgTest = `error message ${methodItem.method}`;
 
   class TestAction extends Action {
-    async do(): Promise<void> {
+    async invoke(): Promise<void> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this as any)[methodItem.method]({
         message: errorMsgTest,
@@ -114,7 +114,7 @@ for (let i = 0; i < msgMethods.length; i++) {
   }
 
   const action = new TestAction();
-  action.do();
+  action.invoke();
   test(errorMsgTest, async function () {
     const result = action.httpContext.response;
     expect(result.statusCode).toBe(methodItem.code);
@@ -128,7 +128,7 @@ for (let i = 0; i < redirectCodes.length; i++) {
   const code = redirectCodes[i] as 301 | 302 | 303 | 307 | 308;
   test(`${code} redirect`, async function () {
     const action = new RedirectTestAction(code, location);
-    await action.do();
+    await action.invoke();
     expect(action.httpContext.response.statusCode).toBe(code);
     expect(action.httpContext.response.headers.location).toBe(location);
   });
@@ -154,7 +154,7 @@ class RedirectTestAction extends Action {
     );
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.redirect(this.location, this.code);
   }
 }

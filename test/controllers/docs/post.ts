@@ -7,7 +7,7 @@ export default class extends Action {
     this.docs = {};
   }
 
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.ok({
       method: "POST",
     });

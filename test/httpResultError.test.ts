@@ -10,7 +10,7 @@ test("router test", async function () {
   const startup = new Startup(event, {});
   startup.useRouter("test/controllers");
 
-  await startup.do();
+  await startup.invoke();
 
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(StatusCode.badRequest);

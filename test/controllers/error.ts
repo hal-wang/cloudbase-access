@@ -2,7 +2,7 @@ import { Action, ErrorMessage, Response, ResponseError } from "../../src";
 import StatusCode from "../../src/Response/StatusCode";
 
 export default class extends Action {
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     throw new ResponseError(
       new Response(StatusCode.badRequest, <ErrorMessage>{ message: "br" })
     );
