@@ -1,15 +1,15 @@
-import { Action, ErrorMessage, HttpResult, HttpResultError } from "../../src";
-import StatusCode from "../../src/HttpResult/StatusCode";
+import { Action, ErrorMessage, Response, ResponseError } from "../../src";
+import StatusCode from "../../src/Response/StatusCode";
 
 export default class extends Action {
   async do(): Promise<void> {
-    throw new HttpResultError(
-      new HttpResult(StatusCode.badRequest, <ErrorMessage>{ message: "br" })
+    throw new ResponseError(
+      new Response(StatusCode.badRequest, <ErrorMessage>{ message: "br" })
     );
   }
   constructor() {
     super();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this as any).response = new HttpResult(StatusCode.ok);
+    (this as any).response = new Response(StatusCode.ok);
   }
 }

@@ -1,5 +1,5 @@
 import Authority from "./Authority";
-import HttpResult from "./HttpResult";
+import Response from "./Response";
 import Middleware from "./Middleware";
 import Request from "./Request";
 import MapParser from "./Map/MapParser";
@@ -12,7 +12,7 @@ export default class Startup {
     return this._current;
   }
 
-  readonly httpContext;
+  readonly httpContext: HttpContext;
 
   constructor(
     event: Record<string, unknown>,
@@ -21,7 +21,7 @@ export default class Startup {
     Startup._current = this;
     this.httpContext = new HttpContext(
       new Request(event, context),
-      new HttpResult(200)
+      new Response(200)
     );
   }
 
@@ -82,8 +82,8 @@ export default class Startup {
       mdw.init(this.httpContext, 0);
       await mdw.do();
     } catch (err) {
-      if (err.httpResult) {
-        this.httpContext.response.update(err.httpResult);
+      if (err.response) {
+        this.httpContext.response.update(err.response);
       } else {
         throw err;
       }

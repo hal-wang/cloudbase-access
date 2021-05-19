@@ -1,4 +1,4 @@
-import { HttpResult, Startup } from "../src/index";
+import { Response, Startup } from "../src/index";
 
 test("router test", async function () {
   const event = <Record<string, unknown>>{
@@ -6,7 +6,7 @@ test("router test", async function () {
     path: "/simple/router",
     httpMethod: "POST",
   };
-  HttpResult.baseHeaders["custom-header"] = "aaa";
+  Response.baseHeaders["custom-header"] = "aaa";
   const startup = new Startup(event, {});
   startup.useRouter("test/controllers");
 

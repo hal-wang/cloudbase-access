@@ -1,6 +1,6 @@
 import HttpContext from "../src/HttpContext";
-import StatusCode from "../src/HttpResult/StatusCode";
-import { Action, HttpResult, Request } from "../src/index";
+import StatusCode from "../src/Response/StatusCode";
+import { Action, Response, Request } from "../src/index";
 
 class Login extends Action {
   async do(): Promise<void> {
@@ -34,7 +34,7 @@ test("action test", async function () {
         },
         {}
       ),
-      new HttpResult(StatusCode.ok)
+      new Response(StatusCode.ok)
     ),
     0
   );

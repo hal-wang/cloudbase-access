@@ -1,6 +1,6 @@
-import { ErrorMessage, HttpResult } from ".";
+import { ErrorMessage, Response } from ".";
 import HttpContext from "./HttpContext";
-import StatusCode from "./HttpResult/StatusCode";
+import StatusCode from "./Response/StatusCode";
 
 export default abstract class Middleware {
   private index!: number;
@@ -33,37 +33,37 @@ export default abstract class Middleware {
     this.index = index;
   }
 
-  protected httpResult = (
+  protected response = (
     statusCode: number,
     body?: unknown,
     headers?: Record<string, string>,
     isBase64 = false
-  ): HttpResult =>
+  ): Response =>
     this.httpContext.response.update({ statusCode, body, headers, isBase64 });
 
-  protected ok = (body?: unknown): HttpResult =>
+  protected ok = (body?: unknown): Response =>
     this.httpContext.response.update({ statusCode: StatusCode.ok, body });
 
-  protected created = (location: string, body?: unknown): HttpResult =>
+  protected created = (location: string, body?: unknown): Response =>
     this.httpContext.response.update({
       statusCode: StatusCode.created,
       body,
       headers: { location },
     });
 
-  protected accepted = (body?: unknown): HttpResult =>
+  protected accepted = (body?: unknown): Response =>
     this.httpContext.response.update({ statusCode: StatusCode.accepted, body });
 
-  protected noContent = (): HttpResult =>
+  protected noContent = (): Response =>
     this.httpContext.response.update({ statusCode: StatusCode.noContent });
 
-  protected partialContent = (body?: unknown): HttpResult =>
+  protected partialContent = (body?: unknown): Response =>
     this.httpContext.response.update({
       statusCode: StatusCode.partialContent,
       body,
     });
 
-  protected badRequest = (body?: unknown): HttpResult =>
+  protected badRequest = (body?: unknown): Response =>
     this.httpContext.response.update({
       statusCode: StatusCode.badRequest,
       body,
@@ -71,7 +71,7 @@ export default abstract class Middleware {
 
   protected badRequestMsg(
     msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
+  ): Response {
     if (!msg) {
       msg = {
         message: "Bad Request",
@@ -81,7 +81,7 @@ export default abstract class Middleware {
     return this.badRequest(msg);
   }
 
-  protected unauthorized = (body?: unknown): HttpResult =>
+  protected unauthorized = (body?: unknown): Response =>
     this.httpContext.response.update({
       statusCode: StatusCode.unauthorized,
       body,
@@ -89,7 +89,7 @@ export default abstract class Middleware {
 
   protected unauthorizedMsg(
     msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
+  ): Response {
     if (!msg) {
       msg = {
         message: "Unauthorized",
@@ -99,7 +99,7 @@ export default abstract class Middleware {
     return this.unauthorized(msg);
   }
 
-  protected forbidden = (body?: unknown): HttpResult =>
+  protected forbidden = (body?: unknown): Response =>
     this.httpContext.response.update({
       statusCode: StatusCode.forbidden,
       body,
@@ -107,7 +107,7 @@ export default abstract class Middleware {
 
   protected forbiddenMsg(
     msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
+  ): Response {
     if (!msg) {
       msg = {
         message: "Forbidden",
@@ -117,12 +117,12 @@ export default abstract class Middleware {
     return this.forbidden(msg);
   }
 
-  protected notFound = (body?: unknown): HttpResult =>
+  protected notFound = (body?: unknown): Response =>
     this.httpContext.response.update({ statusCode: StatusCode.notFound, body });
 
   protected notFoundMsg(
     msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
+  ): Response {
     if (!msg) {
       msg = {
         message: "Not Found",
@@ -132,7 +132,7 @@ export default abstract class Middleware {
     return this.notFound(msg);
   }
 
-  protected errRequest = (body?: unknown): HttpResult =>
+  protected errRequest = (body?: unknown): Response =>
     this.httpContext.response.update({
       statusCode: StatusCode.errRequest,
       body,
@@ -140,7 +140,7 @@ export default abstract class Middleware {
 
   protected errRequestMsg(
     msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
+  ): Response {
     if (!msg) {
       msg = {
         message: "Error Request",
@@ -159,7 +159,7 @@ export default abstract class Middleware {
       | StatusCode.redirect307
       | StatusCode.redirect308
       | number = StatusCode.redirect302
-  ): HttpResult =>
+  ): Response =>
     this.httpContext.response.update({
       statusCode: code,
       headers: { location },

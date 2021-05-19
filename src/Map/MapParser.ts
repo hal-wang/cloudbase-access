@@ -4,11 +4,11 @@ import path = require("path");
 import MapCreater from "./MapCreater";
 import Action from "../Action";
 import linq = require("linq");
-import HttpResultError from "../HttpResult/HttpResultError";
-import { HttpResult } from "..";
+import HttpResultError from "../Response/ResponseError";
 import PathParser from "./PathParser";
 import HttpMethod from "../HttpMethod";
-import StatusCode from "../HttpResult/StatusCode";
+import StatusCode from "../Response/StatusCode";
+import Response from "../Response";
 
 export default class MapParser {
   public readonly realPath: string;
@@ -203,7 +203,7 @@ export default class MapParser {
   private get notFoundErr(): HttpResultError {
     const msg = `Can't find the path：${this.request.path}`;
     return new HttpResultError(
-      new HttpResult(StatusCode.notFound, {
+      new Response(StatusCode.notFound, {
         message: msg,
         path: this.request.path,
       }),
@@ -214,7 +214,7 @@ export default class MapParser {
   private get methodNotAllowedErr(): HttpResultError {
     const msg = `method not allowed：${this.request.method}`;
     return new HttpResultError(
-      new HttpResult(StatusCode.methodNotAllowedMsg, {
+      new Response(StatusCode.methodNotAllowedMsg, {
         message: msg,
         method: this.request.method,
         path: this.request.path,

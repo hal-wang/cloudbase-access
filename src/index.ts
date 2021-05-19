@@ -1,8 +1,8 @@
-import HttpResult from "./HttpResult";
-import ErrorMessage from "./HttpResult/ErrorMessage";
-import HttpResultStruct from "./HttpResult/HttpResultStruct";
-import HttpResultError from "./HttpResult/HttpResultError";
-import StatusCode from "./HttpResult/StatusCode";
+import Response from "./Response";
+import ErrorMessage from "./Response/ErrorMessage";
+import ResponseStruct from "./Response/ResponseStruct";
+import ResponseError from "./Response/ResponseError";
+import StatusCode from "./Response/StatusCode";
 
 import Startup from "./Startup";
 import Request from "./Request";
@@ -25,10 +25,10 @@ import AppInstance from "./AppInstance";
 import DbHelper from "./DbHelper";
 
 export {
-  HttpResult,
+  Response,
   ErrorMessage,
-  HttpResultStruct,
-  HttpResultError,
+  ResponseStruct,
+  ResponseError,
   StatusCode,
   Action,
   Startup,

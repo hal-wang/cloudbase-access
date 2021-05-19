@@ -1,7 +1,7 @@
-import HttpResultStruct from "./HttpResultStruct";
+import ResponseStruct from "./ResponseStruct";
 import StatusCode from "./StatusCode";
 
-export default class HttpResult {
+export default class Response {
   constructor(
     public statusCode: StatusCode | number,
     public body: unknown = {},
@@ -9,11 +9,11 @@ export default class HttpResult {
     public isBase64 = false
   ) {}
 
-  get result(): HttpResultStruct {
-    return <HttpResultStruct>{
+  get result(): ResponseStruct {
+    return <ResponseStruct>{
       isBase64Encoded: this.isBase64,
       statusCode: this.statusCode,
-      headers: Object.assign(HttpResult.baseHeaders, this.headers),
+      headers: Object.assign(Response.baseHeaders, this.headers),
       body: this.body,
     };
   }
@@ -22,7 +22,7 @@ export default class HttpResult {
     return this.statusCode >= 200 && this.statusCode < 300;
   }
 
-  updateResult(val?: HttpResult): HttpResult {
+  updateResult(val?: Response): Response {
     if (!val) return this;
     this.update(val);
     return this;
@@ -35,7 +35,7 @@ export default class HttpResult {
       isBase64?: boolean;
       headers?: Record<string, string>;
     } = {}
-  ): HttpResult {
+  ): Response {
     if (val.statusCode != undefined) {
       this.statusCode = val.statusCode;
     }

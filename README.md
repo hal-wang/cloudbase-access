@@ -160,15 +160,15 @@ cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合�
 
 因此建议设置 router.isMethodNecessary 为 true 。
 
-## HttpResult
+## Response
 
-`HttpResult` 封装了 HTTP 返回结构。可在构造函数传入相关参数。
+`Response` 封装了 HTTP 返回结构。可在构造函数传入相关参数。
 
-`HttpResult` 有个属性 `result` ，可获取最终 HTTP 返回结构 `HttpResultStruct` 。
+`Response` 有个属性 `result` ，可获取最终 HTTP 返回结构 `HttpResultStruct` 。
 
 ### 内置类型
 
-目前 `HttpResult` 内置一些返回类型，都是以静态方式调用：
+目前 `Response` 内置一些返回类型，都是以静态方式调用：
 
 - ok, 200
 - accepted, 202
@@ -187,7 +187,7 @@ cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合�
 - errRequestMsg, 500
 
 ```ts
-return HttpResult.ok("success");
+return Response.ok("success");
 ```
 
 普通内置类型支持传入 `body` 可选参数，`body` 为返回的内容。
@@ -198,8 +198,8 @@ API 返回错误时，可统一返回 `ErrorMessage`，命名以 `Msg` 结尾的
 以下例子中返回 200 请求成功：
 
 ```ts
-import { HttpResult } from "@hal-wang/cloudbase-access";
-return HttpResult.ok({
+import { Response } from "@hal-wang/cloudbase-access";
+return Response.ok({
   list: [],
   count: 0,
 });
@@ -208,14 +208,14 @@ return HttpResult.ok({
 以下例子中返回 400 请求错误：
 
 ```ts
-import { HttpResult } from "@hal-wang/cloudbase-access";
-return HttpResult.badRequestMsg({ message: "请求错误" });
-// 或 return HttpResult.badRequest("请求错误");
+import { Response } from "@hal-wang/cloudbase-access";
+return Response.badRequestMsg({ message: "请求错误" });
+// 或 return Response.badRequest("请求错误");
 ```
 
 ### 在 Action 中
 
-在 `Action` 中已经加入了 `HttpResult` 内置函数，可以直接以 `this.func` 方式调用
+在 `Action` 中已经加入了 `Response` 内置函数，可以直接以 `this.func` 方式调用
 
 ```ts
 import { Action } from "@hal-wang/cloudbase-access";
@@ -380,11 +380,11 @@ return MiddlewareResult.getSuccessResult();
 // 失败
 return new MiddlewareResult(
   false,
-  HttpResult.badRequestMsg({ message: "中间件调用失败" })
+  Response.badRequestMsg({ message: "中间件调用失败" })
 );
 // 或
 return MiddlewareResult.getFailedResult(
-  HttpResult.badRequestMsg({ message: "中间件调用失败" })
+  Response.badRequestMsg({ message: "中间件调用失败" })
 );
 ```
 
@@ -425,7 +425,7 @@ class Auth extends Authority {
 
     if (this.roles.includes("login") && !this.loginAuth()) {
       return MiddlewareResult.getFailedResult(
-        HttpResult.forbidden("账号或密码错误")
+        Response.forbidden("账号或密码错误")
       );
     }
 

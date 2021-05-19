@@ -1,7 +1,7 @@
-import ErrorMessage from "../src/HttpResult/ErrorMessage";
-import HttpResult from "../src/HttpResult";
+import ErrorMessage from "../src/Response/ErrorMessage";
+import Response from "../src/Response";
 import Action from "../src/Action";
-import StatusCode from "../src/HttpResult/StatusCode";
+import StatusCode from "../src/Response/StatusCode";
 import HttpContext from "../src/HttpContext";
 import { Request } from "../src";
 
@@ -58,7 +58,7 @@ for (let i = 0; i < normalMethod.length; i++) {
     constructor() {
       super();
       this.init(
-        new HttpContext(new Request({}, {}), new HttpResult(StatusCode.ok)),
+        new HttpContext(new Request({}, {}), new Response(StatusCode.ok)),
         0
       );
     }
@@ -107,7 +107,7 @@ for (let i = 0; i < msgMethods.length; i++) {
     constructor() {
       super();
       this.init(
-        new HttpContext(new Request({}, {}), new HttpResult(StatusCode.ok)),
+        new HttpContext(new Request({}, {}), new Response(StatusCode.ok)),
         0
       );
     }
@@ -134,12 +134,12 @@ for (let i = 0; i < redirectCodes.length; i++) {
   });
 }
 
-test("HttpResult: is base64", async function () {
-  const hr1 = new HttpResult(200, undefined, undefined, true).result;
+test("Response: is base64", async function () {
+  const hr1 = new Response(200, undefined, undefined, true).result;
   expect(hr1.statusCode).toBe(200);
   expect(hr1.isBase64Encoded).toBe(true);
 
-  const hr2 = new HttpResult(200, undefined, undefined, false).result;
+  const hr2 = new Response(200, undefined, undefined, false).result;
   expect(hr2.statusCode).toBe(200);
   expect(hr2.isBase64Encoded).toBe(false);
 });
@@ -149,7 +149,7 @@ class RedirectTestAction extends Action {
     super();
 
     this.init(
-      new HttpContext(new Request({}, {}), new HttpResult(StatusCode.ok)),
+      new HttpContext(new Request({}, {}), new Response(StatusCode.ok)),
       0
     );
   }

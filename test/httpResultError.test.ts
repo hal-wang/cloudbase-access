@@ -1,5 +1,5 @@
 import { ErrorMessage, Startup } from "../src";
-import StatusCode from "../src/HttpResult/StatusCode";
+import StatusCode from "../src/Response/StatusCode";
 
 test("router test", async function () {
   const event = {
@@ -11,6 +11,7 @@ test("router test", async function () {
   startup.useRouter("test/controllers");
 
   await startup.do();
+
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(StatusCode.badRequest);
   expect((result.body as ErrorMessage).message).toBe("br");
