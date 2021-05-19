@@ -1,4 +1,4 @@
-import { HttpMethod, Router } from "../../src/index";
+import { HttpMethod, Startup } from "../../src/index";
 
 test(`find next`, async function () {
   const event = {
@@ -6,10 +6,10 @@ test(`find next`, async function () {
     path: "/restful/method",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -19,10 +19,10 @@ test(`find simple`, async function () {
     path: "/restful/method/simple",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("simple");
 });
@@ -33,10 +33,10 @@ test(`find simple next`, async function () {
     path: "/restful/method/any",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("query");
 });
@@ -47,10 +47,10 @@ test(`find miss next`, async function () {
     path: "/restful/method/miss",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("miss");
   expect((result.body as Record<string, string>).action).not.toBe("query");
@@ -62,10 +62,10 @@ test(`find miss next 2`, async function () {
     path: "/restful/method/miss/any",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("miss/query");
 });
@@ -76,10 +76,10 @@ test(`find miss next 3`, async function () {
     path: "/restful/method/any/miss",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("query/miss");
 });
@@ -90,10 +90,10 @@ test(`find miss next 4`, async function () {
     path: "/restful/method/any/any",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe(
     "query2/nextQuery"

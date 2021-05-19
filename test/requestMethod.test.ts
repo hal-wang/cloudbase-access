@@ -1,29 +1,29 @@
-import { Router } from "../src/index";
+import { Startup } from "../src/index";
 
 test("request method test", async function () {
-  let router = new Router(
+  let startup = new Startup(
     {
       path: "/router",
       httpMethod: "post",
     },
     {}
   );
-  router.useRouter("test/controllers");
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  let result = router.response;
+  await startup.do();
+  let result = startup.response;
   expect(result.statusCode).toBe(200);
 
-  router = new Router(
+  startup = new Startup(
     {
       path: "/router",
       httpMethod: "POST",
     },
     {}
   );
-  router.useRouter("test/controllers");
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  result = router.response;
+  await startup.do();
+  result = startup.response;
   expect(result.statusCode).toBe(200);
 });

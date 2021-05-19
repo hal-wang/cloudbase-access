@@ -1,4 +1,4 @@
-import { HttpMethod, Router } from "../../src/index";
+import { HttpMethod, Startup } from "../../src/index";
 
 test(`custom httpMethod test`, async function () {
   const event = {
@@ -6,11 +6,11 @@ test(`custom httpMethod test`, async function () {
     path: "/restful/1",
     httpMethod: "CUSTOM",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
   HttpMethod.custom.push("CUSTOM");
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -20,10 +20,10 @@ test(`custom httpMethod test err`, async function () {
     path: "/restful/1",
     httpMethod: "CUSTOM",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
   HttpMethod.custom.splice(0);
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(405);
 });

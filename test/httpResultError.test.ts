@@ -1,4 +1,4 @@
-import { ErrorMessage, Router } from "../src";
+import { ErrorMessage, Startup } from "../src";
 import StatusCode from "../src/HttpResult/StatusCode";
 
 test("router test", async function () {
@@ -7,11 +7,11 @@ test("router test", async function () {
     path: "/error",
     httpMethod: "POST",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(StatusCode.badRequest);
   expect((result.body as ErrorMessage).message).toBe("br");
 });

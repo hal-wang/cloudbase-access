@@ -1,4 +1,4 @@
-import { Middleware, Router } from "../../src/index";
+import { Middleware, Startup } from "../../src/index";
 
 test("middleware additives", async function () {
   const event = {
@@ -6,16 +6,16 @@ test("middleware additives", async function () {
     path: "/simple/router",
     httpMethod: "POST",
   };
-  const router = new Router(event, {});
+  const startup = new Startup(event, {});
 
-  router.use(new Mdw1());
-  router.use(new Mdw2());
-  router.use(new Mdw3());
-  router.use(new Mdw4());
-  router.useRouter("test/controllers");
+  startup.use(new Mdw1());
+  startup.use(new Mdw2());
+  startup.use(new Mdw3());
+  startup.use(new Mdw4());
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   expect(result.headers.mdw1).toBe("mdw1");
   expect(result.headers.mdw2).toBe("mdw2");

@@ -1,4 +1,4 @@
-import { Router } from "../../src/index";
+import { Startup } from "../../src/index";
 
 test(`method not allowed`, async function () {
   const event = {
@@ -6,9 +6,9 @@ test(`method not allowed`, async function () {
     path: "/restful/1",
     httpMethod: "NO",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(405);
 });

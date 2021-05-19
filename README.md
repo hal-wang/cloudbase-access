@@ -50,8 +50,8 @@ export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
 ): Promise<unknown> => {
-  const router = new Router(event, context);
-  return (await router.do()).result;
+  const startup = new Startup(event, context);
+  return (await startup.do()).result;
 };
 ```
 
@@ -400,9 +400,9 @@ export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
 ): Promise<unknown> => {
-  const router = new Router(event, context);
+  const startup = new Startup(event, context);
   router.configure(new YourMiddleware());
-  return (await router.do()).result;
+  return (await startup.do()).result;
 };
 ```
 
@@ -443,8 +443,8 @@ export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
 ): Promise<unknown> => {
-  const router = new Router(event, context, new Auth());
-  return (await router.do()).result;
+  const startup = new Startup(event, context, new Auth());
+  return (await startup.do()).result;
 };
 ```
 

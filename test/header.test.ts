@@ -1,4 +1,4 @@
-import { HttpResult, Router } from "../src/index";
+import { HttpResult, Startup } from "../src/index";
 
 test("router test", async function () {
   const event = <Record<string, unknown>>{
@@ -7,11 +7,11 @@ test("router test", async function () {
     httpMethod: "POST",
   };
   HttpResult.baseHeaders["custom-header"] = "aaa";
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const res = router.response;
+  await startup.do();
+  const res = startup.response;
   expect(res.statusCode).toBe(200);
 
   expect(res.result.headers["custom-header"]).toBe("aaa");

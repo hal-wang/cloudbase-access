@@ -1,4 +1,4 @@
-import { HttpMethod, Router } from "../../src/index";
+import { HttpMethod, Startup } from "../../src/index";
 
 const methods = ["test", "aaa", "NO"];
 
@@ -9,11 +9,11 @@ methods.forEach((method) => {
       path: "/restful",
       httpMethod: method,
     };
-    const router = new Router(event, {});
-    router.useRouter("test/controllers");
+    const startup = new Startup(event, {});
+    startup.useRouter("test/controllers");
 
-    await router.do();
-    const result = router.response;
+    await startup.do();
+    const result = startup.response;
     expect(result.statusCode).toBe(200);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(!!(result.body as any).method).toBe(true);

@@ -1,4 +1,4 @@
-import { Middleware, Router } from "../../src/index";
+import { Middleware, Startup } from "../../src/index";
 
 test("middleware test success", async function () {
   const stepResult: Record<string, number> = {
@@ -10,19 +10,19 @@ test("middleware test success", async function () {
     path: "/simple/router",
     httpMethod: "POST",
   };
-  const router = new Router(event, {});
+  const startup = new Startup(event, {});
 
-  router.use(new Mdw1(stepResult));
-  router.use(new Mdw2(stepResult));
-  router.use(new Mdw3(stepResult));
-  router.use(new Mdw4(stepResult));
-  router.useRouter("test/controllers");
+  startup.use(new Mdw1(stepResult));
+  startup.use(new Mdw2(stepResult));
+  startup.use(new Mdw3(stepResult));
+  startup.use(new Mdw4(stepResult));
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   expect(stepResult.step).toBe(111);
-  expect(router.response.body).toBe("middleware-success");
+  expect(startup.response.body).toBe("middleware-success");
 });
 
 class Mdw1 extends Middleware {

@@ -1,4 +1,4 @@
-import { HttpMethod, Router } from "../../src";
+import { HttpMethod, Startup } from "../../src";
 
 test("restful root get", async function () {
   const event = {
@@ -6,11 +6,11 @@ test("restful root get", async function () {
     path: "/",
     httpMethod: "GET",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expect((result.body as any).method).toBe(HttpMethod.get);

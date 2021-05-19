@@ -1,58 +1,58 @@
-import { Router } from "../src/index";
+import { Startup } from "../src/index";
 
-test("router test", async function () {
+test("startup test", async function () {
   const event = {
     body: {},
     path: "/simple/RoUtEr",
     httpMethod: "POST",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
 });
 
-test("router not exist", async function () {
+test("startup not exist", async function () {
   const event = {
     body: {},
     path: "/simple/router1",
     httpMethod: "POST",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(404);
 });
 
-test("shallow router test", async function () {
+test("shallow startup test", async function () {
   const event = {
     body: {},
     path: "/router",
     httpMethod: "POST",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
 });
 
-test("deep router test", async function () {
+test("deep startup test", async function () {
   const event = {
     body: {},
     path: "/simple/deepActions/RoUtEr",
     httpMethod: "POST",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -63,16 +63,16 @@ test("isMethodNecessary test", async function () {
     httpMethod: "POST",
   };
 
-  let router = new Router(event, {});
-  router.useRouter("test/controllers", false);
-  await router.do();
-  let result = router.response;
+  let startup = new Startup(event, {});
+  startup.useRouter("test/controllers", false);
+  await startup.do();
+  let result = startup.response;
   expect(result.statusCode).toBe(200);
 
-  router = new Router(event, {});
-  router.useRouter("test/controllers", true);
-  await router.do();
-  result = router.response;
+  startup = new Startup(event, {});
+  startup.useRouter("test/controllers", true);
+  await startup.do();
+  result = startup.response;
   expect(result.statusCode).toBe(404);
 
   event = {
@@ -81,16 +81,16 @@ test("isMethodNecessary test", async function () {
     httpMethod: "PUT",
   };
 
-  router = new Router(event, {});
-  router.useRouter("test/controllers", false);
-  await router.do();
-  result = router.response;
+  startup = new Startup(event, {});
+  startup.useRouter("test/controllers", false);
+  await startup.do();
+  result = startup.response;
   expect(result.statusCode).toBe(200);
 
-  router = new Router(event, {});
-  router.useRouter("test/controllers", true);
-  await router.do();
-  result = router.response;
+  startup = new Startup(event, {});
+  startup.useRouter("test/controllers", true);
+  await startup.do();
+  result = startup.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -99,10 +99,10 @@ test("null body test", async function () {
     path: "/nullbody",
     httpMethod: "POST",
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
 });

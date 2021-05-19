@@ -1,4 +1,4 @@
-import { HttpMethod, Router } from "../../src/index";
+import { HttpMethod, Startup } from "../../src/index";
 
 test(`action name error`, async function () {
   const event = {
@@ -6,9 +6,9 @@ test(`action name error`, async function () {
     path: "/err",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {});
-  router.useRouter("test/controllers");
-  await router.do();
-  const result = router.response;
+  const startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(404);
 });

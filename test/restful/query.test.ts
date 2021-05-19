@@ -1,4 +1,4 @@
-import { HttpMethod, Router } from "../../src/index";
+import { HttpMethod, Startup } from "../../src/index";
 
 test(`restful query test`, async function () {
   let event = {
@@ -6,11 +6,11 @@ test(`restful query test`, async function () {
     path: "/restful/45",
     httpMethod: HttpMethod.get,
   };
-  let router = new Router(event, {});
-  router.useRouter("test/controllers");
+  let startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  let result = router.response;
+  await startup.do();
+  let result = startup.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("45");
 
@@ -19,11 +19,11 @@ test(`restful query test`, async function () {
     path: "/restful/11/animals",
     httpMethod: HttpMethod.get,
   };
-  router = new Router(event, {});
-  router.useRouter("test/controllers");
+  startup = new Startup(event, {});
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  result = router.response;
+  await startup.do();
+  result = startup.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("11");
 });

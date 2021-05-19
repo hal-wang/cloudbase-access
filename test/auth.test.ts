@@ -1,10 +1,10 @@
-import { Router } from "../src/index";
+import { Startup } from "../src/index";
 import Authority from "../src/Authority";
 import linq = require("linq");
 import global from "./global";
 
 test("router test login access", async function () {
-  const router = new Router(
+  const startup = new Startup(
     {
       headers: {
         account: global.users[0].account,
@@ -15,16 +15,16 @@ test("router test login access", async function () {
     },
     {}
   );
-  router.useAuth(new Auth());
-  router.useRouter("test/controllers");
+  startup.useAuth(new Auth());
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
 });
 
 test("router test login not access", async function () {
-  const router = new Router(
+  const startup = new Startup(
     {
       headers: {
         account: global.users[0].account,
@@ -35,16 +35,16 @@ test("router test login not access", async function () {
     },
     {}
   );
-  router.useAuth(new Auth());
-  router.useRouter("test/controllers");
+  startup.useAuth(new Auth());
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(403);
 });
 
 test("router test admin access", async function () {
-  const router = new Router(
+  const startup = new Startup(
     {
       headers: {
         account: global.users[1].account,
@@ -55,16 +55,16 @@ test("router test admin access", async function () {
     },
     {}
   );
-  router.useAuth(new Auth());
-  router.useRouter("test/controllers");
+  startup.useAuth(new Auth());
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(200);
 });
 
 test("router test admin not access", async function () {
-  const router = new Router(
+  const startup = new Startup(
     {
       headers: {
         account: global.users[0].account,
@@ -75,11 +75,11 @@ test("router test admin not access", async function () {
     },
     {}
   );
-  router.useAuth(new Auth());
-  router.useRouter("test/controllers");
+  startup.useAuth(new Auth());
+  startup.useRouter("test/controllers");
 
-  await router.do();
-  const result = router.response;
+  await startup.do();
+  const result = startup.response;
   expect(result.statusCode).toBe(403);
 });
 
