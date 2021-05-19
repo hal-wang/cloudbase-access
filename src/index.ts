@@ -7,7 +7,7 @@ import StatusCode from "./HttpResult/StatusCode";
 import Startup from "./Startup";
 import RequestParams from "./RequestParams";
 import HttpMethod from "./HttpMethod";
-console.log("HttpMethod", HttpMethod);
+// console.log("HttpMethod", HttpMethod);
 
 import Middleware from "./Middleware";
 

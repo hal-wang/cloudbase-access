@@ -10,7 +10,7 @@ test(`restful query test`, async function () {
   startup.useRouter("test/controllers");
 
   await startup.do();
-  let result = startup.response;
+  let result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("45");
 
@@ -23,7 +23,7 @@ test(`restful query test`, async function () {
   startup.useRouter("test/controllers");
 
   await startup.do();
-  result = startup.response;
+  result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("11");
 });

@@ -2,6 +2,8 @@ import ErrorMessage from "../src/HttpResult/ErrorMessage";
 import HttpResult from "../src/HttpResult";
 import Action from "../src/Action";
 import StatusCode from "../src/HttpResult/StatusCode";
+import HttpContext from "../src/HttpContext";
+import { RequestParams } from "../src";
 
 const normalMethod = [
   {
@@ -55,14 +57,19 @@ for (let i = 0; i < normalMethod.length; i++) {
     }
     constructor() {
       super();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this as any).response = new HttpResult(StatusCode.ok);
+      this.init(
+        new HttpContext(
+          new RequestParams({}, {}),
+          new HttpResult(StatusCode.ok)
+        ),
+        0
+      );
     }
   }
   const action = new TestAction();
   action.do();
   test(`http result ${methodItem.method}`, async function () {
-    const result = action.response;
+    const result = action.httpContext.response;
     expect(result.statusCode).toBe(methodItem.code);
   });
 }
@@ -102,15 +109,20 @@ for (let i = 0; i < msgMethods.length; i++) {
     }
     constructor() {
       super();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this as any).response = new HttpResult(StatusCode.ok);
+      this.init(
+        new HttpContext(
+          new RequestParams({}, {}),
+          new HttpResult(StatusCode.ok)
+        ),
+        0
+      );
     }
   }
 
   const action = new TestAction();
   action.do();
   test(errorMsgTest, async function () {
-    const result = action.response;
+    const result = action.httpContext.response;
     expect(result.statusCode).toBe(methodItem.code);
     expect((result.body as ErrorMessage).message).toBe(errorMsgTest);
   });
@@ -122,11 +134,9 @@ for (let i = 0; i < redirectCodes.length; i++) {
   const code = redirectCodes[i] as 301 | 302 | 303 | 307 | 308;
   test(`${code} redirect`, async function () {
     const action = new RedirectTestAction(code, location);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (action as any).response = new HttpResult(StatusCode.ok);
     await action.do();
-    expect(action.response.statusCode).toBe(code);
-    expect(action.response.headers.location).toBe(location);
+    expect(action.httpContext.response.statusCode).toBe(code);
+    expect(action.httpContext.response.headers.location).toBe(location);
   });
 }
 
@@ -143,6 +153,11 @@ test("HttpResult: is base64", async function () {
 class RedirectTestAction extends Action {
   constructor(readonly code: StatusCode, readonly location: string) {
     super();
+
+    this.init(
+      new HttpContext(new RequestParams({}, {}), new HttpResult(StatusCode.ok)),
+      0
+    );
   }
 
   async do(): Promise<void> {

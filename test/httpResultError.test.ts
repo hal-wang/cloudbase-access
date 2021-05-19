@@ -11,7 +11,7 @@ test("router test", async function () {
   startup.useRouter("test/controllers");
 
   await startup.do();
-  const result = startup.response;
+  const result = startup.httpContext.response;
   expect(result.statusCode).toBe(StatusCode.badRequest);
   expect((result.body as ErrorMessage).message).toBe("br");
 });

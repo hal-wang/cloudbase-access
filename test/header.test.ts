@@ -11,7 +11,7 @@ test("router test", async function () {
   startup.useRouter("test/controllers");
 
   await startup.do();
-  const res = startup.response;
+  const res = startup.httpContext.response;
   expect(res.statusCode).toBe(200);
 
   expect(res.result.headers["custom-header"]).toBe("aaa");

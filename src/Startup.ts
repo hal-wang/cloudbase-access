@@ -43,31 +43,30 @@ export default class Startup {
     authDelegate?: () => Authority,
     isMethodNecessary = false
   ): void {
-    function getAction(httpContext: HttpContext): Action {
-      const mapParser = new MapParser(
-        httpContext.request,
-        controllerFolder,
-        isMethodNecessary
-      );
-      return mapParser.action;
-    }
+    const getAction = (): Action => {
+      if (!this.httpContext.action) {
+        const mapParser = new MapParser(
+          this.httpContext.request,
+          controllerFolder,
+          isMethodNecessary
+        );
+        this.httpContext.action = mapParser.action;
+      }
+      return this.httpContext.action;
+    };
+    getAction.bind(this);
 
     if (authDelegate) {
       this.use(() => {
         const auth = authDelegate();
-        if (!auth.httpContext.action) {
-          auth.httpContext.action = getAction(auth.httpContext);
-        }
+        const action = getAction();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (auth.roles as any) = auth.httpContext.action.roles;
+        (auth.roles as any) = action.roles;
         return auth;
       });
     }
     this.use(() => {
-      if (!this.httpContext.action) {
-        this.httpContext.action = getAction(this.httpContext);
-      }
-      return this.httpContext.action;
+      return getAction();
     });
   }
 

@@ -8,14 +8,14 @@ test("middleware additives", async function () {
   };
   const startup = new Startup(event, {});
 
-  startup.use(new Mdw1());
-  startup.use(new Mdw2());
-  startup.use(new Mdw3());
-  startup.use(new Mdw4());
+  startup.use(() => new Mdw1());
+  startup.use(() => new Mdw2());
+  startup.use(() => new Mdw3());
+  startup.use(() => new Mdw4());
   startup.useRouter("test/controllers");
 
   await startup.do();
-  const result = startup.response;
+  const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
   expect(result.headers.mdw1).toBe("mdw1");
   expect(result.headers.mdw2).toBe("mdw2");
@@ -26,14 +26,14 @@ test("middleware additives", async function () {
 
 class Mdw1 extends Middleware {
   async do(): Promise<void> {
-    this.response.headers.mdw1 = "mdw1";
+    this.httpContext.response.headers.mdw1 = "mdw1";
     await this.next();
   }
 }
 
 class Mdw2 extends Middleware {
   async do(): Promise<void> {
-    this.response.headers.mdw2 = "mdw2";
+    this.httpContext.response.headers.mdw2 = "mdw2";
     await this.next();
   }
 }
@@ -46,7 +46,7 @@ class Mdw3 extends Middleware {
 
 class Mdw4 extends Middleware {
   async do(): Promise<void> {
-    this.response.headers.mdw4 = "mdw4";
+    this.httpContext.response.headers.mdw4 = "mdw4";
     await this.next();
   }
 }

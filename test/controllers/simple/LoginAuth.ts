@@ -6,7 +6,7 @@ export default class extends Action {
   }
 
   async do(): Promise<void> {
-    const { account, password } = this.requestParams.headers;
+    const { account, password } = this.httpContext.request.headers;
 
     this.ok({
       msg: "login auth",

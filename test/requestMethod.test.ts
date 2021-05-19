@@ -11,7 +11,7 @@ test("request method test", async function () {
   startup.useRouter("test/controllers");
 
   await startup.do();
-  let result = startup.response;
+  let result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 
   startup = new Startup(
@@ -24,6 +24,6 @@ test("request method test", async function () {
   startup.useRouter("test/controllers");
 
   await startup.do();
-  result = startup.response;
+  result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });

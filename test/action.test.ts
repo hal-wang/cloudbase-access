@@ -1,10 +1,11 @@
+import HttpContext from "../src/HttpContext";
 import StatusCode from "../src/HttpResult/StatusCode";
 import { Action, HttpResult, RequestParams } from "../src/index";
 
 class Login extends Action {
   async do(): Promise<void> {
     const { account, password } = <Record<string, unknown>>(
-      this.requestParams.data
+      this.httpContext.request.data
     );
 
     if (account != "abc") {
@@ -22,27 +23,32 @@ class Login extends Action {
 
 test("action test", async function () {
   const loginAction = new Login();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (loginAction as any).requestParams = new RequestParams(
-    {
-      body: {
-        account: "abc",
-        password: "123456",
-      },
-    },
-    {}
+  loginAction.init(
+    new HttpContext(
+      new RequestParams(
+        {
+          body: {
+            account: "abc",
+            password: "123456",
+          },
+        },
+        {}
+      ),
+      new HttpResult(StatusCode.ok)
+    ),
+    0
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (loginAction as any).response = new HttpResult(StatusCode.ok);
 
   await loginAction.do();
-  expect(loginAction.response.statusCode).toBe(StatusCode.ok);
+  expect(loginAction.httpContext.response.statusCode).toBe(StatusCode.ok);
 
-  loginAction.requestParams.data.password = "12345";
+  loginAction.httpContext.request.data.password = "12345";
   await loginAction.do();
-  expect(loginAction.response.statusCode).toBe(StatusCode.badRequest);
+  expect(loginAction.httpContext.response.statusCode).toBe(
+    StatusCode.badRequest
+  );
 
-  loginAction.requestParams.data.account = "12";
+  loginAction.httpContext.request.data.account = "12";
   await loginAction.do();
-  expect(loginAction.response.statusCode).toBe(StatusCode.notFound);
+  expect(loginAction.httpContext.response.statusCode).toBe(StatusCode.notFound);
 });

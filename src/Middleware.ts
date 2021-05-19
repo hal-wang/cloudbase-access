@@ -3,7 +3,7 @@ import HttpContext from "./HttpContext";
 import StatusCode from "./HttpResult/StatusCode";
 
 export default abstract class Middleware {
-  private index: number | undefined;
+  private index!: number;
 
   private _httpContext!: HttpContext;
   public get httpContext(): HttpContext {
@@ -12,9 +12,11 @@ export default abstract class Middleware {
 
   abstract do(): Promise<void>;
   protected async next(): Promise<void> {
-    if (!this.index) return;
+    if (this.httpContext.middlewares.length <= this.index + 1) return;
 
-    const { delegate, middleware } = this.httpContext.middlewares[this.index];
+    const { delegate, middleware } = this.httpContext.middlewares[
+      this.index + 1
+    ];
     if (middleware) {
       await middleware.do();
     } else {
@@ -26,7 +28,7 @@ export default abstract class Middleware {
     }
   }
 
-  public init(httpContext: HttpContext, index: number | undefined): void {
+  public init(httpContext: HttpContext, index: number): void {
     this._httpContext = httpContext;
     this.index = index;
   }

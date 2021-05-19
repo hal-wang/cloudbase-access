@@ -15,11 +15,10 @@ test("router test login access", async function () {
     },
     {}
   );
-  startup.useAuth(new Auth());
-  startup.useRouter("test/controllers");
+  startup.useRouter("test/controllers", () => new Auth());
 
   await startup.do();
-  const result = startup.response;
+  const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -35,11 +34,10 @@ test("router test login not access", async function () {
     },
     {}
   );
-  startup.useAuth(new Auth());
-  startup.useRouter("test/controllers");
+  startup.useRouter("test/controllers", () => new Auth());
 
   await startup.do();
-  const result = startup.response;
+  const result = startup.httpContext.response;
   expect(result.statusCode).toBe(403);
 });
 
@@ -55,11 +53,10 @@ test("router test admin access", async function () {
     },
     {}
   );
-  startup.useAuth(new Auth());
-  startup.useRouter("test/controllers");
+  startup.useRouter("test/controllers", () => new Auth());
 
   await startup.do();
-  const result = startup.response;
+  const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -75,11 +72,10 @@ test("router test admin not access", async function () {
     },
     {}
   );
-  startup.useAuth(new Auth());
-  startup.useRouter("test/controllers");
+  startup.useRouter("test/controllers", () => new Auth());
 
   await startup.do();
-  const result = startup.response;
+  const result = startup.httpContext.response;
   expect(result.statusCode).toBe(403);
 });
 
@@ -107,12 +103,12 @@ class Auth extends Authority {
   }
 
   adminAuth() {
-    const { account } = this.requestParams.headers;
+    const { account } = this.httpContext.request.headers;
     return account == global.adminAccount;
   }
 
   loginAuth() {
-    const { account, password } = this.requestParams.headers;
+    const { account, password } = this.httpContext.request.headers;
     return (
       linq
         .from(global.users)

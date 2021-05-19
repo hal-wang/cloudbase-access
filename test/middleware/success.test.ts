@@ -12,17 +12,17 @@ test("middleware test success", async function () {
   };
   const startup = new Startup(event, {});
 
-  startup.use(new Mdw1(stepResult));
-  startup.use(new Mdw2(stepResult));
-  startup.use(new Mdw3(stepResult));
-  startup.use(new Mdw4(stepResult));
+  startup.use(() => new Mdw1(stepResult));
+  startup.use(() => new Mdw2(stepResult));
+  startup.use(() => new Mdw3(stepResult));
+  startup.use(() => new Mdw4(stepResult));
   startup.useRouter("test/controllers");
 
   await startup.do();
-  const result = startup.response;
+  const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
   expect(stepResult.step).toBe(111);
-  expect(startup.response.body).toBe("middleware-success");
+  expect(startup.httpContext.response.body).toBe("middleware-success");
 });
 
 class Mdw1 extends Middleware {
