@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "../../../src";
+import { Action } from "../../../src";
 
 export default class extends Action {
   constructor() {
@@ -42,8 +42,8 @@ export default class extends Action {
     };
   }
 
-  async do(): Promise<HttpResult> {
-    return this.ok({
+  async do(): Promise<void> {
+    this.ok({
       test: "test",
     });
   }
