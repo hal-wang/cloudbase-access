@@ -1,4 +1,7 @@
-import { Action, Response, Middleware, Request } from ".";
+import Middleware from "./Middleware";
+import Action from "./Middleware/Action";
+import Request from "./Request";
+import Response from "./Response";
 
 export default class HttpContext {
   public action?: Action;

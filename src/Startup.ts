@@ -4,7 +4,7 @@ import Middleware from "./Middleware";
 import Request from "./Request";
 import MapParser from "./Map/MapParser";
 import HttpContext from "./HttpContext";
-import { Action } from ".";
+import Action from "./Middleware/Action";
 
 export default class Startup {
   private static _current: Startup;

@@ -1,4 +1,4 @@
-import { Middleware } from "..";
+import Middleware from ".";
 import ApiDocs from "../ApiDocs";
 
 export default abstract class Action extends Middleware {

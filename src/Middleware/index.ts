@@ -1,5 +1,6 @@
-import { ErrorMessage, Response } from "..";
 import HttpContext from "../HttpContext";
+import Response from "../Response";
+import ErrorMessage from "../Response/ErrorMessage";
 import StatusCode from "../Response/StatusCode";
 
 export default abstract class Middleware {
