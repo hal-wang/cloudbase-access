@@ -6,7 +6,7 @@ import StatusCode from "./Response/StatusCode";
 
 import Startup from "./Startup";
 import Request from "./Request";
-import HttpMethod from "./HttpMethod";
+import HttpMethod from "./Request/HttpMethod";
 
 import Middleware from "./Middleware";
 import Action from "./Middleware/Action";

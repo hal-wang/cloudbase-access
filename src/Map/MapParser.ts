@@ -6,7 +6,7 @@ import Action from "../Middleware/Action";
 import linq = require("linq");
 import HttpResultError from "../Response/ResponseError";
 import PathParser from "./PathParser";
-import HttpMethod from "../HttpMethod";
+import HttpMethod from "../Request/HttpMethod";
 import StatusCode from "../Response/StatusCode";
 import Response from "../Response";
 
