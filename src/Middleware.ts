@@ -1,19 +1,34 @@
 import { ErrorMessage, HttpResult } from ".";
+import HttpContext from "./HttpContext";
 import StatusCode from "./HttpResult/StatusCode";
-import RequestParams from "./RequestParams";
 
 export default abstract class Middleware {
-  //#region will be set before doing
-  readonly requestParams!: RequestParams;
-  readonly response!: HttpResult;
-  private readonly nextMiddleware: Middleware | undefined;
-  //#endregion
+  private index: number | undefined;
+
+  private _httpContext!: HttpContext;
+  public get httpContext(): HttpContext {
+    return this._httpContext;
+  }
 
   abstract do(): Promise<void>;
   protected async next(): Promise<void> {
-    if (this.nextMiddleware) {
-      await this.nextMiddleware.do();
+    if (!this.index) return;
+
+    const { delegate, middleware } = this.httpContext.middlewares[this.index];
+    if (middleware) {
+      await middleware.do();
+    } else {
+      if (!delegate) return;
+      const nextMiddleware = delegate();
+      this.httpContext.middlewares[this.index].middleware = nextMiddleware;
+      nextMiddleware.init(this.httpContext, this.index + 1);
+      await nextMiddleware.do();
     }
+  }
+
+  public init(httpContext: HttpContext, index: number | undefined): void {
+    this._httpContext = httpContext;
+    this.index = index;
   }
 
   protected httpResult = (
@@ -22,29 +37,35 @@ export default abstract class Middleware {
     headers?: Record<string, string>,
     isBase64 = false
   ): HttpResult =>
-    this.response.update({ statusCode, body, headers, isBase64 });
+    this.httpContext.response.update({ statusCode, body, headers, isBase64 });
 
   protected ok = (body?: unknown): HttpResult =>
-    this.response.update({ statusCode: StatusCode.ok, body });
+    this.httpContext.response.update({ statusCode: StatusCode.ok, body });
 
   protected created = (location: string, body?: unknown): HttpResult =>
-    this.response.update({
+    this.httpContext.response.update({
       statusCode: StatusCode.created,
       body,
       headers: { location },
     });
 
   protected accepted = (body?: unknown): HttpResult =>
-    this.response.update({ statusCode: StatusCode.accepted, body });
+    this.httpContext.response.update({ statusCode: StatusCode.accepted, body });
 
   protected noContent = (): HttpResult =>
-    this.response.update({ statusCode: StatusCode.noContent });
+    this.httpContext.response.update({ statusCode: StatusCode.noContent });
 
   protected partialContent = (body?: unknown): HttpResult =>
-    this.response.update({ statusCode: StatusCode.partialContent, body });
+    this.httpContext.response.update({
+      statusCode: StatusCode.partialContent,
+      body,
+    });
 
   protected badRequest = (body?: unknown): HttpResult =>
-    this.response.update({ statusCode: StatusCode.badRequest, body });
+    this.httpContext.response.update({
+      statusCode: StatusCode.badRequest,
+      body,
+    });
 
   protected badRequestMsg(
     msg?: ErrorMessage & Record<string, unknown>
@@ -59,7 +80,10 @@ export default abstract class Middleware {
   }
 
   protected unauthorized = (body?: unknown): HttpResult =>
-    this.response.update({ statusCode: StatusCode.unauthorized, body });
+    this.httpContext.response.update({
+      statusCode: StatusCode.unauthorized,
+      body,
+    });
 
   protected unauthorizedMsg(
     msg?: ErrorMessage & Record<string, unknown>
@@ -74,7 +98,10 @@ export default abstract class Middleware {
   }
 
   protected forbidden = (body?: unknown): HttpResult =>
-    this.response.update({ statusCode: StatusCode.forbidden, body });
+    this.httpContext.response.update({
+      statusCode: StatusCode.forbidden,
+      body,
+    });
 
   protected forbiddenMsg(
     msg?: ErrorMessage & Record<string, unknown>
@@ -89,7 +116,7 @@ export default abstract class Middleware {
   }
 
   protected notFound = (body?: unknown): HttpResult =>
-    this.response.update({ statusCode: StatusCode.notFound, body });
+    this.httpContext.response.update({ statusCode: StatusCode.notFound, body });
 
   protected notFoundMsg(
     msg?: ErrorMessage & Record<string, unknown>
@@ -104,7 +131,10 @@ export default abstract class Middleware {
   }
 
   protected errRequest = (body?: unknown): HttpResult =>
-    this.response.update({ statusCode: StatusCode.errRequest, body });
+    this.httpContext.response.update({
+      statusCode: StatusCode.errRequest,
+      body,
+    });
 
   protected errRequestMsg(
     msg?: ErrorMessage & Record<string, unknown>
@@ -128,5 +158,8 @@ export default abstract class Middleware {
       | StatusCode.redirect308
       | number = StatusCode.redirect302
   ): HttpResult =>
-    this.response.update({ statusCode: code, headers: { location } });
+    this.httpContext.response.update({
+      statusCode: code,
+      headers: { location },
+    });
 }

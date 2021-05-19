@@ -2,8 +2,9 @@ import Authority from "./Authority";
 import HttpResult from "./HttpResult";
 import Middleware from "./Middleware";
 import RequestParams from "./RequestParams";
-import StatusCode from "./HttpResult/StatusCode";
 import MapParser from "./Map/MapParser";
+import HttpContext from "./HttpContext";
+import { Action } from ".";
 
 export default class Startup {
   private static _current: Startup;
@@ -11,39 +12,22 @@ export default class Startup {
     return this._current;
   }
 
-  readonly requestParams: RequestParams;
-  readonly middlewares = <Middleware[]>[];
-
-  readonly response = new HttpResult(StatusCode.ok);
+  readonly httpContext;
 
   constructor(
     event: Record<string, unknown>,
     context: Record<string, unknown>
   ) {
     Startup._current = this;
-    this.requestParams = new RequestParams(event, context);
+    this.httpContext = new HttpContext(
+      new RequestParams(event, context),
+      new HttpResult(200)
+    );
   }
 
-  use(middleware: Middleware): void {
-    if (!middleware) throw new Error();
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (middleware as any).requestParams = this.requestParams;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (middleware as any).response = this.response;
-
-    if (this.middlewares.length > 0) {
-      const preMiddleware = this.middlewares[this.middlewares.length - 1];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (preMiddleware as any).nextMiddleware = middleware;
-    }
-    this.middlewares.push(middleware);
-  }
-
-  private auth?: Authority;
-  public useAuth(auth: Authority): void {
-    this.use(auth);
-    this.auth = auth;
+  use(delegate: () => Middleware): void {
+    if (!delegate) throw new Error();
+    this.httpContext.middlewares.push({ delegate: delegate });
   }
 
   /**
@@ -54,42 +38,53 @@ export default class Startup {
    *
    * if true, the action in definition must appoint method.
    */
-  private isMethodNecessary!: boolean;
-  private controllerFolder: string | undefined;
   public useRouter(
     controllerFolder = "controllers",
+    authDelegate?: () => Authority,
     isMethodNecessary = false
   ): void {
-    this.controllerFolder = controllerFolder;
-    this.isMethodNecessary = isMethodNecessary;
-  }
-
-  private setRouter() {
-    if (!this.controllerFolder) return;
-    const mapParser = new MapParser(
-      this.requestParams,
-      this.controllerFolder,
-      this.isMethodNecessary
-    );
-    const action = mapParser.action;
-    this.use(action);
-
-    if (this.auth) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this.auth as any).roles = ([] as string[]).concat(action.roles);
+    function getAction(httpContext: HttpContext): Action {
+      const mapParser = new MapParser(
+        httpContext.request,
+        controllerFolder,
+        isMethodNecessary
+      );
+      return mapParser.action;
     }
+
+    if (authDelegate) {
+      this.use(() => {
+        const auth = authDelegate();
+        if (!auth.httpContext.action) {
+          auth.httpContext.action = getAction(auth.httpContext);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (auth.roles as any) = auth.httpContext.action.roles;
+        return auth;
+      });
+    }
+    this.use(() => {
+      if (!this.httpContext.action) {
+        this.httpContext.action = getAction(this.httpContext);
+      }
+      return this.httpContext.action;
+    });
   }
 
   async do(): Promise<void> {
     try {
-      this.setRouter();
-      const firstMiddleware = this.middlewares[0];
-      if (firstMiddleware) {
-        await firstMiddleware.do();
+      const { delegate, middleware } = this.httpContext.middlewares[0];
+      let mdw;
+      if (middleware) {
+        mdw = middleware;
+      } else {
+        mdw = delegate();
       }
+      mdw.init(this.httpContext, 0);
+      await mdw.do();
     } catch (err) {
       if (err.httpResult) {
-        this.response.update(err.httpResult);
+        this.httpContext.response.update(err.httpResult);
       } else {
         throw err;
       }
