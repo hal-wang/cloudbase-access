@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "../../../src";
+import { Action } from "../../../src";
 
 /**
  * @action delete docs
@@ -27,11 +27,11 @@ import { Action, HttpResult } from "../../../src";
  * @@@method {string} http method
  */
 export default class extends Action {
-  async do(): Promise<HttpResult> {
-    return this.ok({
+  async do(): Promise<void> {
+    this.ok({
       method: "DELETE",
     });
 
-    // return this.ok("DELETE");
+    // this.ok("DELETE");
   }
 }

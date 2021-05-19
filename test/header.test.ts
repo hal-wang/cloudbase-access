@@ -9,9 +9,9 @@ test("router test", async function () {
   HttpResult.baseHeaders["custom-header"] = "aaa";
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  const result = (await router.do()).result;
-  expect(result.statusCode).toBe(200);
+  await router.do();
+  const res = router.response;
+  expect(res.statusCode).toBe(200);
 
-  const header = (<Record<string, unknown>>result.headers)["custom-header"];
-  expect(header).toBe("aaa");
+  expect(res.result.headers["custom-header"]).toBe("aaa");
 });

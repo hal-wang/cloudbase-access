@@ -7,6 +7,7 @@ test(`action name error`, async function () {
     httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(404);
 });

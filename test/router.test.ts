@@ -8,7 +8,8 @@ test("router test", async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -20,7 +21,8 @@ test("router not exist", async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(404);
 });
 
@@ -32,7 +34,8 @@ test("shallow router test", async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -44,7 +47,8 @@ test("deep router test", async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -57,12 +61,14 @@ test("isMethodNecessary test", async function () {
 
   let router = new Router(event, {}, undefined, "test/controllers");
   router.isMethodNecessary = false;
-  let result = (await router.do()).result;
+  await router.do();
+  let result = router.response;
   expect(result.statusCode).toBe(200);
 
   router = new Router(event, {}, undefined, "test/controllers");
   router.isMethodNecessary = true;
-  result = (await router.do()).result;
+  await router.do();
+  result = router.response;
   expect(result.statusCode).toBe(404);
 
   event = {
@@ -73,12 +79,14 @@ test("isMethodNecessary test", async function () {
 
   router = new Router(event, {}, undefined, "test/controllers");
   router.isMethodNecessary = false;
-  result = (await router.do()).result;
+  await router.do();
+  result = router.response;
   expect(result.statusCode).toBe(200);
 
   router = new Router(event, {}, undefined, "test/controllers");
   router.isMethodNecessary = true;
-  result = (await router.do()).result;
+  await router.do();
+  result = router.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -89,6 +97,7 @@ test("null body test", async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
 });

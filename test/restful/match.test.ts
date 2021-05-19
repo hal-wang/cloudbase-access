@@ -7,7 +7,8 @@ test(`find next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -18,7 +19,8 @@ test(`find simple`, async function () {
     httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("simple");
 });
@@ -30,7 +32,8 @@ test(`find simple next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("query");
 });
@@ -42,7 +45,8 @@ test(`find miss next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("miss");
   expect((result.body as Record<string, string>).action).not.toBe("query");
@@ -55,7 +59,8 @@ test(`find miss next 2`, async function () {
     httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("miss/query");
 });
@@ -67,7 +72,8 @@ test(`find miss next 3`, async function () {
     httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe("query/miss");
 });
@@ -79,7 +85,8 @@ test(`find miss next 4`, async function () {
     httpMethod: HttpMethod.post,
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, string>).action).toBe(
     "query2/nextQuery"

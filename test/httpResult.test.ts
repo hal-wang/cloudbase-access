@@ -1,5 +1,7 @@
 import ErrorMessage from "../src/HttpResult/ErrorMessage";
 import HttpResult from "../src/HttpResult";
+import Action from "../src/Action";
+import StatusCode from "../src/HttpResult/StatusCode";
 
 const normalMethod = [
   {
@@ -34,10 +36,10 @@ const normalMethod = [
     method: "notFound",
     code: 404,
   },
-  {
-    method: "methodNotAllowed",
-    code: 405,
-  },
+  // {
+  //   method: "methodNotAllowed",
+  //   code: 405,
+  // },
   {
     method: "errRequest",
     code: 500,
@@ -46,10 +48,21 @@ const normalMethod = [
 
 for (let i = 0; i < normalMethod.length; i++) {
   const methodItem = normalMethod[i];
+  class TestAction extends Action {
+    async do(): Promise<void> {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this as any)[methodItem.method]();
+    }
+    constructor() {
+      super();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this as any).response = new HttpResult(StatusCode.ok);
+    }
+  }
+  const action = new TestAction();
+  action.do();
   test(`http result ${methodItem.method}`, async function () {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const hr = (HttpResult as any)[methodItem.method]();
-    const result = hr.result;
+    const result = action.response;
     expect(result.statusCode).toBe(methodItem.code);
   });
 }
@@ -79,34 +92,60 @@ const msgMethods = [
 for (let i = 0; i < msgMethods.length; i++) {
   const methodItem = msgMethods[i];
   const errorMsgTest = `error message ${methodItem.method}`;
+
+  class TestAction extends Action {
+    async do(): Promise<void> {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this as any)[methodItem.method]({
+        message: errorMsgTest,
+      });
+    }
+    constructor() {
+      super();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this as any).response = new HttpResult(StatusCode.ok);
+    }
+  }
+
+  const action = new TestAction();
+  action.do();
   test(errorMsgTest, async function () {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const hr = (HttpResult as any)[methodItem.method]({
-      message: errorMsgTest,
-    });
-    const result = hr.result;
+    const result = action.response;
     expect(result.statusCode).toBe(methodItem.code);
     expect((result.body as ErrorMessage).message).toBe(errorMsgTest);
   });
 }
 
 const redirectCodes = [301, 302, 303, 307, 308];
+const location = "/test";
 for (let i = 0; i < redirectCodes.length; i++) {
   const code = redirectCodes[i] as 301 | 302 | 303 | 307 | 308;
   test(`${code} redirect`, async function () {
-    const hr = HttpResult.redirect("/test", code);
-    const result = hr.result;
-    expect(result.statusCode).toBe(code);
-    expect(result.headers.location).toBe("/test");
+    const action = new RedirectTestAction(code, location);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (action as any).response = new HttpResult(StatusCode.ok);
+    await action.do();
+    expect(action.response.statusCode).toBe(code);
+    expect(action.response.headers.location).toBe(location);
   });
 }
 
 test("HttpResult: is base64", async function () {
-  const hr1 = HttpResult.base(200, undefined, undefined, true).result;
+  const hr1 = new HttpResult(200, undefined, undefined, true).result;
   expect(hr1.statusCode).toBe(200);
   expect(hr1.isBase64Encoded).toBe(true);
 
-  const hr2 = HttpResult.base(200, undefined, undefined, false).result;
+  const hr2 = new HttpResult(200, undefined, undefined, false).result;
   expect(hr2.statusCode).toBe(200);
   expect(hr2.isBase64Encoded).toBe(false);
 });
+
+class RedirectTestAction extends Action {
+  constructor(readonly code: StatusCode, readonly location: string) {
+    super();
+  }
+
+  async do(): Promise<void> {
+    this.redirect(this.location, this.code);
+  }
+}

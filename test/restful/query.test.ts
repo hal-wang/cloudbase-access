@@ -8,7 +8,8 @@ test(`restful query test`, async function () {
   };
   let router = new Router(event, {}, undefined, "test/controllers");
 
-  let result = (await router.do()).result;
+  await router.do();
+  let result = router.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("45");
 
@@ -19,7 +20,8 @@ test(`restful query test`, async function () {
   };
   router = new Router(event, {}, undefined, "test/controllers");
 
-  result = (await router.do()).result;
+  await router.do();
+  result = router.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("11");
 });

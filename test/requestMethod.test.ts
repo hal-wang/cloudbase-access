@@ -11,7 +11,8 @@ test("request method test", async function () {
     "test/controllers"
   );
 
-  let result = (await router.do()).result;
+  await router.do();
+  let result = router.response;
   expect(result.statusCode).toBe(200);
 
   router = new Router(
@@ -24,6 +25,7 @@ test("request method test", async function () {
     "test/controllers"
   );
 
-  result = (await router.do()).result;
+  await router.do();
+  result = router.response;
   expect(result.statusCode).toBe(200);
 });

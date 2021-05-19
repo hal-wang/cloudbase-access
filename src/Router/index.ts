@@ -1,11 +1,10 @@
 import Authority from "../Authority";
 import HttpResult from "../HttpResult";
 import Middleware from "../Middleware";
-import MiddlewareType from "../Middleware/MiddlewareType";
 import RequestParams from "./RequestParams";
 import MapParser from "../Map/MapParser";
-import MiddlewareResult from "../Middleware/MiddlewareResult";
 import { Action } from "..";
+import StatusCode from "../HttpResult/StatusCode";
 
 export default class Router {
   private static _current: Router;
@@ -16,7 +15,7 @@ export default class Router {
   readonly requestParams: RequestParams;
   readonly middlewares = <Middleware[]>[];
 
-  private readonly mdwAdditives = <Record<string, string>>{};
+  readonly response = new HttpResult(StatusCode.ok);
 
   /**
    * is httpMethod necessary
@@ -36,135 +35,51 @@ export default class Router {
   ) {
     Router._current = this;
     this.requestParams = new RequestParams(event, context);
-    if (auth != null) this.middlewares.push(auth);
+    if (auth != null) this.use(auth);
   }
 
-  async configure(mdw: Middleware): Promise<void> {
-    this.middlewares.push(mdw);
+  async use(middleware: Middleware): Promise<void> {
+    if (!middleware) throw new Error();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (middleware as any).requestParams = this.requestParams;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (middleware as any).response = this.response;
+
+    if (this.middlewares.length > 0) {
+      const preMiddleware = this.middlewares[this.middlewares.length - 1];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (preMiddleware as any).nextMiddleware = middleware;
+    }
+    this.middlewares.push(middleware);
   }
 
-  async do(): Promise<HttpResult> {
-    let mdwResult = await this.ExecMdw(MiddlewareType.BeforeStart);
-    if (!mdwResult.success) {
-      return this.getResultWithAdditives(mdwResult.failedResult);
-    }
-
-    const httpResult = this.getAction();
-    if (!httpResult.success) {
-      return this.getResultWithAdditives(httpResult.failedResult as HttpResult);
-    }
-    const action = httpResult.action as Action;
-
-    mdwResult = await this.ExecMdw(MiddlewareType.BeforeAction, action);
-    if (!mdwResult.success) {
-      return this.getResultWithAdditives(mdwResult.failedResult);
-    }
-
-    const result = await action.do();
-
-    mdwResult = await this.ExecEndMdw(result, action);
-    if (!mdwResult.success) {
-      return this.getResultWithAdditives(mdwResult.failedResult);
-    }
-
-    return this.getResultWithAdditives(result);
-  }
-
-  private getAction(): {
-    success: boolean;
-    action?: Action;
-    failedResult?: HttpResult;
-  } {
-    let action;
+  async do(): Promise<void> {
     try {
-      const mapParser = new MapParser(
-        this.requestParams,
-        this.cFolder,
-        this.isMethodNecessary
-      );
-      action = mapParser.action;
+      this.use(this.action);
+
+      const firstMiddleware = this.middlewares[0];
+      await firstMiddleware.do();
     } catch (err) {
       if (err.httpResult) {
-        return {
-          success: false,
-          failedResult: err.httpResult,
-        };
+        this.response.update(err.httpResult);
       } else {
         throw err;
       }
     }
+  }
+
+  private get action(): Action {
+    const mapParser = new MapParser(
+      this.requestParams,
+      this.cFolder,
+      this.isMethodNecessary
+    );
+    const action = mapParser.action;
     if (this.auth) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this.auth as any).roles = ([] as string[]).concat(action.roles);
     }
-    return {
-      success: true,
-      action: action,
-    };
-  }
-
-  private async ExecEndMdw(
-    httpResult: HttpResult,
-    action?: Action
-  ): Promise<MiddlewareResult> {
-    let mdwResult;
-    if (httpResult.isSuccess) {
-      mdwResult = await this.ExecMdw(
-        MiddlewareType.BeforeSuccessEnd,
-        action,
-        httpResult
-      );
-    } else {
-      mdwResult = await this.ExecMdw(
-        MiddlewareType.BeforeErrEnd,
-        action,
-        httpResult
-      );
-    }
-    if (!mdwResult.success) return mdwResult;
-
-    mdwResult = await this.ExecMdw(
-      MiddlewareType.BeforeEnd,
-      action,
-      httpResult
-    );
-    if (!mdwResult.success) return mdwResult;
-
-    return new MiddlewareResult(true);
-  }
-
-  private async ExecMdw(
-    type: MiddlewareType,
-    action?: Action,
-    httpResult?: HttpResult
-  ): Promise<MiddlewareResult> {
-    for (let i = 0; i < this.middlewares.length; i++) {
-      const middleware = this.middlewares[i];
-      if (middleware.type != type) continue;
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (middleware as any).requestParams = this.requestParams;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (middleware as any).action = action;
-      middleware.httpResult = httpResult;
-      const mdwResult = await middleware.do();
-
-      for (const key in mdwResult.additives) {
-        this.mdwAdditives[key] = mdwResult.additives[key];
-      }
-
-      if (!mdwResult.success) {
-        return new MiddlewareResult(false, mdwResult.failedResult);
-      }
-    }
-
-    return new MiddlewareResult(true);
-  }
-
-  private getResultWithAdditives(result: HttpResult) {
-    for (const key in this.mdwAdditives) {
-      result.headers[key] = this.mdwAdditives[key];
-    }
-    return result;
+    return action;
   }
 }

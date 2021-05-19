@@ -1,15 +1,22 @@
+import StatusCode from "../src/HttpResult/StatusCode";
 import { Action, HttpResult, RequestParams } from "../src/index";
 
 class Login extends Action {
-  async do(): Promise<HttpResult> {
+  async do(): Promise<void> {
     const { account, password } = <Record<string, unknown>>(
       this.requestParams.data
     );
 
-    if (account != "abc") return this.notFound("用户不存在");
-    if (password != "123456") return this.badRequest("密码错误");
+    if (account != "abc") {
+      this.notFound("用户不存在");
+      return;
+    }
+    if (password != "123456") {
+      this.badRequest("密码错误");
+      return;
+    }
 
-    return this.ok("action ok");
+    this.ok("action ok");
   }
 }
 
@@ -25,15 +32,17 @@ test("action test", async function () {
     },
     {}
   );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (loginAction as any).response = new HttpResult(StatusCode.ok);
 
-  let doResult = await loginAction.do();
-  expect(doResult.statusCode).toBe(200);
+  await loginAction.do();
+  expect(loginAction.response.statusCode).toBe(StatusCode.ok);
 
   loginAction.requestParams.data.password = "12345";
-  doResult = await loginAction.do();
-  expect(doResult.statusCode).toBe(400);
+  await loginAction.do();
+  expect(loginAction.response.statusCode).toBe(StatusCode.badRequest);
 
   loginAction.requestParams.data.account = "12";
-  doResult = await loginAction.do();
-  expect(doResult.statusCode).toBe(404);
+  await loginAction.do();
+  expect(loginAction.response.statusCode).toBe(StatusCode.notFound);
 });

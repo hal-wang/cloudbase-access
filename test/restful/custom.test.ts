@@ -8,7 +8,8 @@ test(`custom httpMethod test`, async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
   HttpMethod.custom.push("CUSTOM");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -20,6 +21,7 @@ test(`custom httpMethod test err`, async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
   HttpMethod.custom.splice(0);
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(405);
 });

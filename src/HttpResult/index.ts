@@ -1,12 +1,12 @@
-import ErrorMessage from "./ErrorMessage";
 import HttpResultStruct from "./HttpResultStruct";
+import StatusCode from "./StatusCode";
 
 export default class HttpResult {
   constructor(
-    public readonly statusCode: number,
-    public readonly body: unknown = {},
+    public statusCode: StatusCode | number,
+    public body: unknown = {},
     public readonly headers = <Record<string, string>>{},
-    public readonly isBase64 = false
+    public isBase64 = false
   ) {}
 
   get result(): HttpResultStruct {
@@ -22,137 +22,42 @@ export default class HttpResult {
     return this.statusCode >= 200 && this.statusCode < 300;
   }
 
+  updateResult(val?: HttpResult): HttpResult {
+    if (!val) return this;
+    this.update(val);
+    return this;
+  }
+
+  update(
+    val: {
+      statusCode?: StatusCode | number;
+      body?: unknown;
+      isBase64?: boolean;
+      headers?: Record<string, string>;
+    } = {}
+  ): HttpResult {
+    if (val.statusCode != undefined) {
+      this.statusCode = val.statusCode;
+    }
+    if (val.body != undefined) {
+      this.body = val.body;
+    }
+    if (val.isBase64 != undefined) {
+      this.isBase64 = val.isBase64;
+    }
+    if (val.headers != undefined) {
+      Object.keys(val.headers).forEach((key) => {
+        if (val.headers) {
+          this.headers[key] = val.headers[key];
+        }
+      });
+    }
+    return this;
+  }
+
   static readonly baseHeaders = <Record<string, string>>{
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
     "nodejs-api": "cloudbase-access",
   };
-
-  static base = function (
-    statusCode: number,
-    body?: unknown,
-    headers?: Record<string, string>,
-    isBase64 = false
-  ): HttpResult {
-    return new HttpResult(statusCode, body, headers, isBase64);
-  };
-
-  //#region reserve
-  static ok = function (body?: unknown): HttpResult {
-    return new HttpResult(200, body);
-  };
-
-  static accepted = function (body?: unknown): HttpResult {
-    return new HttpResult(202, body);
-  };
-
-  static noContent = function (): HttpResult {
-    return new HttpResult(204);
-  };
-
-  static partialContent = function (body?: unknown): HttpResult {
-    return new HttpResult(206, body);
-  };
-
-  static badRequest = function (body?: unknown): HttpResult {
-    return new HttpResult(400, body);
-  };
-  static badRequestMsg = function (
-    msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
-    if (!msg) {
-      msg = {
-        message: "Bad Request",
-      };
-    }
-
-    return HttpResult.badRequest(msg);
-  };
-
-  static unauthorized = function (body?: unknown): HttpResult {
-    return new HttpResult(401, body);
-  };
-  static unauthorizedMsg = function (
-    msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
-    if (!msg) {
-      msg = {
-        message: "Unauthorized",
-      };
-    }
-
-    return HttpResult.unauthorized(msg);
-  };
-
-  static forbidden = function (body?: unknown): HttpResult {
-    return new HttpResult(403, body);
-  };
-  static forbiddenMsg = function (
-    msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
-    if (!msg) {
-      msg = {
-        message: "Forbidden",
-      };
-    }
-
-    return HttpResult.forbidden(msg);
-  };
-
-  static notFound = function (body?: unknown): HttpResult {
-    return new HttpResult(404, body);
-  };
-  static notFoundMsg = function (
-    msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
-    if (!msg) {
-      msg = {
-        message: "Not Found",
-      };
-    }
-
-    return HttpResult.notFound(msg);
-  };
-
-  static methodNotAllowed = function (body?: unknown): HttpResult {
-    return new HttpResult(405, body);
-  };
-  static methodNotAllowedMsg = function (
-    msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
-    if (!msg) {
-      msg = {
-        message: "Method Not Allowed",
-      };
-    }
-
-    return HttpResult.methodNotAllowed(msg);
-  };
-
-  static errRequest = function (body?: unknown): HttpResult {
-    return new HttpResult(500, body);
-  };
-  static errRequestMsg = function (
-    msg?: ErrorMessage & Record<string, unknown>
-  ): HttpResult {
-    if (!msg) {
-      msg = {
-        message: "Error Request",
-      };
-    }
-
-    return HttpResult.errRequest(msg);
-  };
-
-  static redirect = function (
-    location: string,
-    code: 301 | 302 | 303 | 307 | 308 | number = 302
-  ): HttpResult {
-    return new HttpResult(code, {}, { location });
-  };
-
-  static created = function (location: string, body?: unknown): HttpResult {
-    return new HttpResult(201, body, { location });
-  };
-  //#endregion
 }

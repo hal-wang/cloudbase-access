@@ -1,9 +1,4 @@
-import {
-  Middleware,
-  MiddlewareResult,
-  Router,
-  MiddlewareType,
-} from "../../src/index";
+import { Middleware, Router } from "../../src/index";
 
 test("middleware test success", async function () {
   const stepResult: Record<string, number> = {
@@ -17,56 +12,58 @@ test("middleware test success", async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  router.configure(new BeforeStartMdw(stepResult));
-  router.configure(new BeforeActionMdw(stepResult));
-  router.configure(new BeforeSuccessEndMdw(stepResult));
-  router.configure(new BeforeErrEndMdw(stepResult));
+  router.use(new Mdw1(stepResult));
+  router.use(new Mdw2(stepResult));
+  router.use(new Mdw3(stepResult));
+  router.use(new Mdw4(stepResult));
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
   expect(stepResult.step).toBe(111);
+  expect(router.response.body).toBe("middleware-success");
 });
 
-class BeforeStartMdw extends Middleware {
+class Mdw1 extends Middleware {
   constructor(private stepResult: Record<string, number>) {
-    super(MiddlewareType.BeforeStart);
+    super();
   }
 
-  async do(): Promise<MiddlewareResult> {
+  async do(): Promise<void> {
     this.stepResult.step += 1;
-    return MiddlewareResult.getSuccessResult();
+    await this.next();
   }
 }
 
-class BeforeActionMdw extends Middleware {
+class Mdw2 extends Middleware {
   constructor(private stepResult: Record<string, number>) {
-    super(MiddlewareType.BeforeAction);
+    super();
   }
 
-  async do(): Promise<MiddlewareResult> {
+  async do(): Promise<void> {
     this.stepResult.step += 10;
-    return MiddlewareResult.getSuccessResult();
+    await this.next();
   }
 }
 
-class BeforeSuccessEndMdw extends Middleware {
+class Mdw3 extends Middleware {
   constructor(private stepResult: Record<string, number>) {
-    super(MiddlewareType.BeforeSuccessEnd);
+    super();
   }
 
-  async do(): Promise<MiddlewareResult> {
+  async do(): Promise<void> {
     this.stepResult.step += 100;
-    return MiddlewareResult.getSuccessResult();
+    this.ok("middleware-success");
   }
 }
 
-class BeforeErrEndMdw extends Middleware {
+class Mdw4 extends Middleware {
   constructor(private stepResult: Record<string, number>) {
-    super(MiddlewareType.BeforeErrEnd);
+    super();
   }
 
-  async do(): Promise<MiddlewareResult> {
+  async do(): Promise<void> {
     this.stepResult.step += 1000;
-    return MiddlewareResult.getSuccessResult();
+    await this.next();
   }
 }

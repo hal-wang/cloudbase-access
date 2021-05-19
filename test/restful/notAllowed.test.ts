@@ -7,6 +7,7 @@ test(`method not allowed`, async function () {
     httpMethod: "NO",
   };
   const router = new Router(event, {}, undefined, "test/controllers");
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(405);
 });

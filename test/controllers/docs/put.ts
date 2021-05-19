@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "../../../src";
+import { Action } from "../../../src";
 
 /**
  * @action put docs
@@ -12,8 +12,8 @@ export default class extends Action {
     super(["test1", "custom"]);
   }
 
-  async do(): Promise<HttpResult> {
-    return this.ok({
+  async do(): Promise<void> {
+    this.ok({
       method: "PUT",
     });
   }

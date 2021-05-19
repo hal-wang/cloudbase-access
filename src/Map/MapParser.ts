@@ -8,6 +8,7 @@ import HttpResultError from "../HttpResult/HttpResultError";
 import { HttpResult } from "..";
 import PathParser from "./PathParser";
 import HttpMethod from "../Router/HttpMethod";
+import StatusCode from "../HttpResult/StatusCode";
 
 export default class MapParser {
   public readonly realPath: string;
@@ -30,8 +31,6 @@ export default class MapParser {
     const action = new actionClass() as Action;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (action as any).realPath = this.realPath;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (action as any).requestParams = this.requestParams;
     return action;
   }
 
@@ -202,21 +201,25 @@ export default class MapParser {
   }
 
   private get notFoundErr(): HttpResultError {
+    const msg = `Can't find the path：${this.requestParams.path}`;
     return new HttpResultError(
-      HttpResult.notFoundMsg({
-        message: `Can't find the path：${this.requestParams.path}`,
+      new HttpResult(StatusCode.notFound, {
+        message: msg,
         path: this.requestParams.path,
-      })
+      }),
+      msg
     );
   }
 
   private get methodNotAllowedErr(): HttpResultError {
+    const msg = `method not allowed：${this.requestParams.method}`;
     return new HttpResultError(
-      HttpResult.methodNotAllowedMsg({
-        message: `method not allowed：${this.requestParams.method}`,
+      new HttpResult(StatusCode.methodNotAllowedMsg, {
+        message: msg,
         method: this.requestParams.method,
         path: this.requestParams.path,
-      })
+      }),
+      msg
     );
   }
 }

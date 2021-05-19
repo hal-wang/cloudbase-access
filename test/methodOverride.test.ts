@@ -34,9 +34,8 @@ test(`method override request`, async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  const result = (await router.do()).result;
-  expect(result.statusCode).toBe(200);
-  expect((result.body as Record<string, unknown>).method).toBe(
-    HttpMethod.get
-  );
+  await router.do();
+  const res = router.response;
+  expect(res.statusCode).toBe(200);
+  expect((res.body as Record<string, unknown>).method).toBe(HttpMethod.get);
 });

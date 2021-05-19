@@ -9,8 +9,6 @@ import HttpMethod from "./Router/HttpMethod";
 console.log("HttpMethod", HttpMethod);
 
 import Middleware from "./Middleware";
-import MiddlewareType from "./Middleware/MiddlewareType";
-import MiddlewareResult from "./Middleware/MiddlewareResult";
 
 import ApiDocs from "./ApiDocs";
 import ApiDocsParam from "./ApiDocs/ApiDocsParam";
@@ -36,8 +34,6 @@ export {
   RequestParams,
   HttpMethod,
   Middleware,
-  MiddlewareType,
-  MiddlewareResult,
   Authority,
   AppInstance,
   DbHelper,

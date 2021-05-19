@@ -1,4 +1,4 @@
-import { Action, HttpResult } from "../../../../src";
+import { Action } from "../../../../src";
 
 /**
  * @action get doc
@@ -10,8 +10,8 @@ import { Action, HttpResult } from "../../../../src";
  * @output
  */
 export default class extends Action {
-  async do(): Promise<HttpResult> {
-    return this.ok({
+  async do(): Promise<void> {
+    this.ok({
       method: "GET",
     });
   }

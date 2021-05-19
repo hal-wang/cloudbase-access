@@ -21,7 +21,8 @@ methods.forEach((method) => {
     };
     const router = new Router(event, {}, undefined, "test/controllers");
 
-    const result = (await router.do()).result;
+    await router.do();
+    const result = router.response;
     expect(result.statusCode).toBe(200);
     expect((result.body as Record<string, unknown>).method).toBe(method);
   });

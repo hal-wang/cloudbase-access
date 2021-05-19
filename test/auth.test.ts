@@ -1,5 +1,4 @@
-import { MiddlewareResult, Router } from "../src/index";
-import { HttpResult } from "../src";
+import { Router } from "../src/index";
 import Authority from "../src/Authority";
 import linq = require("linq");
 import global from "./global";
@@ -19,7 +18,8 @@ test("router test login access", async function () {
     "test/controllers"
   );
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -38,7 +38,8 @@ test("router test login not access", async function () {
     "test/controllers"
   );
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(403);
 });
 
@@ -57,7 +58,8 @@ test("router test admin access", async function () {
     "test/controllers"
   );
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -76,32 +78,32 @@ test("router test admin not access", async function () {
     "test/controllers"
   );
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(403);
 });
 
 class Auth extends Authority {
-  async do(): Promise<MiddlewareResult> {
+  async do(): Promise<void> {
     if (!this.roles || !this.roles.length) {
-      return MiddlewareResult.getSuccessResult();
+      await this.next();
+      return;
     }
 
     if (
       (this.roles.includes("login") || this.roles.includes("admin")) &&
       !this.loginAuth()
     ) {
-      return MiddlewareResult.getFailedResult(
-        HttpResult.forbidden("账号或密码错误")
-      );
+      this.forbidden("账号或密码错误");
+      return;
     }
 
     if (this.roles.includes("admin") && !this.adminAuth()) {
-      return MiddlewareResult.getFailedResult(
-        HttpResult.forbidden("不是管理员")
-      );
+      this.forbidden("不是管理员");
+      return;
     }
 
-    return MiddlewareResult.getSuccessResult();
+    await this.next();
   }
 
   adminAuth() {

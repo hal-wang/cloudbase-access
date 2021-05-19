@@ -218,12 +218,12 @@ return HttpResult.badRequestMsg({ message: "请求错误" });
 在 `Action` 中已经加入了 `HttpResult` 内置函数，可以直接以 `this.func` 方式调用
 
 ```ts
-import { Action, HttpResult } from "@hal-wang/cloudbase-access";
+import { Action } from "@hal-wang/cloudbase-access";
 
 export default class extends Action {
-  async do(): Promise<HttpResult> {
-    return this.noContent();
-    // or return this.ok('success');
+  async do(): Promise<void> {
+    this.noContent();
+    // or this.ok('success');
   }
 }
 ```
@@ -288,11 +288,11 @@ query.id == "66"; // true;
 1. 在`.ts`文件中创建类，并继承 `Action`，重写 `do` 函数
 
 ```ts
-import { Action, HttpResult } from "@hal-wang/cloudbase-access";
+import { Action } from "@hal-wang/cloudbase-access";
 
 export default class extends Action {
-  async do(): Promise<HttpResult> {
-    return this.noContent();
+  async do(): Promise<void> {
+    return noContent();
   }
 }
 ```
@@ -318,14 +318,14 @@ export default class extends Action {
 例 1
 
 ```ts
-import { Action, HttpResult } from "@hal-wang/cloudbase-access";
+import { Action } from "@hal-wang/cloudbase-access";
 
 export default class extends Action {
-  async do(): Promise<HttpResult> {
+  async do(): Promise<void> {
     const { account, password } = this.requestParams.data
 
     if(/*账号或密码错误*/) return this.notFound('账号或密码错误')
-    return this.ok(new {/*返回信息*/})
+    this.ok(new {/*返回信息*/})
   }
 }
 ```
@@ -333,18 +333,18 @@ export default class extends Action {
 例 2
 
 ```ts
-import { Action, HttpResult } from "@hal-wang/cloudbase-access";
+import { Action } from "@hal-wang/cloudbase-access";
 
 export default class extends Action {
   constructor() {
     super(["login"]);
   }
 
-  async do(): Promise<HttpResult> {
+  async do(): Promise<void> {
     const { account } = this.requestParams.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
 
     const todoList = []; // 可放心从数据库读取用户数据，因为 account 已验证登录
-    return this.ok(todoList);
+    this.ok(todoList);
   }
 }
 ```

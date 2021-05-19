@@ -11,7 +11,8 @@ methods.forEach((method) => {
     };
     const router = new Router(event, {}, undefined, "test/controllers");
 
-    const result = (await router.do()).result;
+    await router.do();
+    const result = router.response;
     expect(result.statusCode).toBe(200);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(!!(result.body as any).method).toBe(true);

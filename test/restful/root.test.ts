@@ -8,7 +8,8 @@ test("restful root get", async function () {
   };
   const router = new Router(event, {}, undefined, "test/controllers");
 
-  const result = (await router.do()).result;
+  await router.do();
+  const result = router.response;
   expect(result.statusCode).toBe(200);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expect((result.body as any).method).toBe(HttpMethod.get);
