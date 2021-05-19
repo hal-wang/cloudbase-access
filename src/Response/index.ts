@@ -22,12 +22,6 @@ export default class Response {
     return this.statusCode >= 200 && this.statusCode < 300;
   }
 
-  updateResult(val?: Response): Response {
-    if (!val) return this;
-    this.update(val);
-    return this;
-  }
-
   update(
     val: {
       statusCode?: StatusCode | number;

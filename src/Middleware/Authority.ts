@@ -1,4 +1,4 @@
-import Middleware from "./Middleware";
+import Middleware from ".";
 
 export default abstract class Authority extends Middleware {
   //#region will be set before doing

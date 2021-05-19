@@ -1,7 +1,7 @@
 import { writeFileSync, existsSync, lstatSync, readdirSync } from "fs";
 import linq = require("linq");
 import path = require("path");
-import Action from "../../Action";
+import Action from "../../Middleware/Action";
 import ApiDocsConfig from "../ApiDocsConfig";
 import ApiDocsMdActionCreater from "./ApiDocsMdActionCreater";
 import ApiDocsNoteParser from "../ApiDocsNoteParser";

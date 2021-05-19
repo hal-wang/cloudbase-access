@@ -1,5 +1,5 @@
-import { Middleware } from ".";
-import ApiDocs from "./ApiDocs";
+import { Middleware } from "..";
+import ApiDocs from "../ApiDocs";
 
 export default abstract class Action extends Middleware {
   constructor(public readonly roles: Array<string> = new Array<string>()) {

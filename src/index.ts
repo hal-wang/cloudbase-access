@@ -9,6 +9,8 @@ import Request from "./Request";
 import HttpMethod from "./HttpMethod";
 
 import Middleware from "./Middleware";
+import Action from "./Middleware/Action";
+import Authority from "./Middleware/Authority";
 
 import ApiDocs from "./ApiDocs";
 import ApiDocsParam from "./ApiDocs/ApiDocsParam";
@@ -18,9 +20,6 @@ import ApiDocsOutputParams from "./ApiDocs/ApiDocsParam/ApiDocsOutputParams";
 import ApiDocsStateCode from "./ApiDocs/ApiDocsParam/ApiDocsStateCode";
 import ApiDocsConfig from "./ApiDocs/ApiDocsConfig";
 import ApiDocsConfigPart from "./ApiDocs/ApiDocsConfig/ApiDocsConfigPart";
-
-import Action from "./Action";
-import Authority from "./Authority";
 
 export {
   Response,

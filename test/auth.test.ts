@@ -1,5 +1,5 @@
 import { Startup } from "../src/index";
-import Authority from "../src/Authority";
+import Authority from "../src/Middleware/Authority";
 import linq = require("linq");
 import global from "./global";
 

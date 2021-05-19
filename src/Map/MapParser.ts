@@ -2,7 +2,7 @@ import Request from "../Request";
 import { existsSync } from "fs";
 import path = require("path");
 import MapCreater from "./MapCreater";
-import Action from "../Action";
+import Action from "../Middleware/Action";
 import linq = require("linq");
 import HttpResultError from "../Response/ResponseError";
 import PathParser from "./PathParser";

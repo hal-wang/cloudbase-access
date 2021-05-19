@@ -1,6 +1,6 @@
 import ErrorMessage from "../src/Response/ErrorMessage";
 import Response from "../src/Response";
-import Action from "../src/Action";
+import Action from "../src/Middleware/Action";
 import StatusCode from "../src/Response/StatusCode";
 import HttpContext from "../src/HttpContext";
 import { Request } from "../src";

@@ -1,4 +1,4 @@
-import Authority from "./Authority";
+import Authority from "./Middleware/Authority";
 import Response from "./Response";
 import Middleware from "./Middleware";
 import Request from "./Request";

@@ -6,7 +6,7 @@ import ApiDocsIOParams from "../ApiDocsParam/ApiDocsIOParams";
 import ApiDocsStateCode from "../ApiDocsParam/ApiDocsStateCode";
 import ApiDocsConfigPart from "../ApiDocsConfig/ApiDocsConfigPart";
 import path = require("path");
-import Action from "../../Action";
+import Action from "../../Middleware/Action";
 
 export default class ApiDocsMdActionCreater {
   constructor(
