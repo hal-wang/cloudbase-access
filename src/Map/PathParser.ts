@@ -1,4 +1,4 @@
-import HttpMethod from "../Router/HttpMethod";
+import HttpMethod from "../HttpMethod";
 
 export default class PathParser {
   private readonly relativePath: string;

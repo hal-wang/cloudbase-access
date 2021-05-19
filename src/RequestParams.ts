@@ -1,4 +1,4 @@
-import HttpMethod from "./Router/HttpMethod";
+import HttpMethod from "./HttpMethod";
 import linq = require("linq");
 
 export default class RequestParams {

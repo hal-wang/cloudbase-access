@@ -4,9 +4,9 @@ import HttpResultStruct from "./HttpResult/HttpResultStruct";
 import HttpResultError from "./HttpResult/HttpResultError";
 import StatusCode from "./HttpResult/StatusCode";
 
-import Router from "./Router";
+import Startup from "./Startup";
 import RequestParams from "./RequestParams";
-import HttpMethod from "./Router/HttpMethod";
+import HttpMethod from "./HttpMethod";
 console.log("HttpMethod", HttpMethod);
 
 import Middleware from "./Middleware";
@@ -32,7 +32,7 @@ export {
   HttpResultError,
   StatusCode,
   Action,
-  Router,
+  Startup,
   RequestParams,
   HttpMethod,
   Middleware,

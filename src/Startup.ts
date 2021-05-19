@@ -1,13 +1,13 @@
-import Authority from "../Authority";
-import HttpResult from "../HttpResult";
-import Middleware from "../Middleware";
-import RequestParams from "../RequestParams";
-import StatusCode from "../HttpResult/StatusCode";
-import MapParser from "../Map/MapParser";
+import Authority from "./Authority";
+import HttpResult from "./HttpResult";
+import Middleware from "./Middleware";
+import RequestParams from "./RequestParams";
+import StatusCode from "./HttpResult/StatusCode";
+import MapParser from "./Map/MapParser";
 
-export default class Router {
-  private static _current: Router;
-  public static get current(): Router {
+export default class Startup {
+  private static _current: Startup;
+  public static get current(): Startup {
     return this._current;
   }
 
@@ -20,7 +20,7 @@ export default class Router {
     event: Record<string, unknown>,
     context: Record<string, unknown>
   ) {
-    Router._current = this;
+    Startup._current = this;
     this.requestParams = new RequestParams(event, context);
   }
 
