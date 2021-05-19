@@ -1,7 +1,7 @@
 import Authority from "./Authority";
 import HttpResult from "./HttpResult";
 import Middleware from "./Middleware";
-import RequestParams from "./RequestParams";
+import Request from "./Request";
 import MapParser from "./Map/MapParser";
 import HttpContext from "./HttpContext";
 import { Action } from ".";
@@ -20,7 +20,7 @@ export default class Startup {
   ) {
     Startup._current = this;
     this.httpContext = new HttpContext(
-      new RequestParams(event, context),
+      new Request(event, context),
       new HttpResult(200)
     );
   }

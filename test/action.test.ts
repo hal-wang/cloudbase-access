@@ -1,6 +1,6 @@
 import HttpContext from "../src/HttpContext";
 import StatusCode from "../src/HttpResult/StatusCode";
-import { Action, HttpResult, RequestParams } from "../src/index";
+import { Action, HttpResult, Request } from "../src/index";
 
 class Login extends Action {
   async do(): Promise<void> {
@@ -25,7 +25,7 @@ test("action test", async function () {
   const loginAction = new Login();
   loginAction.init(
     new HttpContext(
-      new RequestParams(
+      new Request(
         {
           body: {
             account: "abc",

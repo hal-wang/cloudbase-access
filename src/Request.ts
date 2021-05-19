@@ -1,7 +1,7 @@
 import HttpMethod from "./HttpMethod";
 import linq = require("linq");
 
-export default class RequestParams {
+export default class Request {
   readonly headers: Record<string, string | undefined>;
   readonly params: Record<string, string | undefined>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

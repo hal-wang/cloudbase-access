@@ -3,7 +3,7 @@ import HttpResult from "../src/HttpResult";
 import Action from "../src/Action";
 import StatusCode from "../src/HttpResult/StatusCode";
 import HttpContext from "../src/HttpContext";
-import { RequestParams } from "../src";
+import { Request } from "../src";
 
 const normalMethod = [
   {
@@ -58,10 +58,7 @@ for (let i = 0; i < normalMethod.length; i++) {
     constructor() {
       super();
       this.init(
-        new HttpContext(
-          new RequestParams({}, {}),
-          new HttpResult(StatusCode.ok)
-        ),
+        new HttpContext(new Request({}, {}), new HttpResult(StatusCode.ok)),
         0
       );
     }
@@ -110,10 +107,7 @@ for (let i = 0; i < msgMethods.length; i++) {
     constructor() {
       super();
       this.init(
-        new HttpContext(
-          new RequestParams({}, {}),
-          new HttpResult(StatusCode.ok)
-        ),
+        new HttpContext(new Request({}, {}), new HttpResult(StatusCode.ok)),
         0
       );
     }
@@ -155,7 +149,7 @@ class RedirectTestAction extends Action {
     super();
 
     this.init(
-      new HttpContext(new RequestParams({}, {}), new HttpResult(StatusCode.ok)),
+      new HttpContext(new Request({}, {}), new HttpResult(StatusCode.ok)),
       0
     );
   }

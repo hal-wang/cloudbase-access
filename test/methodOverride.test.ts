@@ -1,4 +1,4 @@
-import { HttpMethod, Startup, RequestParams } from "../src/index";
+import { HttpMethod, Startup, Request } from "../src/index";
 
 test("method override", async function () {
   const event = {
@@ -7,9 +7,9 @@ test("method override", async function () {
       "X-HTTP-Method-Override": "POST",
     },
   };
-  const rParams = new RequestParams(event, {});
-  expect(rParams.method).toBe(HttpMethod.post);
-  expect(rParams.method).not.toBe(HttpMethod.patch);
+  const request = new Request(event, {});
+  expect(request.method).toBe(HttpMethod.post);
+  expect(request.method).not.toBe(HttpMethod.patch);
 });
 
 test("method override upper case", async function () {
@@ -19,9 +19,9 @@ test("method override upper case", async function () {
       "X-HTTP-METHOD-OVERRIDE": "POST",
     },
   };
-  const rParams = new RequestParams(event, {});
-  expect(rParams.method).toBe(HttpMethod.post);
-  expect(rParams.method).not.toBe(HttpMethod.patch);
+  const request = new Request(event, {});
+  expect(request.method).toBe(HttpMethod.post);
+  expect(request.method).not.toBe(HttpMethod.patch);
 });
 
 test(`method override request`, async function () {

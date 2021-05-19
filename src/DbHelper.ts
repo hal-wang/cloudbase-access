@@ -1,5 +1,5 @@
 import { Database } from "@cloudbase/node-sdk";
-import { RequestParams } from ".";
+import { Request } from ".";
 
 export default class DbHelper {
   static getResBadContent(res: Record<string, unknown>): string {
@@ -34,14 +34,14 @@ export default class DbHelper {
   }
 
   /**
-   * @param requestParams data: { page, limit }
+   * @param request data: { page, limit }
    * @param partQuery part of query, like where(...)
    */
   static async getPageList(
-    requestParams: RequestParams,
+    request: Request,
     partQuery: Database.Query | Database.CollectionReference
   ): Promise<{ list: unknown[]; total: number | undefined }> {
-    const { page, limit } = DbHelper.getPageQuery(requestParams);
+    const { page, limit } = DbHelper.getPageQuery(request);
 
     const countRes = await partQuery.count();
 
@@ -57,25 +57,25 @@ export default class DbHelper {
   }
 
   private static getPageQuery(
-    requestParams: RequestParams
+    request: Request
   ): { page: number; limit: number } {
     let page: number | undefined;
     let limit: number | undefined;
 
-    if (requestParams.params && requestParams.params.page) {
-      page = Number(requestParams.params.page);
-    } else if (requestParams.data && requestParams.data.page) {
-      page = requestParams.data.page as number;
+    if (request.params && request.params.page) {
+      page = Number(request.params.page);
+    } else if (request.data && request.data.page) {
+      page = request.data.page as number;
     }
 
-    if (requestParams.params && requestParams.params.limit) {
-      limit = Number(requestParams.params.limit);
-    } else if (requestParams.params && requestParams.params.pageSize) {
-      limit = Number(requestParams.params.pageSize);
-    } else if (requestParams.data && requestParams.data.limit) {
-      limit = requestParams.data.limit as number;
-    } else if (requestParams.data && requestParams.data.pageSize) {
-      limit = requestParams.data.pageSize as number;
+    if (request.params && request.params.limit) {
+      limit = Number(request.params.limit);
+    } else if (request.params && request.params.pageSize) {
+      limit = Number(request.params.pageSize);
+    } else if (request.data && request.data.limit) {
+      limit = request.data.limit as number;
+    } else if (request.data && request.data.pageSize) {
+      limit = request.data.pageSize as number;
     }
 
     if (!page) page = 1;

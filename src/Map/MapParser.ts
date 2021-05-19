@@ -1,4 +1,4 @@
-import RequestParams from "../RequestParams";
+import Request from "../Request";
 import { existsSync } from "fs";
 import path = require("path");
 import MapCreater from "./MapCreater";
@@ -14,7 +14,7 @@ export default class MapParser {
   public readonly realPath: string;
 
   constructor(
-    private readonly requestParams: RequestParams,
+    private readonly request: Request,
     private readonly cFolder: string,
     public readonly isMethodNecessary: boolean
   ) {
@@ -37,7 +37,7 @@ export default class MapParser {
   private setQuery(): void {
     if (!this.realPath.includes("^")) return;
 
-    const reqPath = this.requestParams.path;
+    const reqPath = this.request.path;
     const mapPathStrs = this.realPath.split("/");
     const reqPathStrs = reqPath.split("/");
     for (let i = 0; i < Math.min(mapPathStrs.length, reqPathStrs.length); i++) {
@@ -47,7 +47,7 @@ export default class MapParser {
 
       const key = mapPathStr.substr(1, mapPathStr.length - 1);
       const value = decodeURIComponent(reqPathStr);
-      this.requestParams.query[key] = value;
+      this.request.query[key] = value;
     }
   }
 
@@ -91,7 +91,7 @@ export default class MapParser {
 
   private isSimplePathMatched(mapPath: string): boolean {
     mapPath = this.removeExtension(mapPath);
-    const reqUrlStrs = this.requestParams.path.toLowerCase().split("/");
+    const reqUrlStrs = this.request.path.toLowerCase().split("/");
     const mapPathStrs = mapPath.toLowerCase().split("/");
     if (reqUrlStrs.length != mapPathStrs.length) return false;
 
@@ -103,15 +103,15 @@ export default class MapParser {
     methodIncluded: boolean
   ): boolean {
     mapPath = this.removeExtension(mapPath);
-    const reqUrlStrs = this.requestParams.path
-      ? this.requestParams.path.toLowerCase().split("/")
+    const reqUrlStrs = this.request.path
+      ? this.request.path.toLowerCase().split("/")
       : [];
     const mapPathStrs = mapPath.toLowerCase().split("/");
     if (reqUrlStrs.length != mapPathStrs.length - 1) return false;
-    if (!this.requestParams.method) return false;
+    if (!this.request.method) return false;
 
     if (methodIncluded) {
-      reqUrlStrs.push(String(this.requestParams.method).toLowerCase());
+      reqUrlStrs.push(String(this.request.method).toLowerCase());
     } else {
       mapPathStrs.splice(mapPathStrs.length - 1, 1);
     }
@@ -201,23 +201,23 @@ export default class MapParser {
   }
 
   private get notFoundErr(): HttpResultError {
-    const msg = `Can't find the path：${this.requestParams.path}`;
+    const msg = `Can't find the path：${this.request.path}`;
     return new HttpResultError(
       new HttpResult(StatusCode.notFound, {
         message: msg,
-        path: this.requestParams.path,
+        path: this.request.path,
       }),
       msg
     );
   }
 
   private get methodNotAllowedErr(): HttpResultError {
-    const msg = `method not allowed：${this.requestParams.method}`;
+    const msg = `method not allowed：${this.request.method}`;
     return new HttpResultError(
       new HttpResult(StatusCode.methodNotAllowedMsg, {
         message: msg,
-        method: this.requestParams.method,
-        path: this.requestParams.path,
+        method: this.request.method,
+        path: this.request.path,
       }),
       msg
     );

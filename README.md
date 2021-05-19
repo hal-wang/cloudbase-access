@@ -230,9 +230,9 @@ export default class extends Action {
 
 ## 请求参数
 
-`RequestParams` 类解析并封装请求参数，构造函数传入云函数 `event` 和 `context`。
+`Request` 类解析并封装请求参数，构造函数传入云函数 `event` 和 `context`。
 
-在 `Action` 中，有 `RequestParams` 实例对象 `requestParams`，可通过 `this.requestParams` 方式使用。
+在 `Action` 中，有 `Request` 实例对象 `request`，可通过 `this.request` 方式使用。
 
 实例包含以下字段
 
@@ -262,7 +262,7 @@ _注意：在 event 中，path 实为 `/` 开头，上例为 `/user/login`。但
 
 请求 body，如果是 JSON 字符串，则转为 JSON 对象。
 
-在 event 中，json 为字符串，在 `RequestParams` 中已解析。
+在 event 中，json 为字符串，在 `Request` 中已解析。
 
 ### query
 
@@ -322,7 +322,7 @@ import { Action } from "@hal-wang/cloudbase-access";
 
 export default class extends Action {
   async do(): Promise<void> {
-    const { account, password } = this.requestParams.data
+    const { account, password } = this.request.data
 
     if(/*账号或密码错误*/) return this.notFound('账号或密码错误')
     this.ok(new {/*返回信息*/})
@@ -341,7 +341,7 @@ export default class extends Action {
   }
 
   async do(): Promise<void> {
-    const { account } = this.requestParams.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
+    const { account } = this.request.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
 
     const todoList = []; // 可放心从数据库读取用户数据，因为 account 已验证登录
     this.ok(todoList);
@@ -434,7 +434,7 @@ class Auth extends Authority {
 
   loginAuth() {
     // 实际情况应该需要查表等复杂操作
-    const { account, password } = this.requestParams.headers;
+    const { account, password } = this.request.headers;
     return account == "abc" && password == "123456";
   }
 }

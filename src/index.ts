@@ -5,9 +5,8 @@ import HttpResultError from "./HttpResult/HttpResultError";
 import StatusCode from "./HttpResult/StatusCode";
 
 import Startup from "./Startup";
-import RequestParams from "./RequestParams";
+import Request from "./Request";
 import HttpMethod from "./HttpMethod";
-// console.log("HttpMethod", HttpMethod);
 
 import Middleware from "./Middleware";
 
@@ -33,7 +32,7 @@ export {
   StatusCode,
   Action,
   Startup,
-  RequestParams,
+  Request,
   HttpMethod,
   Middleware,
   Authority,
