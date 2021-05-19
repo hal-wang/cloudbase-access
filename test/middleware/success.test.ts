@@ -10,12 +10,13 @@ test("middleware test success", async function () {
     path: "/simple/router",
     httpMethod: "POST",
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
 
   router.use(new Mdw1(stepResult));
   router.use(new Mdw2(stepResult));
   router.use(new Mdw3(stepResult));
   router.use(new Mdw4(stepResult));
+  router.useRouter("test/controllers");
 
   await router.do();
   const result = router.response;

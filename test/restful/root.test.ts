@@ -6,7 +6,8 @@ test("restful root get", async function () {
     path: "/",
     httpMethod: "GET",
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
 
   await router.do();
   const result = router.response;

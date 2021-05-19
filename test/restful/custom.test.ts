@@ -6,7 +6,8 @@ test(`custom httpMethod test`, async function () {
     path: "/restful/1",
     httpMethod: "CUSTOM",
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   HttpMethod.custom.push("CUSTOM");
   await router.do();
   const result = router.response;
@@ -19,7 +20,8 @@ test(`custom httpMethod test err`, async function () {
     path: "/restful/1",
     httpMethod: "CUSTOM",
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   HttpMethod.custom.splice(0);
   await router.do();
   const result = router.response;

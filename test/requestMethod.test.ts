@@ -6,10 +6,9 @@ test("request method test", async function () {
       path: "/router",
       httpMethod: "post",
     },
-    {},
-    undefined,
-    "test/controllers"
+    {}
   );
+  router.useRouter("test/controllers");
 
   await router.do();
   let result = router.response;
@@ -20,10 +19,9 @@ test("request method test", async function () {
       path: "/router",
       httpMethod: "POST",
     },
-    {},
-    undefined,
-    "test/controllers"
+    {}
   );
+  router.useRouter("test/controllers");
 
   await router.do();
   result = router.response;

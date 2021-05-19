@@ -6,7 +6,8 @@ test(`find next`, async function () {
     path: "/restful/method",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   await router.do();
   const result = router.response;
   expect(result.statusCode).toBe(200);
@@ -18,7 +19,8 @@ test(`find simple`, async function () {
     path: "/restful/method/simple",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   await router.do();
   const result = router.response;
   expect(result.statusCode).toBe(200);
@@ -31,7 +33,8 @@ test(`find simple next`, async function () {
     path: "/restful/method/any",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   await router.do();
   const result = router.response;
   expect(result.statusCode).toBe(200);
@@ -44,7 +47,8 @@ test(`find miss next`, async function () {
     path: "/restful/method/miss",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   await router.do();
   const result = router.response;
   expect(result.statusCode).toBe(200);
@@ -58,7 +62,8 @@ test(`find miss next 2`, async function () {
     path: "/restful/method/miss/any",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   await router.do();
   const result = router.response;
   expect(result.statusCode).toBe(200);
@@ -71,7 +76,8 @@ test(`find miss next 3`, async function () {
     path: "/restful/method/any/miss",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   await router.do();
   const result = router.response;
   expect(result.statusCode).toBe(200);
@@ -84,7 +90,8 @@ test(`find miss next 4`, async function () {
     path: "/restful/method/any/any",
     httpMethod: HttpMethod.post,
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   await router.do();
   const result = router.response;
   expect(result.statusCode).toBe(200);

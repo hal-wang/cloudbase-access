@@ -6,12 +6,13 @@ test("middleware additives", async function () {
     path: "/simple/router",
     httpMethod: "POST",
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
 
   router.use(new Mdw1());
   router.use(new Mdw2());
   router.use(new Mdw3());
   router.use(new Mdw4());
+  router.useRouter("test/controllers");
 
   await router.do();
   const result = router.response;

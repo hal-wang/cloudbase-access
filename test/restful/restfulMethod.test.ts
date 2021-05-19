@@ -19,7 +19,8 @@ methods.forEach((method) => {
       path: "/restful",
       httpMethod: method,
     };
-    const router = new Router(event, {}, undefined, "test/controllers");
+    const router = new Router(event, {});
+    router.useRouter("test/controllers");
 
     await router.do();
     const result = router.response;

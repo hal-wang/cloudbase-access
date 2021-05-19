@@ -6,7 +6,8 @@ test(`method not allowed`, async function () {
     path: "/restful/1",
     httpMethod: "NO",
   };
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
   await router.do();
   const result = router.response;
   expect(result.statusCode).toBe(405);

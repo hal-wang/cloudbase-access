@@ -6,7 +6,8 @@ test(`restful query test`, async function () {
     path: "/restful/45",
     httpMethod: HttpMethod.get,
   };
-  let router = new Router(event, {}, undefined, "test/controllers");
+  let router = new Router(event, {});
+  router.useRouter("test/controllers");
 
   await router.do();
   let result = router.response;
@@ -18,7 +19,8 @@ test(`restful query test`, async function () {
     path: "/restful/11/animals",
     httpMethod: HttpMethod.get,
   };
-  router = new Router(event, {}, undefined, "test/controllers");
+  router = new Router(event, {});
+  router.useRouter("test/controllers");
 
   await router.do();
   result = router.response;

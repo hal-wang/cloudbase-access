@@ -7,7 +7,8 @@ test("router test", async function () {
     httpMethod: "POST",
   };
   HttpResult.baseHeaders["custom-header"] = "aaa";
-  const router = new Router(event, {}, undefined, "test/controllers");
+  const router = new Router(event, {});
+  router.useRouter("test/controllers");
 
   await router.do();
   const res = router.response;

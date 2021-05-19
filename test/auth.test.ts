@@ -13,10 +13,10 @@ test("router test login access", async function () {
       path: "/simple/loginAuth",
       httpMethod: "POST",
     },
-    {},
-    new Auth(),
-    "test/controllers"
+    {}
   );
+  router.useAuth(new Auth());
+  router.useRouter("test/controllers");
 
   await router.do();
   const result = router.response;
@@ -33,10 +33,10 @@ test("router test login not access", async function () {
       path: "/simple/loginAuth",
       httpMethod: "POST",
     },
-    {},
-    new Auth(),
-    "test/controllers"
+    {}
   );
+  router.useAuth(new Auth());
+  router.useRouter("test/controllers");
 
   await router.do();
   const result = router.response;
@@ -53,10 +53,10 @@ test("router test admin access", async function () {
       path: "/simple/adminAuth",
       httpMethod: "POST",
     },
-    {},
-    new Auth(),
-    "test/controllers"
+    {}
   );
+  router.useAuth(new Auth());
+  router.useRouter("test/controllers");
 
   await router.do();
   const result = router.response;
@@ -73,10 +73,10 @@ test("router test admin not access", async function () {
       path: "/simple/adminAuth",
       httpMethod: "POST",
     },
-    {},
-    new Auth(),
-    "test/controllers"
+    {}
   );
+  router.useAuth(new Auth());
+  router.useRouter("test/controllers");
 
   await router.do();
   const result = router.response;
