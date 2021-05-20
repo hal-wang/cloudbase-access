@@ -73,7 +73,7 @@ function copyFile(source, target) {
     }
     const files = fs.opendirSync(source);
     files.forEach((file) => {
-      copyFile(path.join(source, file));
+      copyFile(path.join(source, file), path.join(target, file));
     });
   } else if (stat.isFile()) {
     fs.copyFileSync(source, target);
