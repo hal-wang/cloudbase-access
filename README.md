@@ -38,9 +38,9 @@ npm i @hal-wang/cloudbase-access
 
 理论上 `javascript` 完全没问题，但作者并未进行测试。
 
-## Router
+## Startup
 
-路由管理类，也是 `cba` 的控制中心。构造函数传入环境 `event` 和 `context`。
+`Startup` 是 `cba` 的控制中心，构造函数传入环境 `event` 和 `context`。
 
 如在 `main` 函数中：
 
@@ -51,23 +51,31 @@ export const main = async (
   context: Record<string, unknown>
 ): Promise<unknown> => {
   const startup = new Startup(event, context);
-  return (await startup.do()).result;
+  startup.useRouter("test/controllers");
+  await startup.invoke();
+  return startup.httpContext.response.result;
 };
 ```
 
 以上几行代码即创建一个简单的 RESTful 规范的 API。
 
-如果访问的路径不存在，会返回 404 NotFound 结构。
+上述代码，如果访问的路径不存在，会返回 404 NotFound 结构。
 
-### 权限参数
+## 路由（useRouter）
 
-`Router` 第三个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
+在前面示例代码中， `startup.useRouter` 是使用路由中间件，调用该函数能够使 `cba` 支持路由功能
 
-### controllers 目录
+### 控制器文件夹
 
-`Router` 第四个参数（可选）传入 `controllers` 目录名称，默认为 `controllers`，建议不传此参数，即 `controllers`。
+`useRouter` 第一个参数是控制器（controllers）文件夹，`cba` 能够将路由文件夹下的所有 `Action` 映射为 `http` 访问路径
+
+该参数默认传参 `controllers` ，即如果不传该参数，则 `controllers` 需要在根目录下定义
 
 所有 `controllers` 统一放在这个文件夹中，在 `controllers` 目录中，建立各 `controller` 文件夹，再在 `controller` 文件夹中建 `action` 文件。详情后面 [##Action](##Action) 部分有介绍。
+
+### 访问权限
+
+`Router` 第二个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
 
 ### 路由匹配
 
@@ -89,7 +97,9 @@ export const main = async (
 }
 ```
 
-#### isMethodNecessary
+### isMethodNecessary
+
+`useRouter` 第三个参数传入 `isMethodNecessary`
 
 如果设置 `router.isMethodNecessary = true;`, 则所有 `Action` 必须严格使用 `httpMethod` 命名，与 RESTFul 规范相符。否则会找不到路由并返回 `404`。
 
@@ -99,7 +109,7 @@ export const main = async (
 
 获取 todo list
 
-##### 方式 1
+##### 方式 1（推荐）
 
 目录结构如下：
 
@@ -127,7 +137,7 @@ export const main = async (
 
 获取单个 todo item
 
-##### 方式 1
+##### 方式 1（推荐）
 
 目录结构如下：
 
@@ -158,17 +168,194 @@ export const main = async (
 
 cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合规范，易读性也更好。
 
-因此建议设置 router.isMethodNecessary 为 true 。
+因此建议设置 `isMethodNecessary` 为 true 。
 
-## Response
+## 中间件
 
-`Response` 封装了 HTTP 返回结构。可在构造函数传入相关参数。
+中间件是 `cba` 最重要的部分之一，如记录日志，验证权限
 
-`Response` 有个属性 `result` ，可获取最终 HTTP 返回结构 `HttpResultStruct` 。
+中间件包括
 
-### 内置类型
+1. API 执行最小单元 `Action`
+2. 权限认证 `Authority`
+3. 其他派生自类 `Middleware`的中间件
 
-目前 `Response` 内置一些返回类型，都是以静态方式调用：
+所有中间件应派生自类 `Middleware`，并实现 `invoke` 函数
+
+### 执行顺序
+
+中间件是以递归方式严格按声明顺序执行，每个中间件都可以修改正向或反向管道内容
+
+在中间件里如果需要调用下一个中间件，需执行 `await this.next()`，若不调用下一个中间件，中间件将反向递归执行，并最终返回当前管道内容
+
+```
+ 中间件1   中间件2 ... 中间件n
+    _       _           _
+->-|-|-----|-|---------|-|-->   没有执行 next
+   | |     | |         | |   ↓
+-<-|-|-----|-|---------|-|--<   反向递归
+    -       -           -
+```
+
+### 注册中间件
+
+你需要使用 `startup.use` 注册中间件，传参是一个创建中间件的回调函数，如
+
+```ts
+import { Router } from "@hal-wang/cloudbase-access";
+export const main = async (
+  event: Record<string, unknown>,
+  context: Record<string, unknown>
+): Promise<unknown> => {
+  const startup = new Startup(event, context);
+  startup.use(() => new YourMiddleware());
+  startup.invoke();
+  return startup.httpContext.response.result;
+};
+```
+
+### useRouter
+
+`startup.useRouter` 是一个特殊的注册中间件的方式，调用该方法能够使 `cba` 支持路由功能
+
+该方法可能会注册一个或两个中间件：
+
+- 根据路由找到的 Action
+- 权限验证 Authority（如果传参 auth）
+
+## HttpContext
+
+管道中的内容都在 `HttpContext` 对象之中，每个中间件都可以调用 `this.httpContext` 来获取或修改管道内容
+
+该对象包含以下属性：
+
+- response: 返回结果
+- request: 请求内容
+- action: Action，只有执行了 Authority 或 Action 的中间件，此值才会有内容，因此可以在中间件中的 `await next()` 后使用
+
+### Response
+
+管道的返回内容，可以调用 `response.result` 来获取最终 HTTP 返回结构 `ResponseStruct`
+
+在每个中间件中都可以修改 `this.httpContext.response` 内容
+
+### Request
+
+`httpContext.request` 对象已经解析并封装了请求参数
+
+在中间件中，可通过 `this.httpContext.request` 方式获取请求内容
+
+`request` 对象包含以下字段
+
+#### event
+
+云函数环境 event
+
+#### context
+
+云函数环境 context
+
+#### path
+
+访问路径，如`POST https://domain.com/user/login`，path 值为`user/login`。
+
+_注意：在 event 中，path 实为 `/` 开头，上例为 `/user/login`。但在 `cba` 中移除了开头的 `/`_
+
+#### headers
+
+请求头部
+
+#### params
+
+查询参数
+
+#### data
+
+请求 body，如果是 JSON 字符串，则自动转为 JSON 对象。
+
+#### query
+
+RESTFul 规范的路径中查询参数。如 `user/:id` 调用时是 `user/66`，在 query 中即存在
+
+```ts
+query.id == "66"; // true;
+```
+
+## Action
+
+正常情况 Action 会终止管道继续向后执行
+
+每次调用 API，如果顺利进行，主要执行的是 `Action` 中的 `invoke` 函数。
+
+所有 `Action` 都应派生自 `Action` 类，并重写 `invoke` 函数。
+
+### 创建一个 Action
+
+1. 在云函数根目录（即与 `index.ts` 同级）创建名为 `controllers` 文件夹。也可以为其他，需要在 Router 构造函数第四个参数可以指定，默认为 `controllers`
+1. 根据各业务，创建不同 `controller` 文件夹，名称自定，但名称与路由名称对应
+1. 在 controller 文件夹中，创建 `.ts` 文件，每个 `.ts` 文件对应一个 `action`
+1. 在 `.ts` 文件中创建类，并继承 `Action`，重写 `invoke` 函数
+
+```
++-- controllers
+|   +-- type1
+|       +-- action1.ts
+|       +-- action2.ts
+|       +-- ...
+|   +-- type2
+|       +-- action3.ts
+|       +-- action4.ts
+```
+
+### Action 文件内容
+
+模块返回一个类，该类继承 `Action` 并实现 `invoke` 函数
+
+```ts
+import { Action } from "@hal-wang/cloudbase-access";
+export default class extends Action {
+  async invoke(): Promise<void> {}
+}
+```
+
+#### 权限参数
+
+构造函数有一个可选参数，传入字符串数组，值为允许的权限角色。
+
+如判断调用需要登录信息：
+
+```ts
+["login"];
+```
+
+如判断调用者是管理员：
+
+```ts
+["admin"];
+```
+
+具体判断方式，参考后面的 [权限](#权限) 部分。
+
+```ts
+import { Action } from "@hal-wang/cloudbase-access";
+
+export default class extends Action {
+  constructor() {
+    super(["login"]);
+  }
+
+  async invoke(): Promise<void> {
+    const { account } = this.httpContext.request.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
+
+    const todoList = []; // 可放心从数据库读取用户数据，因为 account 已验证登录
+    this.ok(todoList);
+  }
+}
+```
+
+### Action 内置结果
+
+目前 `Action` 内置一些返回结果：
 
 - ok, 200
 - accepted, 202
@@ -187,238 +374,51 @@ cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合�
 - errRequestMsg, 500
 
 ```ts
-return Response.ok("success");
+this.ok("success");
 ```
-
-普通内置类型支持传入 `body` 可选参数，`body` 为返回的内容。
-API 返回错误时，可统一返回 `ErrorMessage`，命名以 `Msg` 结尾的内置类型接受 `ErrorMessage` 参数。
-
-### 举例
-
-以下例子中返回 200 请求成功：
-
-```ts
-import { Response } from "@hal-wang/cloudbase-access";
-return Response.ok({
-  list: [],
-  count: 0,
-});
-```
-
-以下例子中返回 400 请求错误：
-
-```ts
-import { Response } from "@hal-wang/cloudbase-access";
-return Response.badRequestMsg({ message: "请求错误" });
-// 或 return Response.badRequest("请求错误");
-```
-
-### 在 Action 中
-
-在 `Action` 中已经加入了 `Response` 内置函数，可以直接以 `this.func` 方式调用
 
 ```ts
 import { Action } from "@hal-wang/cloudbase-access";
-
 export default class extends Action {
-  async do(): Promise<void> {
+  async invoke(): Promise<void> {
     this.noContent();
     // or this.ok('success');
   }
 }
 ```
 
-## 请求参数
-
-`Request` 类解析并封装请求参数，构造函数传入云函数 `event` 和 `context`。
-
-在 `Action` 中，有 `Request` 实例对象 `request`，可通过 `this.request` 方式使用。
-
-实例包含以下字段
-
-### event
-
-云函数环境 event
-
-### context
-
-云函数环境 context
-
-### path
-
-访问路径，如`POST https://domain.com/api/user/login`，path 值为`user/login`。
-
-_注意：在 event 中，path 实为 `/` 开头，上例为 `/user/login`。但在 `cba` 中移除了开头的 `/`_
-
-### headers
-
-请求头部
-
-### params
-
-查询参数
-
-### data
-
-请求 body，如果是 JSON 字符串，则转为 JSON 对象。
-
-在 event 中，json 为字符串，在 `Request` 中已解析。
-
-### query
-
-v0.9.0 中新增。
-
-RESTFul 规范的路径中查询参数。如 `user/:id` 调用时是 `user/66`，在 query 中即存在
-
-```ts
-query.id == "66"; // true;
-```
-
-## Action
-
-每次调用 API，如果顺利进行，主要执行的是 `Action` 中的 `do` 函数。
-
-所有 `Action` 都应派生自 `Action` 类，并重写 `do` 函数。
-
-### 创建一个 Action
-
-1. 在云函数根目录（即与 index.ts 同级）创建名为`controllers`文件夹。也可以为其他，需要在 Router 构造函数第四个参数可以指定，默认为`controllers`
-1. 根据各业务，创建不同 controller 文件夹，名称自定，但名称与路由名称对应。
-1. 在 controller 文件夹中，创建`.ts`文件，每个`.ts`文件对应一个`action`
-1. 在`.ts`文件中创建类，并继承 `Action`，重写 `do` 函数
-
 ```ts
 import { Action } from "@hal-wang/cloudbase-access";
-
 export default class extends Action {
-  async do(): Promise<void> {
-    return noContent();
+  async invoke(): Promise<void> {
+    const { account, password } = this.httpContext.request.params
+
+    if(/*账号或密码错误*/) {
+      this.notFound('账号或密码错误')
+    }
+    else {
+      this.ok(new {/*返回信息*/})
+    }
   }
 }
 ```
 
-### Action 文件内容
-
-在`.ts`文件中，模块返回一个类，该类继承 `Action`，构造函数有一个可选参数，传入字符串数组，值为允许的权限角色。
-
-如判断调用需要登录信息：
-
-```ts
-["login"];
-```
-
-如判断调用者是管理员：
-
-```ts
-["admin"];
-```
-
-具体判断方式，参考后面的 [权限](#权限) 部分。
-
-例 1
-
-```ts
-import { Action } from "@hal-wang/cloudbase-access";
-
-export default class extends Action {
-  async do(): Promise<void> {
-    const { account, password } = this.request.data
-
-    if(/*账号或密码错误*/) return this.notFound('账号或密码错误')
-    this.ok(new {/*返回信息*/})
-  }
-}
-```
-
-例 2
-
-```ts
-import { Action } from "@hal-wang/cloudbase-access";
-
-export default class extends Action {
-  constructor() {
-    super(["login"]);
-  }
-
-  async do(): Promise<void> {
-    const { account } = this.request.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
-
-    const todoList = []; // 可放心从数据库读取用户数据，因为 account 已验证登录
-    this.ok(todoList);
-  }
-}
-```
-
-## 中间件
-
-中间件可以在 API 每次调用的生命周期各个阶段执行，如记录日志，验证权限等。
-
-所有中间件应派生自类 `Middleware`，实现 `do` 函数，返回 `MiddlewareResult`
-
-### 中间件类型
-
-在 `cba` 中，中间件有以下几种类别：
-
-1.  BeforeStart： `Action` 初始化前调用
-1.  BeforeAction： `Action` 执行前调用
-1.  BeforeEnd： `Action` 执行后调用
-1.  BeforeSuccessEnd： `Action` 执行后，而且返回结果为 2xx 时调用
-1.  BeforeErrEnd： `Action` 执行后，而且返回结果不为 2xx 时调用
-
-类型为 `BeforeStart` 的中间件执行时，`Action` 未被加载，也未进行路由匹配，因此无法获取 `query`, `roles` 等。
-
-类型为 `BeforeStart` 和 `BeforeAction` 的中间件执行时，`Action` 未执行，因此无法获取 `Action` 执行结果。
-
-### 中间件结果
-
-```ts
-// 成功
-return new MiddlewareResult(true);
-// 或
-return MiddlewareResult.getSuccessResult();
-
-// 失败
-return new MiddlewareResult(
-  false,
-  Response.badRequestMsg({ message: "中间件调用失败" })
-);
-// 或
-return MiddlewareResult.getFailedResult(
-  Response.badRequestMsg({ message: "中间件调用失败" })
-);
-```
-
-如果返回失败，则 API 此次调用结束，返回中间件结果。
-
-### 注册中间件
-
-你需要使用 router.configure 注册中间件，如
-
-```ts
-import { Router } from "@hal-wang/cloudbase-access";
-export const main = async (
-  event: Record<string, unknown>,
-  context: Record<string, unknown>
-): Promise<unknown> => {
-  const startup = new Startup(event, context);
-  router.configure(new YourMiddleware());
-  return (await startup.do()).result;
-};
-```
+多数内置类型支持传入 `body` 可选参数，`body` 为返回的内容。
+API 返回错误时，可统一返回 `ErrorMessage`，命名以 `Msg` 结尾的内置类型接受 `ErrorMessage` 参数。
 
 ## 权限
 
-`Router` 构造函数第三个参数是权限验证 `Authority` 对象。
+`startup.useRouter()` 第二个参数是权限验证 `Authority` 对象。
 
-你需要新写个类，继承 `Authority`，并实现 `do` 函数。
+你需要新写个类，继承 `Authority`，并实现 `invoke` 函数。
 
-其实 `Authority` 也是个中间件，只是加载方式较特殊。当然你也可以自己写个权限管理中间件，效果可以与 `Authority` 相同。
+`Authority` 也是个中间件，只是加载方式较特殊。当然你也可以自己写个权限管理中间件，效果可以与 `Authority` 相同。
 
 权限是用于判断用户能否使用 API，可以精确到控制每个 `Action` 。下例使用请求头部的账号信息验证调用者信息，用法如下：
 
 ```ts
 class Auth extends Authority {
-  async do(): Promise<MiddlewareResult> {
+  async invoke(): Promise<MiddlewareResult> {
     if (!this.roles || !this.roles.length) {
       return MiddlewareResult.getSuccessResult();
     }
@@ -434,7 +434,7 @@ class Auth extends Authority {
 
   loginAuth() {
     // 实际情况应该需要查表等复杂操作
-    const { account, password } = this.request.headers;
+    const { account, password } = this.httpContext.request.headers;
     return account == "abc" && password == "123456";
   }
 }
@@ -444,8 +444,22 @@ export const main = async (
   context: Record<string, unknown>
 ): Promise<unknown> => {
   const startup = new Startup(event, context, new Auth());
-  return (await startup.do()).result;
+  return (await startup.invoke()).result;
 };
+```
+
+```ts
+import { Action } from "@hal-wang/cloudbase-access";
+
+export default class extends Action {
+  constructor() {
+    super(["login"]);
+  }
+
+  async invoke(): Promise<void> {
+    this.ok();
+  }
+}
 ```
 
 ## cba-map
