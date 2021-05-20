@@ -5,6 +5,8 @@ import ResponseError from "./Response/ResponseError";
 import StatusCode from "./Response/StatusCode";
 
 import Startup from "./Startup";
+import HttpContext from "./HttpContext";
+
 import Request from "./Request";
 import HttpMethod from "./Request/HttpMethod";
 
@@ -41,4 +43,5 @@ export {
   ApiDocsStateCode,
   ApiDocsConfigPart,
   ApiDocsConfig,
+  HttpContext,
 };
