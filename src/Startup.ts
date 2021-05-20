@@ -6,6 +6,8 @@ import MapParser from "./Map/MapParser";
 import HttpContext from "./HttpContext";
 import Action from "./Middleware/Action";
 import { ResponseStruct } from ".";
+import * as path from "path";
+import { existsSync } from "fs";
 
 export default class Startup {
   private static _current: Startup;
@@ -42,11 +44,33 @@ export default class Startup {
    *
    * if true, the action in definition must appoint method.
    */
-  public useRouter(
-    controllerFolder = "controllers",
-    authDelegate?: () => Authority,
-    isMethodNecessary = false
-  ): void {
+  public useRouter(use?: {
+    forceControllerFolder?: string;
+    authDelegate?: () => Authority;
+    forceIsMethodNecessary?: boolean;
+  }): void {
+    if (!use) {
+      use = {};
+    }
+
+    let controllerFolder: string;
+    let isMethodNecessary: boolean;
+    const defaultControllers = "controllers";
+    const configPath = path.join(process.cwd(), "cba.config.json");
+    if (!existsSync(configPath)) {
+      controllerFolder = defaultControllers;
+      isMethodNecessary = false;
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const config = require(configPath);
+      if (!config.router || config.router.controllers == undefined) {
+        controllerFolder = defaultControllers;
+      }
+      if (!config.router || config.router.isMethodNecessary == undefined) {
+        isMethodNecessary = false;
+      }
+    }
+
     const getAction = (): Action => {
       if (!this.httpContext.action) {
         const mapParser = new MapParser(
@@ -60,7 +84,8 @@ export default class Startup {
     };
     getAction.bind(this);
 
-    if (authDelegate) {
+    if (use.authDelegate) {
+      const authDelegate = use.authDelegate;
       this.use(() => {
         const auth = authDelegate();
         const action = getAction();

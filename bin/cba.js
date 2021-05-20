@@ -16,12 +16,15 @@ const config = require(configPath);
 let outDir = "/";
 if (fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
   const tsconfig = require(tsconfigPath);
-  if (tsconfig.compilerOptions && tsconfig.compilerOptions.outDir) {
+  const existDir = tsconfig.compilerOptions && tsconfig.compilerOptions.outDir;
+  if (existDir) {
     outDir = tsconfig.compilerOptions.outDir;
   }
 
-  const targetRoot = path.join(process.cwd(), outDir);
-  deleteFile(targetRoot);
+  if (existDir) {
+    const targetRoot = path.join(process.cwd(), outDir);
+    deleteFile(targetRoot);
+  }
 
   const tscResult = shell.exec("tsc");
   if (tscResult.code != 0) {
@@ -31,17 +34,23 @@ if (fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
   }
   deleteFile(outDir, ".d.ts");
 
-  if (config.static && config.static.length) {
-    config.static.forEach(({ source, target }) => {
-      const sourcePath = path.join(process.cwd(), source);
-      const targetPath = path.join(process.cwd(), outDir, target);
-      copyFile(sourcePath, targetPath);
-    });
+  if (existDir) {
+    if (config.static && config.static.length) {
+      config.static.forEach(({ source, target }) => {
+        const sourcePath = path.join(process.cwd(), source);
+        const targetPath = path.join(process.cwd(), outDir, target);
+        copyFile(sourcePath, targetPath);
+      });
+    }
+    copyFile(
+      path.join(process.cwd(), "package.json"),
+      path.join(process.cwd(), outDir, "package.json")
+    );
+    copyFile(
+      path.join(process.cwd(), "cba.config.json"),
+      path.join(process.cwd(), outDir, "cba.config.json")
+    );
   }
-  copyFile(
-    path.join(process.cwd(), "package.json"),
-    path.join(process.cwd(), outDir, "package.json")
-  );
 }
 
 const MapCreater = require("../dist/Map/MapCreater").default;
