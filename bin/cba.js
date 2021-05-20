@@ -3,10 +3,11 @@ const shell = require("shelljs");
 const fs = require("fs");
 const path = require("path");
 
-const config = require(path.join(process.cwd(), "cba.config.json"));
-if (!fs.existsSync(config)) {
+const configPath = path.join(process.cwd(), "cba.config.json");
+if (!fs.existsSync(configPath)) {
   throw new Error(`cba.config.json is not exist`);
 }
+const config = require(configPath);
 
 if (config.target && fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
   const targetRoot = path.join(process.cwd(), config.target);
@@ -14,12 +15,16 @@ if (config.target && fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
     deleteFile(targetRoot);
   }
 
-  const tscResult = shell.exec("tsc");
-  console.log(tscResult);
+  {
+    const execResult = shell.exec("tsc");
+    console.log(execResult);
+  }
 
-  const tscResult = shell.exec(
-    `find ${config.target} -name "*.d.ts" |xargs rm -rf`
-  );
+  {
+    const execResult = shell.exec(
+      `find ${config.target} -name "*.d.ts" |xargs rm -rf`
+    );
+  }
 
   if (config.static && config.static.length) {
     config.static.forEach(({ source, target }) => {
