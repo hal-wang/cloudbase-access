@@ -1,0 +1,6 @@
+{
+  "target": "dist",
+  "router": {
+    "controllers": "controllers"
+  }
+}

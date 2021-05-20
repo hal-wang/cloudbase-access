@@ -7,10 +7,6 @@
   "ts": {
     "static": [
       {
-        "source": "package.json",
-        "target": "package.json"
-      },
-      {
         "source": "imgs",
         "target": "assets/imgs"
       }

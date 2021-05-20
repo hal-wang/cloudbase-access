@@ -45,7 +45,7 @@ npm i @hal-wang/cloudbase-access
 如在 `main` 函数中：
 
 ```ts
-import { Router } from "@hal-wang/cloudbase-access";
+import { Startup } from "@hal-wang/cloudbase-access";
 export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
@@ -75,7 +75,7 @@ export const main = async (
 
 ### 访问权限
 
-`Router` 第二个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
+`Startup` 第二个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
 
 ### 路由匹配
 
@@ -202,7 +202,7 @@ cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合�
 你需要使用 `startup.use` 注册中间件，传参是一个创建中间件的回调函数，如
 
 ```ts
-import { Router } from "@hal-wang/cloudbase-access";
+import { Startup } from "@hal-wang/cloudbase-access";
 export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
@@ -291,7 +291,7 @@ query.id == "66"; // true;
 
 ### 创建一个 Action
 
-1. 在云函数根目录（即与 `index.ts` 同级）创建名为 `controllers` 文件夹。也可以为其他，需要在 Router 构造函数第四个参数可以指定，默认为 `controllers`
+1. 在云函数根目录（即与 `index.ts` 同级）创建名为 `controllers` 文件夹。也可以为其他，需要在 userRouter 函数第一个参数可以指定，默认为 `controllers`
 1. 根据各业务，创建不同 `controller` 文件夹，名称自定，但名称与路由名称对应
 1. 在 controller 文件夹中，创建 `.ts` 文件，每个 `.ts` 文件对应一个 `action`
 1. 在 `.ts` 文件中创建类，并继承 `Action`，重写 `invoke` 函数

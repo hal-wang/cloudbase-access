@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "esnext"
+    ],
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./dist",
+    "target": "esnext",
+    "strict": true
+  },
+  "exclude": [
+    "dist",
+    "command.test.ts"
+  ]
+}
