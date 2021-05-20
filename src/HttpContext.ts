@@ -5,7 +5,7 @@ import Response from "./Response";
 
 export default class HttpContext {
   public action?: Action;
-  public readonly bag: Record<string, unknown> = {};
+  private readonly bag: { [k: string]: unknown } = {};
 
   constructor(
     public readonly request: Request,
@@ -15,4 +15,11 @@ export default class HttpContext {
       middleware?: Middleware;
     }[] = []
   ) {}
+
+  public getBag<T>(key: string): T {
+    return this.bag[key] as T;
+  }
+  public setBag<T>(key: string, value: T): void {
+    this.bag[key] = value;
+  }
 }
