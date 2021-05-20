@@ -60,7 +60,6 @@
     "typescript": "^4.2.4"
   },
   "bin": {
-    "cba-map": "bin/cba-map.js",
     "cba-doc": "bin/cba-doc.js",
     "cba": "bin/cba.js"
   },

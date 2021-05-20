@@ -16,9 +16,6 @@
       }
     ]
   },
-  "map": {
-    "target": "cba-map.json"
-  },
   "doc": {
     "target": "../docs/api/README.md",
     "configPath": "docConfigs/base.json"
