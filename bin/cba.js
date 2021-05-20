@@ -1,4 +1,6 @@
+#!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-var-requires */
+
 const shell = require("shelljs");
 const fs = require("fs");
 const path = require("path");
@@ -17,13 +19,14 @@ if (config.target && fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
 
   {
     const execResult = shell.exec("tsc");
-    console.log(execResult);
+    console.log("tsc execResult", execResult);
   }
 
   {
     const execResult = shell.exec(
       `find ${config.target} -name "*.d.ts" |xargs rm -rf`
     );
+    console.log("rm execResult", execResult);
   }
 
   if (config.static && config.static.length) {

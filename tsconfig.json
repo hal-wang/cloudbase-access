@@ -9,6 +9,9 @@
     "target": "esnext",
     "strict": true
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     "test",
     "dist",

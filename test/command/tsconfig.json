@@ -9,8 +9,7 @@
     "target": "esnext",
     "strict": true
   },
-  "exclude": [
-    "dist",
-    "command.test.ts"
-  ]
+  "include": [
+    "src/**/*"
+  ],
 }

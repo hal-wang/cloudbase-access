@@ -62,7 +62,7 @@
   },
   "bin": {
     "cba-doc": "bin/cba-doc.js",
-    "cba": "bin/cba.js"
+    "cba-build": "bin/cba.js"
   },
   "files": [
     "dist/",
