@@ -5,6 +5,7 @@ import Response from "./Response";
 
 export default class HttpContext {
   public action?: Action;
+  public readonly bag: Record<string, unknown> = {};
 
   constructor(
     public readonly request: Request,
