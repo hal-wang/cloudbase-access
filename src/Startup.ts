@@ -5,6 +5,7 @@ import Request from "./Request";
 import MapParser from "./Map/MapParser";
 import HttpContext from "./HttpContext";
 import Action from "./Middleware/Action";
+import { ResponseStruct } from ".";
 
 export default class Startup {
   private static _current: Startup;
@@ -12,7 +13,10 @@ export default class Startup {
     return this._current;
   }
 
-  readonly httpContext: HttpContext;
+  public readonly httpContext: HttpContext;
+  public get httpResult(): ResponseStruct {
+    return this.httpContext.response.result;
+  }
 
   constructor(
     event: Record<string, unknown>,
