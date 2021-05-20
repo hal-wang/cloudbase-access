@@ -1,16 +1,37 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as fs from "fs";
 import * as shell from "shelljs";
 
-test("router test", async function () {
-  const commandFolder = "./test/command";
-  fs.copyFileSync(
-    "./cba.config.example.json",
-    "./test/command/cba.config.json"
-  );
+test("cba command", async function () {
+  const sourceConfig = "./cba.config.example.json";
+  const targetConfig = "./test/command/cba.config.json";
+  fs.copyFileSync(sourceConfig, targetConfig);
 
-  shell.cd(commandFolder);
-  const execResult = shell.exec(`npm i && npm run build`);
-  expect(execResult.code).toBe(0);
-  expect(fs.existsSync(`./dist`)).toBe(true);
-  expect(fs.existsSync(`./README.md`)).toBe(false);
+  shell.cd("./test/command");
+
+  const tsconfigPath = "./tsconfig.json";
+  const tsconfigStr = fs.readFileSync(tsconfigPath, "utf-8");
+  const tsconfig = JSON.parse(tsconfigStr);
+  tsconfig.compilerOptions.outDir = "../functions/v1";
+  fs.writeFileSync(tsconfigPath, JSON.stringify(tsconfig));
+
+  try {
+    {
+      const execResult = shell.exec(`npm i && npm run build`);
+      expect(execResult.code).toBe(0);
+      expect(fs.existsSync(`./dist`)).toBe(true);
+      expect(fs.existsSync(`./README.md`)).toBe(false);
+    }
+
+    tsconfig.compilerOptions.outDir = "./dist";
+    fs.writeFileSync("./tsconfig.json", JSON.stringify(tsconfig));
+
+    {
+      const execResult = shell.exec(`npm run build`);
+      expect(execResult.code).toBe(0);
+      expect(fs.existsSync(tsconfig.compilerOptions.outDir)).toBe(true);
+    }
+  } finally {
+    fs.writeFileSync("./tsconfig.json", tsconfigStr);
+  }
 });

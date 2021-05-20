@@ -1,5 +1,4 @@
 {
-  "target": "dist",
   "router": {
     "controllers": "controllers",
     "isMethodNecessary": false
