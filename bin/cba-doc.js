@@ -2,8 +2,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const DocsCreater = require("../dist/ApiDocs/ApiDocsCreater").default;
+const path = require("path");
+const config = require(path.join(process.cwd(), "cba.config.json"));
 
-const controllers = process.argv[2];
-const target = process.argv[3];
-const config = process.argv[4];
-new DocsCreater(controllers, config).write(target);
+const controllers = path.join(config.target, config.router.controllers);
+const target = config.doc.target;
+const configPath = config.doc.configPath;
+new DocsCreater(controllers, configPath).write(target);

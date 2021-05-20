@@ -1,0 +1,26 @@
+{
+  "target": "dist",
+  "router": {
+    "controllers": "controllers",
+    "isMethodNecessary": false
+  },
+  "ts": {
+    "static": [
+      {
+        "source": "package.json",
+        "target": "package.json"
+      },
+      {
+        "source": "imgs",
+        "target": "assets/imgs"
+      }
+    ]
+  },
+  "map": {
+    "target": "cba-map.json"
+  },
+  "doc": {
+    "target": "../docs/api/README.md",
+    "configPath": "docConfigs/base.json"
+  }
+}

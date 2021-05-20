@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const MapCreater = require("../dist/Map/MapCreater").default;
+const path = require("path");
+const config = require(path.join(process.cwd(), "cba.config.json"));
 
-const controllers = process.argv[2];
-new MapCreater(controllers).write();
+new MapCreater(path.join(config.target, config.router.controllers)).write();

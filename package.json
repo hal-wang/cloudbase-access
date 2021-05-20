@@ -55,12 +55,14 @@
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^26.6.3",
     "prettier": "^2.3.0",
+    "shelljs": "^0.8.4",
     "ts-jest": "^26.5.6",
     "typescript": "^4.2.4"
   },
   "bin": {
     "cba-map": "bin/cba-map.js",
-    "cba-doc": "bin/cba-doc.js"
+    "cba-doc": "bin/cba-doc.js",
+    "cba": "bin/cba.js"
   },
   "files": [
     "dist/",

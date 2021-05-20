@@ -19,11 +19,8 @@ export default class MapCreater {
     return this.readFilesFromFolder("", []);
   }
 
-  write(): void {
-    writeFileSync(
-      path.join(process.cwd(), "cba-map.json"),
-      JSON.stringify(this.map)
-    );
+  write(filePath = "cba-map.json"): void {
+    writeFileSync(path.join(process.cwd(), filePath), JSON.stringify(this.map));
   }
 
   private get cfPath(): string {
