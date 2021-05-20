@@ -17,17 +17,13 @@ if (config.target && fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
     deleteFile(targetRoot);
   }
 
-  {
-    const execResult = shell.exec("tsc");
-    console.log("tsc execResult", execResult);
+  const tscResult = shell.exec("tsc");
+  if (tscResult.code != 0) {
+    throw new Error(tscResult.stderr);
+  } else {
+    console.log(tscResult.stdout);
   }
-
-  {
-    const execResult = shell.exec(
-      `find ${config.target} -name "*.d.ts" |xargs rm -rf`
-    );
-    console.log("rm execResult", execResult);
-  }
+  deleteFile(config.target, ".d.ts");
 
   if (config.static && config.static.length) {
     config.static.forEach(({ source, target }) => {
@@ -52,15 +48,19 @@ if (config.map && config.map.target) {
   mapCreater.write();
 }
 
-function deleteFile(filePath) {
+function deleteFile(filePath, type = undefined) {
   const stat = fs.statSync(filePath);
   if (stat.isFile()) {
-    fs.unlinkSync(filePath);
+    if (!type || filePath.endsWith(type)) {
+      fs.unlinkSync(filePath);
+    }
   } else if (stat.isDirectory()) {
     fs.readdirSync(filePath).forEach((file) => {
-      deleteFile(path.join(filePath, file));
+      deleteFile(path.join(filePath, file), type);
     });
-    fs.rmdirSync(filePath);
+    if (!fs.readdirSync(filePath).length) {
+      fs.rmdirSync(filePath);
+    }
   }
 }
 

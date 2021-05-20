@@ -1,4 +1,4 @@
-import { Startup } from "../../../src";
+import { Startup } from "@hal-wang/cloudbase-access";
 
 export const main = async (
   event: Record<string, unknown>,

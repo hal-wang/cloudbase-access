@@ -9,8 +9,8 @@ test("router test", async function () {
   );
 
   shell.cd(commandFolder);
-  const execResult = shell.exec(`npm run build`);
-  console.log("execResult", execResult);
-
-  expect(fs.existsSync("./dist")).toBe(true);
+  const execResult = shell.exec(`npm i && npm run build`);
+  expect(execResult.code).toBe(0);
+  expect(fs.existsSync(`./dist`)).toBe(true);
+  expect(fs.existsSync(`./README.md`)).toBe(false);
 });
