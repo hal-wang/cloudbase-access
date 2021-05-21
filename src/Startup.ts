@@ -29,28 +29,25 @@ export default class Startup {
   }
 
   use(
-    delegate:
+    mdf:
       | (() => Middleware)
       | ((ctx: HttpContext, next: () => Promise<void>) => Promise<void>)
   ): void {
-    if (!delegate) throw new Error();
+    if (!mdf) throw new Error();
 
-    let mdDele;
-    if (delegate.length) {
-      mdDele = () => {
+    let mdFunc;
+    if (mdf.length) {
+      mdFunc = () => {
         return new SimpleMiddleware(
-          delegate as (
-            ctx: HttpContext,
-            next: () => Promise<void>
-          ) => Promise<void>
+          mdf as (ctx: HttpContext, next: () => Promise<void>) => Promise<void>
         );
       };
     } else {
-      mdDele = delegate as () => Middleware;
+      mdFunc = mdf as () => Middleware;
     }
 
     this.ctx.mds.push({
-      delegate: mdDele,
+      mdf: mdFunc,
     });
   }
 
@@ -105,12 +102,12 @@ export default class Startup {
 
   async invoke(): Promise<void> {
     try {
-      const { delegate, middleware } = this.ctx.mds[0];
+      const { mdf, middleware } = this.ctx.mds[0];
       let mdw;
       if (middleware) {
         mdw = middleware;
       } else {
-        mdw = delegate();
+        mdw = mdf();
       }
       mdw.init(this.ctx, 0);
       await mdw.invoke();

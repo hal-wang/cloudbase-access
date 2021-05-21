@@ -11,7 +11,7 @@ export default class HttpContext {
     public readonly req: Request,
     public readonly res: Response,
     public readonly mds: {
-      delegate: () => Middleware;
+      mdf: () => Middleware;
       middleware?: Middleware;
     }[] = []
   ) {}

@@ -3,7 +3,7 @@ import HttpContext from "../HttpContext";
 
 class SimpleMiddleware extends Middleware {
   constructor(
-    private readonly delegate: (
+    private readonly mdf: (
       ctx: HttpContext,
       next: () => Promise<void>
     ) => Promise<void>
@@ -12,7 +12,7 @@ class SimpleMiddleware extends Middleware {
   }
 
   async invoke(): Promise<void> {
-    await this.delegate(this.ctx, this.next.bind(this));
+    await this.mdf(this.ctx, this.next.bind(this));
   }
 }
 
