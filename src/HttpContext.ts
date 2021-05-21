@@ -12,7 +12,7 @@ export default class HttpContext {
     public readonly res: Response,
     public readonly mds: {
       mdf: () => Middleware;
-      middleware?: Middleware;
+      md?: Middleware;
     }[] = []
   ) {}
 

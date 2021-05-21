@@ -102,10 +102,10 @@ export default class Startup {
 
   async invoke(): Promise<void> {
     try {
-      const { mdf, middleware } = this.ctx.mds[0];
+      const { mdf, md } = this.ctx.mds[0];
       let mdw;
-      if (middleware) {
-        mdw = middleware;
+      if (md) {
+        mdw = md;
       } else {
         mdw = mdf();
       }
