@@ -6,7 +6,14 @@ import StatusCode from "./Response/StatusCode";
 
 import Startup from "./Startup";
 import HttpContext from "./HttpContext";
-import Config from "./Config";
+
+import Config, {
+  TsConfig,
+  AppConfig,
+  DocConfig,
+  RouterConfig,
+  TsStaticItemConfig,
+} from "./Config";
 
 import Request from "./Request";
 import HttpMethod from "./Request/HttpMethod";
@@ -33,7 +40,7 @@ export {
   Action,
   Startup,
   Request,
-  Config,
+  HttpContext,
   HttpMethod,
   Middleware,
   Authority,
@@ -45,5 +52,10 @@ export {
   ApiDocsStateCode,
   ApiDocsConfigPart,
   ApiDocsConfig,
-  HttpContext,
+  Config,
+  TsConfig,
+  AppConfig,
+  DocConfig,
+  RouterConfig,
+  TsStaticItemConfig,
 };
