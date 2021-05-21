@@ -5,7 +5,7 @@ import { Action, Response, Request } from "../src/index";
 class Login extends Action {
   async invoke(): Promise<void> {
     const { account, password } = <Record<string, unknown>>(
-      this.ctx.request.data
+      this.ctx.req.data
     );
 
     if (account != "abc") {
@@ -42,11 +42,11 @@ test("action test", async function () {
   await loginAction.invoke();
   expect(loginAction.ctx.response.statusCode).toBe(StatusCode.ok);
 
-  loginAction.ctx.request.data.password = "12345";
+  loginAction.ctx.req.data.password = "12345";
   await loginAction.invoke();
   expect(loginAction.ctx.response.statusCode).toBe(StatusCode.badRequest);
 
-  loginAction.ctx.request.data.account = "12";
+  loginAction.ctx.req.data.account = "12";
   await loginAction.invoke();
   expect(loginAction.ctx.response.statusCode).toBe(StatusCode.notFound);
 });

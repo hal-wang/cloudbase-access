@@ -8,7 +8,7 @@ export default class HttpContext {
   private readonly bag: { [k: string]: unknown } = {};
 
   constructor(
-    public readonly request: Request,
+    public readonly req: Request,
     public readonly response: Response,
     public readonly middlewares: {
       delegate: () => Middleware;

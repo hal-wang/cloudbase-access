@@ -6,7 +6,7 @@ export default class extends Action {
   }
 
   async invoke(): Promise<void> {
-    const { account, password } = this.ctx.request.headers;
+    const { account, password } = this.ctx.req.headers;
 
     this.ok({
       msg: "admin auth",

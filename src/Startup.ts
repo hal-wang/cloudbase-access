@@ -94,7 +94,7 @@ export default class Startup {
   getAction(controllerFolder: string, isMethodNecessary: boolean): Action {
     if (!this.ctx.action) {
       const mapParser = new MapParser(
-        this.ctx.request,
+        this.ctx.req,
         controllerFolder,
         isMethodNecessary
       );

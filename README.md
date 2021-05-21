@@ -228,7 +228,7 @@ export const main = async (
 该对象包含以下属性：
 
 - response: 返回结果
-- request: 请求内容
+- req: 请求内容
 - action: Action，只有执行了 Authority 或 Action 的中间件，此值才会有内容，因此可以在中间件中的 `await next()` 后使用
 
 ### Response
@@ -239,11 +239,11 @@ export const main = async (
 
 ### Request
 
-`ctx.request` 对象已经解析并封装了请求参数
+`ctx.req` 对象已经解析并封装了请求参数
 
-在中间件中，可通过 `this.ctx.request` 方式获取请求内容
+在中间件中，可通过 `this.ctx.req` 方式获取请求内容
 
-`request` 对象包含以下字段
+`req` 对象包含以下字段
 
 #### event
 
@@ -343,7 +343,7 @@ export default class extends Action {
   }
 
   async invoke(): Promise<void> {
-    const { account } = this.ctx.request.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
+    const { account } = this.ctx.req.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
 
     const todoList = []; // 可放心从数据库读取用户数据，因为 account 已验证登录
     this.ok(todoList);
@@ -389,7 +389,7 @@ export default class extends Action {
 import { Action } from "@hal-wang/cloudbase-access";
 export default class extends Action {
   async invoke(): Promise<void> {
-    const { account, password } = this.ctx.request.params
+    const { account, password } = this.ctx.req.params
 
     if(/*账号或密码错误*/) {
       this.notFound('账号或密码错误')
@@ -432,7 +432,7 @@ class Auth extends Authority {
 
   loginAuth() {
     // 实际情况应该需要查表等复杂操作
-    const { account, password } = this.ctx.request.headers;
+    const { account, password } = this.ctx.req.headers;
     return account == "abc" && password == "123456";
   }
 }

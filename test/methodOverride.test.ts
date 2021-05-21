@@ -7,9 +7,9 @@ test("method override", async function () {
       "X-HTTP-Method-Override": "POST",
     },
   };
-  const request = new Request(event, {});
-  expect(request.method).toBe(HttpMethod.post);
-  expect(request.method).not.toBe(HttpMethod.patch);
+  const req = new Request(event, {});
+  expect(req.method).toBe(HttpMethod.post);
+  expect(req.method).not.toBe(HttpMethod.patch);
 });
 
 test("method override upper case", async function () {
@@ -19,9 +19,9 @@ test("method override upper case", async function () {
       "X-HTTP-METHOD-OVERRIDE": "POST",
     },
   };
-  const request = new Request(event, {});
-  expect(request.method).toBe(HttpMethod.post);
-  expect(request.method).not.toBe(HttpMethod.patch);
+  const req = new Request(event, {});
+  expect(req.method).toBe(HttpMethod.post);
+  expect(req.method).not.toBe(HttpMethod.patch);
 });
 
 test(`method override request`, async function () {

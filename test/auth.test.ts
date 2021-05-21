@@ -115,12 +115,12 @@ class Auth extends Authority {
   }
 
   adminAuth() {
-    const { account } = this.ctx.request.headers;
+    const { account } = this.ctx.req.headers;
     return account == global.adminAccount;
   }
 
   loginAuth() {
-    const { account, password } = this.ctx.request.headers;
+    const { account, password } = this.ctx.req.headers;
     return (
       linq
         .from(global.users)

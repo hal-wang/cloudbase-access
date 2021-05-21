@@ -4,7 +4,7 @@ export default class extends Action {
   async invoke(): Promise<void> {
     this.ok({
       method: "DELETE",
-      id: this.ctx.request.query.id,
+      id: this.ctx.req.query.id,
     });
   }
 }
