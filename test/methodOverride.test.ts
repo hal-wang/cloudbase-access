@@ -36,7 +36,7 @@ test(`method override request`, async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const res = startup.ctx.response;
+  const res = startup.ctx.res;
   expect(res.statusCode).toBe(200);
   expect((res.body as Record<string, unknown>).method).toBe(HttpMethod.get);
 });

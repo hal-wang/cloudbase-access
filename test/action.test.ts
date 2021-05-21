@@ -40,13 +40,13 @@ test("action test", async function () {
   );
 
   await loginAction.invoke();
-  expect(loginAction.ctx.response.statusCode).toBe(StatusCode.ok);
+  expect(loginAction.ctx.res.statusCode).toBe(StatusCode.ok);
 
   loginAction.ctx.req.data.password = "12345";
   await loginAction.invoke();
-  expect(loginAction.ctx.response.statusCode).toBe(StatusCode.badRequest);
+  expect(loginAction.ctx.res.statusCode).toBe(StatusCode.badRequest);
 
   loginAction.ctx.req.data.account = "12";
   await loginAction.invoke();
-  expect(loginAction.ctx.response.statusCode).toBe(StatusCode.notFound);
+  expect(loginAction.ctx.res.statusCode).toBe(StatusCode.notFound);
 });

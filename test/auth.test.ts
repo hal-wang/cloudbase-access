@@ -21,7 +21,7 @@ test("router test login access", async function () {
   });
 
   await startup.invoke();
-  const result = startup.ctx.response;
+  const result = startup.ctx.res;
   expect(result.statusCode).toBe(200);
 });
 
@@ -43,7 +43,7 @@ test("router test login not access", async function () {
   });
 
   await startup.invoke();
-  const result = startup.ctx.response;
+  const result = startup.ctx.res;
   expect(result.statusCode).toBe(403);
 });
 
@@ -65,7 +65,7 @@ test("router test admin access", async function () {
   });
 
   await startup.invoke();
-  const result = startup.ctx.response;
+  const result = startup.ctx.res;
   expect(result.statusCode).toBe(200);
 });
 
@@ -87,7 +87,7 @@ test("router test admin not access", async function () {
   });
 
   await startup.invoke();
-  const result = startup.ctx.response;
+  const result = startup.ctx.res;
   expect(result.statusCode).toBe(403);
 });
 

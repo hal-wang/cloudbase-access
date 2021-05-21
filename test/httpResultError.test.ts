@@ -12,7 +12,7 @@ test("router test", async function () {
 
   await startup.invoke();
 
-  const result = startup.ctx.response;
+  const result = startup.ctx.res;
   expect(result.statusCode).toBe(StatusCode.badRequest);
   expect((result.body as ErrorMessage).message).toBe("br");
 });

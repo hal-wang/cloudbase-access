@@ -10,6 +10,6 @@ export default class extends Action {
   constructor() {
     super();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this as any).response = new Response(StatusCode.ok);
+    (this as any).res = new Response(StatusCode.ok);
   }
 }

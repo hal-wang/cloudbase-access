@@ -53,7 +53,7 @@ export const main = async (
   const startup = new Startup(event, context);
   startup.useRouter();
   await startup.invoke();
-  return startup.ctx.response.result;
+  return startup.ctx.res.result;
 };
 ```
 
@@ -208,7 +208,7 @@ export const main = async (
   const startup = new Startup(event, context);
   startup.use(() => new YourMiddleware());
   startup.invoke();
-  return startup.ctx.response.result;
+  return startup.ctx.res.result;
 };
 ```
 
@@ -227,15 +227,15 @@ export const main = async (
 
 该对象包含以下属性：
 
-- response: 返回结果
+- res: 返回结果
 - req: 请求内容
 - action: Action，只有执行了 Authority 或 Action 的中间件，此值才会有内容，因此可以在中间件中的 `await next()` 后使用
 
 ### Response
 
-管道的返回内容，可以调用 `response.result` 来获取最终 HTTP 返回结构 `ResponseStruct`
+管道的返回内容，可以调用 `res.result` 来获取最终 HTTP 返回结构 `ResponseStruct`
 
-在每个中间件中都可以修改 `this.ctx.response` 内容
+在每个中间件中都可以修改 `this.ctx.res` 内容
 
 ### Request
 

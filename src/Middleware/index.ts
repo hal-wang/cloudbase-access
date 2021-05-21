@@ -32,38 +32,37 @@ export default abstract class Middleware {
     this.index = index;
   }
 
-  protected response = (
+  protected res = (
     statusCode: number,
     body?: unknown,
     headers?: Record<string, string>,
     isBase64 = false
-  ): Response =>
-    this.ctx.response.update({ statusCode, body, headers, isBase64 });
+  ): Response => this.ctx.res.update({ statusCode, body, headers, isBase64 });
 
   protected ok = (body?: unknown): Response =>
-    this.ctx.response.update({ statusCode: StatusCode.ok, body });
+    this.ctx.res.update({ statusCode: StatusCode.ok, body });
 
   protected created = (location: string, body?: unknown): Response =>
-    this.ctx.response.update({
+    this.ctx.res.update({
       statusCode: StatusCode.created,
       body,
       headers: { location },
     });
 
   protected accepted = (body?: unknown): Response =>
-    this.ctx.response.update({ statusCode: StatusCode.accepted, body });
+    this.ctx.res.update({ statusCode: StatusCode.accepted, body });
 
   protected noContent = (): Response =>
-    this.ctx.response.update({ statusCode: StatusCode.noContent });
+    this.ctx.res.update({ statusCode: StatusCode.noContent });
 
   protected partialContent = (body?: unknown): Response =>
-    this.ctx.response.update({
+    this.ctx.res.update({
       statusCode: StatusCode.partialContent,
       body,
     });
 
   protected badRequest = (body?: unknown): Response =>
-    this.ctx.response.update({
+    this.ctx.res.update({
       statusCode: StatusCode.badRequest,
       body,
     });
@@ -81,7 +80,7 @@ export default abstract class Middleware {
   }
 
   protected unauthorized = (body?: unknown): Response =>
-    this.ctx.response.update({
+    this.ctx.res.update({
       statusCode: StatusCode.unauthorized,
       body,
     });
@@ -99,7 +98,7 @@ export default abstract class Middleware {
   }
 
   protected forbidden = (body?: unknown): Response =>
-    this.ctx.response.update({
+    this.ctx.res.update({
       statusCode: StatusCode.forbidden,
       body,
     });
@@ -117,7 +116,7 @@ export default abstract class Middleware {
   }
 
   protected notFound = (body?: unknown): Response =>
-    this.ctx.response.update({ statusCode: StatusCode.notFound, body });
+    this.ctx.res.update({ statusCode: StatusCode.notFound, body });
 
   protected notFoundMsg(
     msg?: ErrorMessage & Record<string, unknown>
@@ -132,7 +131,7 @@ export default abstract class Middleware {
   }
 
   protected errRequest = (body?: unknown): Response =>
-    this.ctx.response.update({
+    this.ctx.res.update({
       statusCode: StatusCode.errRequest,
       body,
     });
@@ -159,7 +158,7 @@ export default abstract class Middleware {
       | StatusCode.redirect308
       | number = StatusCode.redirect302
   ): Response =>
-    this.ctx.response.update({
+    this.ctx.res.update({
       statusCode: code,
       headers: { location },
     });

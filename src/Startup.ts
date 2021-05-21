@@ -17,7 +17,7 @@ export default class Startup {
 
   public readonly ctx: HttpContext;
   public get httpResult(): ResponseStruct {
-    return this.ctx.response.result;
+    return this.ctx.res.result;
   }
 
   constructor(
@@ -115,8 +115,8 @@ export default class Startup {
       mdw.init(this.ctx, 0);
       await mdw.invoke();
     } catch (err) {
-      if (err.response) {
-        this.ctx.response.update(err.response);
+      if (err.res) {
+        this.ctx.res.update(err.res);
       } else {
         throw err;
       }
