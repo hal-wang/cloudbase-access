@@ -33,7 +33,7 @@ test(`method override request`, async function () {
     },
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const res = startup.httpContext.response;

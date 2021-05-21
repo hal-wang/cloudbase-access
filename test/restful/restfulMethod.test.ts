@@ -20,7 +20,7 @@ methods.forEach((method) => {
       httpMethod: method,
     };
     const startup = new Startup(event, {});
-    startup.useRouter("test/controllers");
+    startup.useRouter({ forceControllerFolder: "test/controllers" });
 
     await startup.invoke();
     const result = startup.httpContext.response;

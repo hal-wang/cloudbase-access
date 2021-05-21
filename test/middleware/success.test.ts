@@ -16,7 +16,7 @@ test("middleware test success", async function () {
   startup.use(() => new Mdw2(stepResult));
   startup.use(() => new Mdw3(stepResult));
   startup.use(() => new Mdw4(stepResult));
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const result = startup.httpContext.response;

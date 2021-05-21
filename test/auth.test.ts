@@ -15,7 +15,10 @@ test("router test login access", async function () {
     },
     {}
   );
-  startup.useRouter("test/controllers", () => new Auth());
+  startup.useRouter({
+    forceControllerFolder: "test/controllers",
+    authDelegate: () => new Auth(),
+  });
 
   await startup.invoke();
   const result = startup.httpContext.response;
@@ -34,7 +37,10 @@ test("router test login not access", async function () {
     },
     {}
   );
-  startup.useRouter("test/controllers", () => new Auth());
+  startup.useRouter({
+    forceControllerFolder: "test/controllers",
+    authDelegate: () => new Auth(),
+  });
 
   await startup.invoke();
   const result = startup.httpContext.response;
@@ -53,7 +59,10 @@ test("router test admin access", async function () {
     },
     {}
   );
-  startup.useRouter("test/controllers", () => new Auth());
+  startup.useRouter({
+    forceControllerFolder: "test/controllers",
+    authDelegate: () => new Auth(),
+  });
 
   await startup.invoke();
   const result = startup.httpContext.response;
@@ -72,7 +81,10 @@ test("router test admin not access", async function () {
     },
     {}
   );
-  startup.useRouter("test/controllers", () => new Auth());
+  startup.useRouter({
+    forceControllerFolder: "test/controllers",
+    authDelegate: () => new Auth(),
+  });
 
   await startup.invoke();
   const result = startup.httpContext.response;

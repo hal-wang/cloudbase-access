@@ -51,7 +51,7 @@ export const main = async (
   context: Record<string, unknown>
 ): Promise<unknown> => {
   const startup = new Startup(event, context);
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   return startup.httpContext.response.result;
 };

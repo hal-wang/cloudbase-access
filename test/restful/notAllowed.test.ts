@@ -7,7 +7,7 @@ test(`method not allowed`, async function () {
     httpMethod: "NO",
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(405);

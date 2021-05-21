@@ -8,7 +8,7 @@ test("router test", async function () {
   };
   Response.baseHeaders["custom-header"] = "aaa";
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const res = startup.httpContext.response;

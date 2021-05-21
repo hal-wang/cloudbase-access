@@ -12,7 +12,7 @@ test("middleware additives", async function () {
   startup.use(() => new Mdw2());
   startup.use(() => new Mdw3());
   startup.use(() => new Mdw4());
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const result = startup.httpContext.response;

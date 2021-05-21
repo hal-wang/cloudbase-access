@@ -7,7 +7,7 @@ test("startup test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const result = startup.httpContext.response;
@@ -21,7 +21,7 @@ test("startup not exist", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const result = startup.httpContext.response;
@@ -35,7 +35,7 @@ test("shallow startup test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const result = startup.httpContext.response;
@@ -49,7 +49,7 @@ test("deep startup test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const result = startup.httpContext.response;
@@ -64,13 +64,19 @@ test("isMethodNecessary test", async function () {
   };
 
   let startup = new Startup(event, {});
-  startup.useRouter("test/controllers", undefined, false);
+  startup.useRouter({
+    forceControllerFolder: "test/controllers",
+    forceIsMethodNecessary: false,
+  });
   await startup.invoke();
   let result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
-  startup.useRouter("test/controllers", undefined, true);
+  startup.useRouter({
+    forceControllerFolder: "test/controllers",
+    forceIsMethodNecessary: true,
+  });
   await startup.invoke();
   result = startup.httpContext.response;
   expect(result.statusCode).toBe(404);
@@ -82,13 +88,19 @@ test("isMethodNecessary test", async function () {
   };
 
   startup = new Startup(event, {});
-  startup.useRouter("test/controllers", undefined, false);
+  startup.useRouter({
+    forceControllerFolder: "test/controllers",
+    forceIsMethodNecessary: false,
+  });
   await startup.invoke();
   result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
-  startup.useRouter("test/controllers", undefined, true);
+  startup.useRouter({
+    forceControllerFolder: "test/controllers",
+    forceIsMethodNecessary: true,
+  });
   await startup.invoke();
   result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
@@ -100,7 +112,7 @@ test("null body test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const result = startup.httpContext.response;

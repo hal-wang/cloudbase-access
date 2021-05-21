@@ -8,6 +8,7 @@ import Action from "./Middleware/Action";
 import { ResponseStruct } from ".";
 import * as path from "path";
 import { existsSync } from "fs";
+import Config from "./Config";
 
 export default class Startup {
   private static _current: Startup;
@@ -46,57 +47,43 @@ export default class Startup {
    */
   public useRouter(use?: {
     forceControllerFolder?: string;
-    authDelegate?: () => Authority;
     forceIsMethodNecessary?: boolean;
+    authDelegate?: () => Authority;
   }): void {
     if (!use) {
       use = {};
     }
 
-    let controllerFolder: string;
-    let isMethodNecessary: boolean;
-    const defaultControllers = "controllers";
-    const configPath = path.join(process.cwd(), "cba.config.json");
-    if (!existsSync(configPath)) {
-      controllerFolder = defaultControllers;
-      isMethodNecessary = false;
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const config = require(configPath);
-      if (!config.router || config.router.controllers == undefined) {
-        controllerFolder = defaultControllers;
-      }
-      if (!config.router || config.router.isMethodNecessary == undefined) {
-        isMethodNecessary = false;
-      }
-    }
-
-    const getAction = (): Action => {
-      if (!this.httpContext.action) {
-        const mapParser = new MapParser(
-          this.httpContext.request,
-          controllerFolder,
-          isMethodNecessary
-        );
-        this.httpContext.action = mapParser.action;
-      }
-      return this.httpContext.action;
-    };
-    getAction.bind(this);
+    const { controllerFolder, isMethodNecessary } = this.getConfig(
+      use.forceControllerFolder,
+      use.forceIsMethodNecessary
+    );
 
     if (use.authDelegate) {
       const authDelegate = use.authDelegate;
       this.use(() => {
         const auth = authDelegate();
-        const action = getAction();
+        const action = this.getAction(controllerFolder, isMethodNecessary);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (auth.roles as any) = action.roles;
         return auth;
       });
     }
     this.use(() => {
-      return getAction();
+      return this.getAction(controllerFolder, isMethodNecessary);
     });
+  }
+
+  getAction(controllerFolder: string, isMethodNecessary: boolean): Action {
+    if (!this.httpContext.action) {
+      const mapParser = new MapParser(
+        this.httpContext.request,
+        controllerFolder,
+        isMethodNecessary
+      );
+      this.httpContext.action = mapParser.action;
+    }
+    return this.httpContext.action;
   }
 
   async invoke(): Promise<void> {
@@ -117,5 +104,60 @@ export default class Startup {
         throw err;
       }
     }
+  }
+
+  getConfig(
+    forceControllerFolder?: string,
+    forceIsMethodNecessary?: boolean
+  ): { controllerFolder: string; isMethodNecessary: boolean } {
+    const defaultControllers = "controllers";
+    const defaultIsMethodNecessary = false;
+
+    let controllerFolder: string | undefined = undefined;
+    let isMethodNecessary: boolean | undefined = undefined;
+    if (
+      // 如果都传值，不用读取 config
+      forceControllerFolder != undefined &&
+      forceIsMethodNecessary != undefined
+    ) {
+      controllerFolder = forceControllerFolder;
+      isMethodNecessary = forceIsMethodNecessary;
+    } else {
+      if (forceControllerFolder != undefined) {
+        controllerFolder = forceControllerFolder;
+      }
+      if (forceIsMethodNecessary != undefined) {
+        isMethodNecessary = forceIsMethodNecessary;
+      }
+
+      const config = Config.instance;
+      if (!config || !config.router) {
+        if (controllerFolder == undefined) {
+          controllerFolder = defaultControllers;
+        }
+        if (isMethodNecessary == undefined) {
+          isMethodNecessary = defaultIsMethodNecessary;
+        }
+      } else {
+        if (controllerFolder == undefined) {
+          if (config.router.controllerFolder == undefined) {
+            controllerFolder = defaultControllers;
+          } else {
+            controllerFolder = config.router.controllerFolder;
+          }
+        }
+        if (isMethodNecessary == undefined) {
+          if (config.router.isMethodNecessary == undefined) {
+            isMethodNecessary = defaultIsMethodNecessary;
+          } else {
+            isMethodNecessary = config.router.isMethodNecessary;
+          }
+        }
+      }
+    }
+    return {
+      controllerFolder: controllerFolder || defaultControllers,
+      isMethodNecessary: isMethodNecessary || defaultIsMethodNecessary,
+    };
   }
 }

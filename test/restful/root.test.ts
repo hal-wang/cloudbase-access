@@ -7,7 +7,7 @@ test("restful root get", async function () {
     httpMethod: "GET",
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   const result = startup.httpContext.response;

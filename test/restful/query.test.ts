@@ -7,7 +7,7 @@ test(`restful query test`, async function () {
     httpMethod: HttpMethod.get,
   };
   let startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   let result = startup.httpContext.response;
@@ -20,7 +20,7 @@ test(`restful query test`, async function () {
     httpMethod: HttpMethod.get,
   };
   startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   result = startup.httpContext.response;

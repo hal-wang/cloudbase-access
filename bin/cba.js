@@ -4,14 +4,14 @@
 const shell = require("shelljs");
 const fs = require("fs");
 const path = require("path");
+const Config = require("../dist/Config").default;
 
-const configPath = path.join(process.cwd(), "cba.config.json");
 const tsconfigPath = path.join(process.cwd(), "tsconfig.json");
 
-if (!fs.existsSync(configPath)) {
-  throw new Error(`cba.config.json is not exist`);
+const config = Config.instance;
+if (!config) {
+  throw new Error("the config file is not exist");
 }
-const config = require(configPath);
 
 let outDir = "/";
 if (fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {

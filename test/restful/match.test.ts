@@ -7,7 +7,7 @@ test(`find next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
@@ -20,7 +20,7 @@ test(`find simple`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
@@ -34,7 +34,7 @@ test(`find simple next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
@@ -48,7 +48,7 @@ test(`find miss next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
@@ -63,7 +63,7 @@ test(`find miss next 2`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
@@ -77,7 +77,7 @@ test(`find miss next 3`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);
@@ -91,7 +91,7 @@ test(`find miss next 4`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
   await startup.invoke();
   const result = startup.httpContext.response;
   expect(result.statusCode).toBe(200);

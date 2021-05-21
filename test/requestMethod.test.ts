@@ -8,7 +8,7 @@ test("request method test", async function () {
     },
     {}
   );
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   let result = startup.httpContext.response;
@@ -21,7 +21,7 @@ test("request method test", async function () {
     },
     {}
   );
-  startup.useRouter("test/controllers");
+  startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
   result = startup.httpContext.response;

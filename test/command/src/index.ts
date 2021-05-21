@@ -5,7 +5,7 @@ export const main = async (
   context: Record<string, unknown>
 ): Promise<unknown> => {
   const startup = new Startup(event, context);
-  startup.useRouter("controllers");
+  startup.useRouter();
   await startup.invoke();
   return startup.httpContext.response.result;
 };

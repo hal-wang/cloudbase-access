@@ -2,5 +2,4 @@ cba.config.json
 node_modules
 dist
 cba-map.json
-cba.config.json
 package-lock.json
