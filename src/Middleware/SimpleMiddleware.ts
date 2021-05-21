@@ -12,7 +12,7 @@ class SimpleMiddleware extends Middleware {
   }
 
   async invoke(): Promise<void> {
-    await this.delegate(this.httpContext, this.next.bind(this));
+    await this.delegate(this.ctx, this.next.bind(this));
   }
 }
 

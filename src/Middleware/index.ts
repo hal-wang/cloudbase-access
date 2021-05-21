@@ -6,30 +6,29 @@ import StatusCode from "../Response/StatusCode";
 export default abstract class Middleware {
   private index!: number;
 
-  private _httpContext!: HttpContext;
-  public get httpContext(): HttpContext {
-    return this._httpContext;
+  private httpContext!: HttpContext;
+  public get ctx(): HttpContext {
+    return this.httpContext;
   }
 
   abstract invoke(): Promise<void>;
   protected async next(): Promise<void> {
-    if (this.httpContext.middlewares.length <= this.index + 1) return;
+    if (this.ctx.middlewares.length <= this.index + 1) return;
 
-    const { delegate, middleware } =
-      this.httpContext.middlewares[this.index + 1];
+    const { delegate, middleware } = this.ctx.middlewares[this.index + 1];
     if (middleware) {
       await middleware.invoke();
     } else {
       if (!delegate) return;
       const nextMiddleware = delegate();
-      this.httpContext.middlewares[this.index].middleware = nextMiddleware;
-      nextMiddleware.init(this.httpContext, this.index + 1);
+      this.ctx.middlewares[this.index].middleware = nextMiddleware;
+      nextMiddleware.init(this.ctx, this.index + 1);
       await nextMiddleware.invoke();
     }
   }
 
-  public init(httpContext: HttpContext, index: number): void {
-    this._httpContext = httpContext;
+  public init(ctx: HttpContext, index: number): void {
+    this.httpContext = ctx;
     this.index = index;
   }
 
@@ -39,32 +38,32 @@ export default abstract class Middleware {
     headers?: Record<string, string>,
     isBase64 = false
   ): Response =>
-    this.httpContext.response.update({ statusCode, body, headers, isBase64 });
+    this.ctx.response.update({ statusCode, body, headers, isBase64 });
 
   protected ok = (body?: unknown): Response =>
-    this.httpContext.response.update({ statusCode: StatusCode.ok, body });
+    this.ctx.response.update({ statusCode: StatusCode.ok, body });
 
   protected created = (location: string, body?: unknown): Response =>
-    this.httpContext.response.update({
+    this.ctx.response.update({
       statusCode: StatusCode.created,
       body,
       headers: { location },
     });
 
   protected accepted = (body?: unknown): Response =>
-    this.httpContext.response.update({ statusCode: StatusCode.accepted, body });
+    this.ctx.response.update({ statusCode: StatusCode.accepted, body });
 
   protected noContent = (): Response =>
-    this.httpContext.response.update({ statusCode: StatusCode.noContent });
+    this.ctx.response.update({ statusCode: StatusCode.noContent });
 
   protected partialContent = (body?: unknown): Response =>
-    this.httpContext.response.update({
+    this.ctx.response.update({
       statusCode: StatusCode.partialContent,
       body,
     });
 
   protected badRequest = (body?: unknown): Response =>
-    this.httpContext.response.update({
+    this.ctx.response.update({
       statusCode: StatusCode.badRequest,
       body,
     });
@@ -82,7 +81,7 @@ export default abstract class Middleware {
   }
 
   protected unauthorized = (body?: unknown): Response =>
-    this.httpContext.response.update({
+    this.ctx.response.update({
       statusCode: StatusCode.unauthorized,
       body,
     });
@@ -100,7 +99,7 @@ export default abstract class Middleware {
   }
 
   protected forbidden = (body?: unknown): Response =>
-    this.httpContext.response.update({
+    this.ctx.response.update({
       statusCode: StatusCode.forbidden,
       body,
     });
@@ -118,7 +117,7 @@ export default abstract class Middleware {
   }
 
   protected notFound = (body?: unknown): Response =>
-    this.httpContext.response.update({ statusCode: StatusCode.notFound, body });
+    this.ctx.response.update({ statusCode: StatusCode.notFound, body });
 
   protected notFoundMsg(
     msg?: ErrorMessage & Record<string, unknown>
@@ -133,7 +132,7 @@ export default abstract class Middleware {
   }
 
   protected errRequest = (body?: unknown): Response =>
-    this.httpContext.response.update({
+    this.ctx.response.update({
       statusCode: StatusCode.errRequest,
       body,
     });
@@ -160,7 +159,7 @@ export default abstract class Middleware {
       | StatusCode.redirect308
       | number = StatusCode.redirect302
   ): Response =>
-    this.httpContext.response.update({
+    this.ctx.response.update({
       statusCode: code,
       headers: { location },
     });

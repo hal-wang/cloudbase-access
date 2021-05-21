@@ -10,7 +10,7 @@ test(`custom httpMethod test`, async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
   HttpMethod.custom.push("CUSTOM");
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -24,6 +24,6 @@ test(`custom httpMethod test err`, async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
   HttpMethod.custom.splice(0);
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(405);
 });

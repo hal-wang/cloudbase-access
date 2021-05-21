@@ -53,7 +53,7 @@ export const main = async (
   const startup = new Startup(event, context);
   startup.useRouter();
   await startup.invoke();
-  return startup.httpContext.response.result;
+  return startup.ctx.response.result;
 };
 ```
 
@@ -208,7 +208,7 @@ export const main = async (
   const startup = new Startup(event, context);
   startup.use(() => new YourMiddleware());
   startup.invoke();
-  return startup.httpContext.response.result;
+  return startup.ctx.response.result;
 };
 ```
 
@@ -223,7 +223,7 @@ export const main = async (
 
 ## HttpContext
 
-管道中的内容都在 `HttpContext` 对象之中，每个中间件都可以调用 `this.httpContext` 来获取或修改管道内容
+管道中的内容都在 `HttpContext` 对象之中，每个中间件都可以调用 `this.ctx` 来获取或修改管道内容
 
 该对象包含以下属性：
 
@@ -235,13 +235,13 @@ export const main = async (
 
 管道的返回内容，可以调用 `response.result` 来获取最终 HTTP 返回结构 `ResponseStruct`
 
-在每个中间件中都可以修改 `this.httpContext.response` 内容
+在每个中间件中都可以修改 `this.ctx.response` 内容
 
 ### Request
 
-`httpContext.request` 对象已经解析并封装了请求参数
+`ctx.request` 对象已经解析并封装了请求参数
 
-在中间件中，可通过 `this.httpContext.request` 方式获取请求内容
+在中间件中，可通过 `this.ctx.request` 方式获取请求内容
 
 `request` 对象包含以下字段
 
@@ -343,7 +343,7 @@ export default class extends Action {
   }
 
   async invoke(): Promise<void> {
-    const { account } = this.httpContext.request.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
+    const { account } = this.ctx.request.headers; // 在auth中已经验证 account 的正确性，因此可认为调用者身份无误。
 
     const todoList = []; // 可放心从数据库读取用户数据，因为 account 已验证登录
     this.ok(todoList);
@@ -389,7 +389,7 @@ export default class extends Action {
 import { Action } from "@hal-wang/cloudbase-access";
 export default class extends Action {
   async invoke(): Promise<void> {
-    const { account, password } = this.httpContext.request.params
+    const { account, password } = this.ctx.request.params
 
     if(/*账号或密码错误*/) {
       this.notFound('账号或密码错误')
@@ -432,7 +432,7 @@ class Auth extends Authority {
 
   loginAuth() {
     // 实际情况应该需要查表等复杂操作
-    const { account, password } = this.httpContext.request.headers;
+    const { account, password } = this.ctx.request.headers;
     return account == "abc" && password == "123456";
   }
 }

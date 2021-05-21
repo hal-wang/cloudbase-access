@@ -10,7 +10,7 @@ test("restful root get", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expect((result.body as any).method).toBe(HttpMethod.get);

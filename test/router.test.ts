@@ -10,7 +10,7 @@ test("startup test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -24,7 +24,7 @@ test("startup not exist", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(404);
 });
 
@@ -38,7 +38,7 @@ test("shallow startup test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -52,7 +52,7 @@ test("deep startup test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -69,7 +69,7 @@ test("isMethodNecessary test", async function () {
     forceIsMethodNecessary: false,
   });
   await startup.invoke();
-  let result = startup.httpContext.response;
+  let result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
@@ -78,7 +78,7 @@ test("isMethodNecessary test", async function () {
     forceIsMethodNecessary: true,
   });
   await startup.invoke();
-  result = startup.httpContext.response;
+  result = startup.ctx.response;
   expect(result.statusCode).toBe(404);
 
   event = {
@@ -93,7 +93,7 @@ test("isMethodNecessary test", async function () {
     forceIsMethodNecessary: false,
   });
   await startup.invoke();
-  result = startup.httpContext.response;
+  result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
@@ -102,7 +102,7 @@ test("isMethodNecessary test", async function () {
     forceIsMethodNecessary: true,
   });
   await startup.invoke();
-  result = startup.httpContext.response;
+  result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -115,6 +115,6 @@ test("null body test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 });

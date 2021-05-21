@@ -66,7 +66,7 @@ for (let i = 0; i < normalMethod.length; i++) {
   const action = new TestAction();
   action.invoke();
   test(`http result ${methodItem.method}`, async function () {
-    const result = action.httpContext.response;
+    const result = action.ctx.response;
     expect(result.statusCode).toBe(methodItem.code);
   });
 }
@@ -116,7 +116,7 @@ for (let i = 0; i < msgMethods.length; i++) {
   const action = new TestAction();
   action.invoke();
   test(errorMsgTest, async function () {
-    const result = action.httpContext.response;
+    const result = action.ctx.response;
     expect(result.statusCode).toBe(methodItem.code);
     expect((result.body as ErrorMessage).message).toBe(errorMsgTest);
   });
@@ -129,8 +129,8 @@ for (let i = 0; i < redirectCodes.length; i++) {
   test(`${code} redirect`, async function () {
     const action = new RedirectTestAction(code, location);
     await action.invoke();
-    expect(action.httpContext.response.statusCode).toBe(code);
-    expect(action.httpContext.response.headers.location).toBe(location);
+    expect(action.ctx.response.statusCode).toBe(code);
+    expect(action.ctx.response.headers.location).toBe(location);
   });
 }
 

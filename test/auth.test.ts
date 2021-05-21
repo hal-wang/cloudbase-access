@@ -21,7 +21,7 @@ test("router test login access", async function () {
   });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -43,7 +43,7 @@ test("router test login not access", async function () {
   });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(403);
 });
 
@@ -65,7 +65,7 @@ test("router test admin access", async function () {
   });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
 });
 
@@ -87,7 +87,7 @@ test("router test admin not access", async function () {
   });
 
   await startup.invoke();
-  const result = startup.httpContext.response;
+  const result = startup.ctx.response;
   expect(result.statusCode).toBe(403);
 });
 
@@ -115,12 +115,12 @@ class Auth extends Authority {
   }
 
   adminAuth() {
-    const { account } = this.httpContext.request.headers;
+    const { account } = this.ctx.request.headers;
     return account == global.adminAccount;
   }
 
   loginAuth() {
-    const { account, password } = this.httpContext.request.headers;
+    const { account, password } = this.ctx.request.headers;
     return (
       linq
         .from(global.users)

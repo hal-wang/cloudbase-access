@@ -15,9 +15,9 @@ export default class Startup {
     return this._current;
   }
 
-  public readonly httpContext: HttpContext;
+  public readonly ctx: HttpContext;
   public get httpResult(): ResponseStruct {
-    return this.httpContext.response.result;
+    return this.ctx.response.result;
   }
 
   constructor(
@@ -25,10 +25,7 @@ export default class Startup {
     context: Record<string, unknown>
   ) {
     Startup._current = this;
-    this.httpContext = new HttpContext(
-      new Request(event, context),
-      new Response(200)
-    );
+    this.ctx = new HttpContext(new Request(event, context), new Response(200));
   }
 
   use(
@@ -52,7 +49,7 @@ export default class Startup {
       mdDele = delegate as () => Middleware;
     }
 
-    this.httpContext.middlewares.push({
+    this.ctx.middlewares.push({
       delegate: mdDele,
     });
   }
@@ -95,31 +92,31 @@ export default class Startup {
   }
 
   getAction(controllerFolder: string, isMethodNecessary: boolean): Action {
-    if (!this.httpContext.action) {
+    if (!this.ctx.action) {
       const mapParser = new MapParser(
-        this.httpContext.request,
+        this.ctx.request,
         controllerFolder,
         isMethodNecessary
       );
-      this.httpContext.action = mapParser.action;
+      this.ctx.action = mapParser.action;
     }
-    return this.httpContext.action;
+    return this.ctx.action;
   }
 
   async invoke(): Promise<void> {
     try {
-      const { delegate, middleware } = this.httpContext.middlewares[0];
+      const { delegate, middleware } = this.ctx.middlewares[0];
       let mdw;
       if (middleware) {
         mdw = middleware;
       } else {
         mdw = delegate();
       }
-      mdw.init(this.httpContext, 0);
+      mdw.init(this.ctx, 0);
       await mdw.invoke();
     } catch (err) {
       if (err.response) {
-        this.httpContext.response.update(err.response);
+        this.ctx.response.update(err.response);
       } else {
         throw err;
       }

@@ -10,7 +10,7 @@ test(`restful query test`, async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  let result = startup.httpContext.response;
+  let result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("45");
 
@@ -23,7 +23,7 @@ test(`restful query test`, async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  result = startup.httpContext.response;
+  result = startup.ctx.response;
   expect(result.statusCode).toBe(200);
   expect((result.body as Record<string, unknown>).id).toBe("11");
 });
