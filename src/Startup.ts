@@ -49,7 +49,7 @@ export default class Startup {
       mdDele = delegate as () => Middleware;
     }
 
-    this.ctx.middlewares.push({
+    this.ctx.mds.push({
       delegate: mdDele,
     });
   }
@@ -105,7 +105,7 @@ export default class Startup {
 
   async invoke(): Promise<void> {
     try {
-      const { delegate, middleware } = this.ctx.middlewares[0];
+      const { delegate, middleware } = this.ctx.mds[0];
       let mdw;
       if (middleware) {
         mdw = middleware;

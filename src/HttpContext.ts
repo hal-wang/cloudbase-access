@@ -10,7 +10,7 @@ export default class HttpContext {
   constructor(
     public readonly req: Request,
     public readonly res: Response,
-    public readonly middlewares: {
+    public readonly mds: {
       delegate: () => Middleware;
       middleware?: Middleware;
     }[] = []
