@@ -9,9 +9,7 @@ export default class MapCreater {
       !existsSync(this.dirPath) ||
       !lstatSync(this.dirPath).isDirectory()
     ) {
-      throw new Error(
-        "please input controllers folder path, for example 'src/controllers'"
-      );
+      throw new Error("the router dir is not exist");
     }
   }
 

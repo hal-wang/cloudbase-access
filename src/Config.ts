@@ -1,30 +1,26 @@
 import { existsSync } from "fs";
 import * as path from "path";
+import ApiDocsConfig from "./ApiDocs/ApiDocsConfig";
 
-interface RouterConfig {
+export interface AppConfig {
+  router?: RouterConfig;
+  ts?: TsConfig;
+  doc?: ApiDocsConfig;
+}
+
+export interface RouterConfig {
   dir?: string;
   strict?: boolean;
 }
 
-interface AppConfig {
-  router?: RouterConfig;
-}
-
-interface TsStaticItemConfig {
+export interface TsStaticItemConfig {
   source: string;
   target: string;
 }
 
-interface TsConfig {
+export interface TsConfig {
   static?: TsStaticItemConfig[];
 }
-
-interface DocConfig {
-  target: string;
-  configPath?: string;
-}
-
-export { AppConfig, RouterConfig, TsConfig, TsStaticItemConfig, DocConfig };
 
 export default class Config {
   private static config: AppConfig | null | undefined = undefined;

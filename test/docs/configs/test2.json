@@ -1,9 +1,0 @@
-{
-  "outputHeaders": [
-    {
-      "name": "base-output-header",
-      "desc": "this is a base output header",
-      "type": "string"
-    }
-  ]
-}

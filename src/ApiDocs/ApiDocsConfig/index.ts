@@ -1,7 +1,8 @@
 import ApiDocsConfigPart from "./ApiDocsConfigPart";
 
 export default interface ApiDocsConfig {
-  parts?: ApiDocsConfigPart[] | string[];
+  output: string;
+  parts?: ApiDocsConfigPart[];
   partsFromAuth?: boolean;
   title?: string;
   subtitle?: string;

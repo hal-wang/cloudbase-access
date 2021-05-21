@@ -6,36 +6,20 @@ import ApiDocsConfig from "../ApiDocsConfig";
 import ApiDocsMdActionCreater from "./ApiDocsMdActionCreater";
 import ApiDocsNoteParser from "../ApiDocsNoteParser";
 import ApiDocsMdPart from "./ApiDocsMdPart";
+import { AppConfig } from "../../Config";
 
 export default class ApiDocsCreater {
-  constructor(
-    private readonly dir: string,
-    private readonly docsConfig?: ApiDocsConfig | string
-  ) {
-    if (
-      !this.dir ||
-      !existsSync(this.dirPath) ||
-      !lstatSync(this.dirPath).isDirectory()
-    ) {
-      throw new Error(
-        "please input controllers folder path, for example 'src/controllers'"
-      );
-    }
-  }
+  constructor(private readonly config: AppConfig) {}
 
-  private get config(): ApiDocsConfig {
-    if (!this.docsConfig) return {};
-    if (typeof this.docsConfig == "string") {
-      const configPath = path.join(process.cwd(), this.docsConfig);
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      return require(configPath) as ApiDocsConfig;
-    } else {
-      return this.docsConfig;
+  get docConfig(): ApiDocsConfig {
+    if (!this.config.doc) {
+      throw new Error("there is no doc config");
     }
+    return this.config.doc;
   }
 
   get docs(): string {
-    const part = new ApiDocsMdPart(this.config);
+    const part = new ApiDocsMdPart(this.docConfig);
     let result = part.title;
     result += this.readFilesFromFolder("");
     if (result.endsWith(part.separation)) {
@@ -56,7 +40,14 @@ export default class ApiDocsCreater {
   }
 
   private get dirPath(): string {
-    return path.join(process.cwd(), this.dir);
+    if (!this.config.router || !this.config.router.dir) {
+      throw new Error("there is no router dir");
+    }
+    const result = path.join(process.cwd(), this.config.router.dir);
+    if (!existsSync(result) || !lstatSync(result).isDirectory()) {
+      throw new Error("the dir is not exist");
+    }
+    return result;
   }
 
   private readFilesFromFolder(folderRPath: string): string {
@@ -81,7 +72,7 @@ export default class ApiDocsCreater {
       const readFileResult = this.readFile(files[i]);
       if (readFileResult) {
         result += readFileResult;
-        result += new ApiDocsMdPart(this.config).separation;
+        result += new ApiDocsMdPart(this.docConfig).separation;
       }
     }
 
@@ -121,6 +112,7 @@ export default class ApiDocsCreater {
     }
     if (!docs) return "";
 
-    return new ApiDocsMdActionCreater(rPath, docs, this.config, action).result;
+    return new ApiDocsMdActionCreater(rPath, docs, this.docConfig, action)
+      .result;
   }
 }

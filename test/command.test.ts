@@ -9,29 +9,33 @@ test("cba command", async function () {
 
   shell.cd("./test/command");
 
-  const tsconfigPath = "./tsconfig.json";
-  const tsconfigStr = fs.readFileSync(tsconfigPath, "utf-8");
-  const tsconfig = JSON.parse(tsconfigStr);
-  tsconfig.compilerOptions.outDir = "../functions/v1";
-  fs.writeFileSync(tsconfigPath, JSON.stringify(tsconfig));
-
   try {
-    {
-      const execResult = shell.exec(`npm i && npm run build`);
-      expect(execResult.code).toBe(0);
-      expect(fs.existsSync(`./dist`)).toBe(true);
-      expect(fs.existsSync(`./README.md`)).toBe(false);
-    }
+    const tsconfigPath = "./tsconfig.json";
+    const tsconfigStr = fs.readFileSync(tsconfigPath, "utf-8");
+    const tsconfig = JSON.parse(tsconfigStr);
+    tsconfig.compilerOptions.outDir = "../functions/v1";
+    fs.writeFileSync(tsconfigPath, JSON.stringify(tsconfig));
 
-    tsconfig.compilerOptions.outDir = "./dist";
-    fs.writeFileSync("./tsconfig.json", JSON.stringify(tsconfig));
+    try {
+      {
+        const execResult = shell.exec(`npm i && npm run build`);
+        expect(execResult.code).toBe(0);
+        expect(fs.existsSync(`./dist`)).toBe(true);
+        expect(fs.existsSync(`./README.md`)).toBe(false);
+      }
 
-    {
-      const execResult = shell.exec(`npm run build`);
-      expect(execResult.code).toBe(0);
-      expect(fs.existsSync(tsconfig.compilerOptions.outDir)).toBe(true);
+      tsconfig.compilerOptions.outDir = "./dist";
+      fs.writeFileSync("./tsconfig.json", JSON.stringify(tsconfig));
+
+      {
+        const execResult = shell.exec(`npm run build`);
+        expect(execResult.code).toBe(0);
+        expect(fs.existsSync(tsconfig.compilerOptions.outDir)).toBe(true);
+      }
+    } finally {
+      fs.writeFileSync("./tsconfig.json", tsconfigStr);
     }
   } finally {
-    fs.writeFileSync("./tsconfig.json", tsconfigStr);
+    shell.cd("../..");
   }
 });

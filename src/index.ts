@@ -10,7 +10,6 @@ import HttpContext from "./HttpContext";
 import Config, {
   TsConfig,
   AppConfig,
-  DocConfig,
   RouterConfig,
   TsStaticItemConfig,
 } from "./Config";
@@ -55,7 +54,6 @@ export {
   Config,
   TsConfig,
   AppConfig,
-  DocConfig,
   RouterConfig,
   TsStaticItemConfig,
 };

@@ -79,11 +79,7 @@ export default class Startup {
 
   getAction(): Action {
     if (!this.ctx.action) {
-      const mapParser = new MapParser(
-        this.ctx.req,
-        this.routerDir,
-        this.strict
-      );
+      const mapParser = new MapParser(this.ctx.req, this.dir, this.strict);
       this.ctx.action = mapParser.action;
     }
     return this.ctx.action;
@@ -111,7 +107,7 @@ export default class Startup {
     return this.result;
   }
 
-  get routerDir(): string {
+  get dir(): string {
     if (this.unitTest && this.unitTest.dir) {
       return this.unitTest.dir;
     }

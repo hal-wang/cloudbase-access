@@ -12,7 +12,39 @@
     ]
   },
   "doc": {
-    "target": "../docs/api/README.md",
-    "configPath": "docConfigs/base.json"
+    "output": "../docs/api/README.md",
+    "title": "cba-title",
+    "subtitle": "cba-subtitle",
+    "parts": [
+      {
+        "inputHeaders": [
+          {
+            "name": "base-input-header",
+            "desc": "this is a base input header",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "outputHeaders": [
+          {
+            "name": "base-output-header",
+            "desc": "this is a base output header",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "custom",
+        "query": [
+          {
+            "name": "base-query",
+            "desc": "this is a base query",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "partsFromAuth": true
   }
 }

@@ -743,7 +743,7 @@ parts 的内容较为复杂，参考 [parts](###parts) 部分
 
 如果 `ApiDocs.parts` 包含某个可配置项，则生成的文档会包含该可配置项的内容。
 
-优势 `parts` 与 `auth` 使用场景可能重复。为了简单化，属性 parts 值也可以为一个特殊值 `@auth`，此时这个 `Action` 的 `parts`属性值将取自 `auth` 属性值。
+有时 `parts` 与 `auth` 使用场景可能重复。为了简单化，属性 parts 值也可以为一个特殊值 `@auth`，此时这个 `Action` 的 `parts`属性值将取自 `auth` 属性值。
 
 更进一步，如果配置文件中的 `partsFromAuth` 属性值为 `true`，那么所有 `parts` 如果未设置值，都将取自 `auth` 属性值。（未写自动化文档 `Action `将被忽略，没有 `@input` 将忽略输入参数，没有 `@output` 将忽略输出参数 ）。
 

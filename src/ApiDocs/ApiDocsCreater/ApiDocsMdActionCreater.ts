@@ -5,7 +5,6 @@ import ApiDocsParam from "../ApiDocsParam";
 import ApiDocsIOParams from "../ApiDocsParam/ApiDocsIOParams";
 import ApiDocsStateCode from "../ApiDocsParam/ApiDocsStateCode";
 import ApiDocsConfigPart from "../ApiDocsConfig/ApiDocsConfigPart";
-import path = require("path");
 import Action from "../../Middleware/Action";
 
 export default class ApiDocsMdActionCreater {
@@ -36,23 +35,7 @@ export default class ApiDocsMdActionCreater {
 
   private get partConfigs(): ApiDocsConfigPart[] {
     if (!this.config || !this.config.parts) return [];
-    const result = <ApiDocsConfigPart[]>[];
-    this.config.parts.forEach((partConfig: ApiDocsConfigPart | string) => {
-      if (typeof partConfig == "string") {
-        const configPath = path.join(process.cwd(), partConfig);
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const partConfigObj = require(configPath) as ApiDocsConfigPart;
-        if (!partConfigObj.name) {
-          partConfigObj.name = new PathParser(
-            partConfig
-          ).fileNameWithoutExtension;
-        }
-        result.push(partConfigObj);
-      } else {
-        result.push(partConfig);
-      }
-    });
-    return result;
+    return this.config.parts;
   }
 
   private getTitle(): string {
