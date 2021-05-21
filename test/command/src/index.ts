@@ -7,5 +7,5 @@ export const main = async (
   const startup = new Startup(event, context);
   startup.useRouter();
   await startup.invoke();
-  return startup.ctx.res.result;
+  return startup.result;
 };

@@ -22,8 +22,7 @@ methods.forEach((method) => {
     const startup = new Startup(event, {});
     startup.useRouter({ forceControllerFolder: "test/controllers" });
 
-    await startup.invoke();
-    const result = startup.ctx.res;
+    const result = await startup.invoke();
     expect(result.statusCode).toBe(200);
     expect((result.body as Record<string, unknown>).method).toBe(method);
   });

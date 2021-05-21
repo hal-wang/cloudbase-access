@@ -16,7 +16,7 @@ export default class Startup {
   }
 
   public readonly ctx: HttpContext;
-  public get httpResult(): ResponseStruct {
+  public get result(): ResponseStruct {
     return this.ctx.res.result;
   }
 
@@ -100,7 +100,7 @@ export default class Startup {
     return this.ctx.action;
   }
 
-  async invoke(): Promise<void> {
+  async invoke(): Promise<ResponseStruct> {
     try {
       const { mdf, md } = this.ctx.mds[0];
       let mdw;
@@ -118,6 +118,8 @@ export default class Startup {
         throw err;
       }
     }
+
+    return this.result;
   }
 
   getConfig(

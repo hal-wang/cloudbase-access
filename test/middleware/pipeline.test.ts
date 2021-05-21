@@ -14,8 +14,7 @@ test("middleware additives", async function () {
   startup.use(() => new Mdw4());
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
-  await startup.invoke();
-  const result = startup.ctx.res;
+  const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
   expect(result.headers.mdw1).toBe("mdw1");
   expect(result.headers.mdw2).toBe("mdw2");

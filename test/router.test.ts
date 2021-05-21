@@ -10,8 +10,7 @@ test("startup test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
 });
 
 test("startup not exist", async function () {
@@ -24,8 +23,7 @@ test("startup not exist", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.ctx.res;
-  expect(result.statusCode).toBe(404);
+  expect(startup.result.statusCode).toBe(404);
 });
 
 test("shallow startup test", async function () {
@@ -38,8 +36,7 @@ test("shallow startup test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
 });
 
 test("deep startup test", async function () {
@@ -52,8 +49,7 @@ test("deep startup test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
 });
 
 test("isMethodNecessary test", async function () {
@@ -69,8 +65,7 @@ test("isMethodNecessary test", async function () {
     forceIsMethodNecessary: false,
   });
   await startup.invoke();
-  let result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
   startup.useRouter({
@@ -78,8 +73,7 @@ test("isMethodNecessary test", async function () {
     forceIsMethodNecessary: true,
   });
   await startup.invoke();
-  result = startup.ctx.res;
-  expect(result.statusCode).toBe(404);
+  expect(startup.result.statusCode).toBe(404);
 
   event = {
     body: {},
@@ -93,8 +87,7 @@ test("isMethodNecessary test", async function () {
     forceIsMethodNecessary: false,
   });
   await startup.invoke();
-  result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
   startup.useRouter({
@@ -102,8 +95,7 @@ test("isMethodNecessary test", async function () {
     forceIsMethodNecessary: true,
   });
   await startup.invoke();
-  result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
 });
 
 test("null body test", async function () {
@@ -115,6 +107,5 @@ test("null body test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
 });

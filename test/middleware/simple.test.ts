@@ -25,8 +25,7 @@ test("simpple middleware", async function () {
     await next();
   });
 
-  await startup.invoke();
-  const result = startup.ctx.res;
+  const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
   expect(result.headers.mdw1).toBe("mdw1");
   expect(result.headers.mdw2).toBe("mdw2");

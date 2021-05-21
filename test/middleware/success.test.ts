@@ -19,10 +19,9 @@ test("middleware test success", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
   expect(stepResult.step).toBe(111);
-  expect(startup.ctx.res.body).toBe("middleware-success");
+  expect(startup.result.body).toBe("middleware-success");
 });
 
 class Mdw1 extends Middleware {

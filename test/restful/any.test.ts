@@ -12,8 +12,7 @@ methods.forEach((method) => {
     const startup = new Startup(event, {});
     startup.useRouter({ forceControllerFolder: "test/controllers" });
 
-    await startup.invoke();
-    const result = startup.ctx.res;
+    const result = await startup.invoke();
     expect(result.statusCode).toBe(200);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(!!(result.body as any).method).toBe(true);

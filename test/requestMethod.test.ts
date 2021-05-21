@@ -1,7 +1,7 @@
 import { Startup } from "../src/index";
 
-test("request method test", async function () {
-  let startup = new Startup(
+test("request method lower case", async function () {
+  const startup = new Startup(
     {
       path: "/router",
       httpMethod: "post",
@@ -11,10 +11,11 @@ test("request method test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  let result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
+});
 
-  startup = new Startup(
+test("request method upper case", async function () {
+  const startup = new Startup(
     {
       path: "/router",
       httpMethod: "POST",
@@ -24,6 +25,5 @@ test("request method test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  result = startup.ctx.res;
-  expect(result.statusCode).toBe(200);
+  expect(startup.result.statusCode).toBe(200);
 });

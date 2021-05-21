@@ -11,8 +11,6 @@ test("router test", async function () {
   startup.useRouter({ forceControllerFolder: "test/controllers" });
 
   await startup.invoke();
-  const res = startup.ctx.res;
-  expect(res.statusCode).toBe(200);
-
-  expect(res.result.headers["custom-header"]).toBe("aaa");
+  expect(startup.result.statusCode).toBe(200);
+  expect(startup.result.headers["custom-header"]).toBe("aaa");
 });

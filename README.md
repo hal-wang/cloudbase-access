@@ -52,8 +52,7 @@ export const main = async (
 ): Promise<unknown> => {
   const startup = new Startup(event, context);
   startup.useRouter();
-  await startup.invoke();
-  return startup.ctx.res.result;
+  return await startup.invoke();
 };
 ```
 
@@ -208,7 +207,7 @@ export const main = async (
   const startup = new Startup(event, context);
   startup.use(() => new YourMiddleware());
   startup.invoke();
-  return startup.ctx.res.result;
+  return startup.result;
 };
 ```
 
