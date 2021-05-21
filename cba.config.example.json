@@ -6,8 +6,12 @@
   "ts": {
     "static": [
       {
-        "source": "imgs",
-        "target": "assets/imgs"
+        "source": "static",
+        "target": "assets"
+      },
+      {
+        "source": "static.txt",
+        "target": "read.txt"
       }
     ]
   },

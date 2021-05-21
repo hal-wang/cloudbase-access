@@ -35,8 +35,8 @@ if (fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
   deleteFile(outDir, ".d.ts");
 
   if (existDir) {
-    if (config.static && config.static.length) {
-      config.static.forEach(({ source, target }) => {
+    if (config.ts && config.ts.static) {
+      config.ts.static.forEach(({ source, target }) => {
         const sourcePath = path.join(process.cwd(), source);
         const targetPath = path.join(process.cwd(), outDir, target);
         copyFile(sourcePath, targetPath);
@@ -88,7 +88,7 @@ function copyFile(source, target) {
     if (!fs.existsSync(target)) {
       fs.mkdirSync(target);
     }
-    const files = fs.opendirSync(source);
+    const files = fs.readdirSync(source);
     files.forEach((file) => {
       copyFile(path.join(source, file), path.join(target, file));
     });
