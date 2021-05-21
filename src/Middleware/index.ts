@@ -15,9 +15,8 @@ export default abstract class Middleware {
   protected async next(): Promise<void> {
     if (this.httpContext.middlewares.length <= this.index + 1) return;
 
-    const { delegate, middleware } = this.httpContext.middlewares[
-      this.index + 1
-    ];
+    const { delegate, middleware } =
+      this.httpContext.middlewares[this.index + 1];
     if (middleware) {
       await middleware.invoke();
     } else {

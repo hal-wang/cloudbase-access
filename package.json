@@ -1,6 +1,6 @@
 {
   "name": "@hal-wang/cloudbase-access",
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.9",
   "description": "利用 NodeJS 和 CloudBase 快速创建 Serverless RESTful Api",
   "homepage": "https://github.com/hal-wang/cloudbase-access",
   "repository": {
@@ -8,22 +8,13 @@
     "url": "https://github.com/hal-wang/cloudbase-access"
   },
   "keywords": [
-    "cloudbase-access",
-    "mvc",
-    "nodejs-api",
     "cloudbase",
-    "restful-api",
-    "mongodb",
-    "cloud-function",
+    "restful",
     "nodejs-server",
     "serverless",
-    "tencent-cloud",
-    "tencent-scf",
     "nodejs",
-    "ts",
     "typescript",
-    "javascript",
-    "js"
+    "javascript"
   ],
   "bugs": {
     "url": "https://github.com/hal-wang/cloudbase-access/issues",

@@ -34,7 +34,7 @@ npm i @hal-wang/cloudbase-access
 
 ## 关于 CBA 的建议
 
-强烈建议使用 `typescript` 并生成 `javascript` 代码后上传，可参考以上示例，做法是 ts 生成 js 文件，并用脚本删除 `.d.ts` 文件。
+强烈建议使用 `typescript` ，通过对 cba 的配置可以生成云函数可以调用的 js 文件。
 
 理论上 `javascript` 完全没问题，但作者并未进行测试。
 
@@ -51,15 +51,13 @@ export const main = async (
   context: Record<string, unknown>
 ): Promise<unknown> => {
   const startup = new Startup(event, context);
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+  startup.useRouter();
   await startup.invoke();
   return startup.httpContext.response.result;
 };
 ```
 
-以上几行代码即创建一个简单的 RESTful 规范的 API。
-
-上述代码，如果访问的路径不存在，会返回 404 NotFound 结构。
+以上几行代码即创建一个简单的 API
 
 ## 路由（useRouter）
 

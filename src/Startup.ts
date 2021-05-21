@@ -6,9 +6,8 @@ import MapParser from "./Map/MapParser";
 import HttpContext from "./HttpContext";
 import Action from "./Middleware/Action";
 import { ResponseStruct } from ".";
-import * as path from "path";
-import { existsSync } from "fs";
 import Config from "./Config";
+import SimpleMiddleware from "./Middleware/SimpleMiddleware";
 
 export default class Startup {
   private static _current: Startup;
@@ -32,9 +31,30 @@ export default class Startup {
     );
   }
 
-  use(delegate: () => Middleware): void {
+  use(
+    delegate:
+      | (() => Middleware)
+      | ((ctx: HttpContext, next: () => Promise<void>) => Promise<void>)
+  ): void {
     if (!delegate) throw new Error();
-    this.httpContext.middlewares.push({ delegate: delegate });
+
+    let mdDele;
+    if (delegate.length) {
+      mdDele = () => {
+        return new SimpleMiddleware(
+          delegate as (
+            ctx: HttpContext,
+            next: () => Promise<void>
+          ) => Promise<void>
+        );
+      };
+    } else {
+      mdDele = delegate as () => Middleware;
+    }
+
+    this.httpContext.middlewares.push({
+      delegate: mdDele,
+    });
   }
 
   /**
