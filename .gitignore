@@ -1,4 +1,3 @@
-
 dist
 node_modules
 package-lock.json
@@ -6,3 +5,4 @@ yarn.lock
 
 cba-map.json
 test.*
+/bin/*

@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-var-requires */
 
-const shell = require("shelljs");
-const fs = require("fs");
-const path = require("path");
-const Config = require("../dist/Config").default;
-
-const tsconfigPath = path.join(process.cwd(), "tsconfig.json");
+import * as fs from "fs";
+import * as path from "path";
+import * as shell from "shelljs";
+import { Config } from "../dist";
+import MapCreater from "../dist/Map/MapCreater";
 
 const config = Config.instance;
 if (!config) {
@@ -14,7 +12,9 @@ if (!config) {
 }
 
 let outDir = "/";
-if (fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
+const tsconfigPath = path.join(process.cwd(), "tsconfig.json");
+if (fs.existsSync(tsconfigPath)) {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const tsconfig = require(tsconfigPath);
   const existDir = tsconfig.compilerOptions && tsconfig.compilerOptions.outDir;
   if (existDir) {
@@ -53,17 +53,12 @@ if (fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
   }
 }
 
-const MapCreater = require("../dist/Map/MapCreater").default;
 const mapCreater = new MapCreater(
   path.join(outDir, config.router.dir || "controllers")
 );
-if (config.map && config.map.target) {
-  mapCreater.write(path.join(outDir, config.map.target));
-} else {
-  mapCreater.write();
-}
+mapCreater.write();
 
-function deleteFile(filePath, type = undefined) {
+function deleteFile(filePath: string, type?: string) {
   if (!fs.existsSync(filePath)) return;
 
   const stat = fs.statSync(filePath);
@@ -81,7 +76,7 @@ function deleteFile(filePath, type = undefined) {
   }
 }
 
-function copyFile(source, target) {
+function copyFile(source: string, target: string) {
   if (!fs.existsSync(source)) return;
   const stat = fs.statSync(source);
   if (stat.isDirectory()) {
