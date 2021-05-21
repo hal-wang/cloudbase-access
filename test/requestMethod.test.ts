@@ -8,8 +8,7 @@ test("request method lower case", async function () {
     },
     {}
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter();
 
   await startup.invoke();
@@ -24,8 +23,7 @@ test("request method upper case", async function () {
     },
     {}
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter();
 
   await startup.invoke();

@@ -16,8 +16,7 @@ test("middleware test success", async function () {
   startup.use(() => new Mdw2(stepResult));
   startup.use(() => new Mdw3(stepResult));
   startup.use(() => new Mdw4(stepResult));
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter();
 
   await startup.invoke();

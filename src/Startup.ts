@@ -6,7 +6,7 @@ import MapParser from "./Map/MapParser";
 import HttpContext from "./HttpContext";
 import Action from "./Middleware/Action";
 import { ResponseStruct } from ".";
-import Config from "./Config";
+import Config, { RouterConfig } from "./Config";
 import SimpleMiddleware from "./Middleware/SimpleMiddleware";
 
 export default class Startup {
@@ -19,8 +19,6 @@ export default class Startup {
   public get result(): ResponseStruct {
     return this.ctx.res.result;
   }
-
-  private unitTest?: { dir?: string; strict?: boolean };
 
   constructor(
     event: Record<string, unknown>,
@@ -105,6 +103,10 @@ export default class Startup {
     }
 
     return this.result;
+  }
+
+  get unitTest(): RouterConfig {
+    return this.ctx.getBag<RouterConfig>("unitTest");
   }
 
   get dir(): string {

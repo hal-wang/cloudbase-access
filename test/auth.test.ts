@@ -16,8 +16,7 @@ test("router test login access", async function () {
     {}
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter({
     authDelegate: () => new Auth(),
   });
@@ -38,8 +37,7 @@ test("router test login not access", async function () {
     },
     {}
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter({
     authDelegate: () => new Auth(),
   });
@@ -60,8 +58,7 @@ test("router test admin access", async function () {
     },
     {}
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter({
     authDelegate: () => new Auth(),
   });
@@ -82,8 +79,7 @@ test("router test admin not access", async function () {
     },
     {}
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter({
     authDelegate: () => new Auth(),
   });

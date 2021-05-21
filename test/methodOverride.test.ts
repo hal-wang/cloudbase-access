@@ -33,8 +33,7 @@ test(`method override request`, async function () {
     },
   };
   const startup = new Startup(event, {});
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter();
 
   await startup.invoke();

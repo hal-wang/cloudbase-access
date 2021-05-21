@@ -7,8 +7,7 @@ test(`action name error`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter();
   await startup.invoke();
   const result = await startup.invoke();

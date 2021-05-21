@@ -12,8 +12,7 @@ test("middleware additives", async function () {
   startup.use(() => new Mdw2());
   startup.use(() => new Mdw3());
   startup.use(() => new Mdw4());
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter();
 
   const result = await startup.invoke();
