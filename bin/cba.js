@@ -54,7 +54,9 @@ if (fs.existsSync(path.join(process.cwd(), "tsconfig.json"))) {
 }
 
 const MapCreater = require("../dist/Map/MapCreater").default;
-const mapCreater = new MapCreater(path.join(outDir, config.router.controllers));
+const mapCreater = new MapCreater(
+  path.join(outDir, config.router.dir || "controllers")
+);
 if (config.map && config.map.target) {
   mapCreater.write(path.join(outDir, config.map.target));
 } else {

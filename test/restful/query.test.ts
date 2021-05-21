@@ -7,7 +7,9 @@ test(`restful query test1`, async function () {
     httpMethod: HttpMethod.get,
   };
   const startup = new Startup(event, {});
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
@@ -21,7 +23,9 @@ test(`restful query test2`, async function () {
     httpMethod: HttpMethod.get,
   };
   const startup = new Startup(event, {});
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);

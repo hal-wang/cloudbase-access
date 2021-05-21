@@ -15,8 +15,8 @@ export default class MapParser {
 
   constructor(
     private readonly req: Request,
-    private readonly cFolder: string,
-    public readonly isMethodNecessary: boolean
+    private readonly dir: string,
+    public readonly strict: boolean
   ) {
     const map = this.getMap();
     this.realPath = this.getRestfulMapPath(map);
@@ -25,7 +25,7 @@ export default class MapParser {
   }
 
   public get action(): Action {
-    const filePath = path.join(this.cfPath, this.realPath);
+    const filePath = path.join(this.dirPath, this.realPath);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const actionClass = require(filePath).default;
     const action = new actionClass() as Action;
@@ -54,7 +54,7 @@ export default class MapParser {
   private getRestfulMapPath(map: string[]): string {
     let mapPath;
 
-    if (!this.isMethodNecessary) {
+    if (!this.strict) {
       const matchedPaths = linq
         .from(map)
         .where((item) => this.isSimplePathMatched(item))
@@ -178,8 +178,8 @@ export default class MapParser {
     return mostLikePathParts.path;
   }
 
-  private get cfPath(): string {
-    return path.join(process.cwd(), this.cFolder);
+  private get dirPath(): string {
+    return path.join(process.cwd(), this.dir);
   }
 
   private getMap(): string[] {
@@ -188,7 +188,7 @@ export default class MapParser {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       return require(mapPath);
     } else {
-      return new MapCreater(this.cFolder).map;
+      return new MapCreater(this.dir).map;
     }
   }
 

@@ -2,8 +2,8 @@ import { existsSync } from "fs";
 import * as path from "path";
 
 interface RouterConfig {
-  controllerFolder?: string;
-  isMethodNecessary?: boolean;
+  dir?: string;
+  strict?: boolean;
 }
 
 interface AppConfig {

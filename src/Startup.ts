@@ -20,6 +20,8 @@ export default class Startup {
     return this.ctx.res.result;
   }
 
+  private unitTest?: { dir?: string; strict?: boolean };
+
   constructor(
     event: Record<string, unknown>,
     context: Record<string, unknown>
@@ -52,48 +54,35 @@ export default class Startup {
   }
 
   /**
-   * isMethodNecessary
+   * strict
    *
    * if not, the path end with the httpMethod word will be matched.
    * for example, the post request with path 'user/get' match 'user.ts'.
    *
    * if true, the action in definition must appoint method.
    */
-  public useRouter(use?: {
-    forceControllerFolder?: string;
-    forceIsMethodNecessary?: boolean;
-    authDelegate?: () => Authority;
-  }): void {
-    if (!use) {
-      use = {};
-    }
-
-    const { controllerFolder, isMethodNecessary } = this.getConfig(
-      use.forceControllerFolder,
-      use.forceIsMethodNecessary
-    );
-
-    if (use.authDelegate) {
-      const authDelegate = use.authDelegate;
+  public useRouter(config?: { authDelegate?: () => Authority }): void {
+    if (config && config.authDelegate) {
+      const authDelegate = config.authDelegate;
       this.use(() => {
         const auth = authDelegate();
-        const action = this.getAction(controllerFolder, isMethodNecessary);
+        const action = this.getAction();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (auth.roles as any) = action.roles;
         return auth;
       });
     }
     this.use(() => {
-      return this.getAction(controllerFolder, isMethodNecessary);
+      return this.getAction();
     });
   }
 
-  getAction(controllerFolder: string, isMethodNecessary: boolean): Action {
+  getAction(): Action {
     if (!this.ctx.action) {
       const mapParser = new MapParser(
         this.ctx.req,
-        controllerFolder,
-        isMethodNecessary
+        this.routerDir,
+        this.strict
       );
       this.ctx.action = mapParser.action;
     }
@@ -122,58 +111,29 @@ export default class Startup {
     return this.result;
   }
 
-  getConfig(
-    forceControllerFolder?: string,
-    forceIsMethodNecessary?: boolean
-  ): { controllerFolder: string; isMethodNecessary: boolean } {
-    const defaultControllers = "controllers";
-    const defaultIsMethodNecessary = false;
-
-    let controllerFolder: string | undefined = undefined;
-    let isMethodNecessary: boolean | undefined = undefined;
-    if (
-      // 如果都传值，不用读取 config
-      forceControllerFolder != undefined &&
-      forceIsMethodNecessary != undefined
-    ) {
-      controllerFolder = forceControllerFolder;
-      isMethodNecessary = forceIsMethodNecessary;
-    } else {
-      if (forceControllerFolder != undefined) {
-        controllerFolder = forceControllerFolder;
-      }
-      if (forceIsMethodNecessary != undefined) {
-        isMethodNecessary = forceIsMethodNecessary;
-      }
-
-      const config = Config.instance;
-      if (!config || !config.router) {
-        if (controllerFolder == undefined) {
-          controllerFolder = defaultControllers;
-        }
-        if (isMethodNecessary == undefined) {
-          isMethodNecessary = defaultIsMethodNecessary;
-        }
-      } else {
-        if (controllerFolder == undefined) {
-          if (config.router.controllerFolder == undefined) {
-            controllerFolder = defaultControllers;
-          } else {
-            controllerFolder = config.router.controllerFolder;
-          }
-        }
-        if (isMethodNecessary == undefined) {
-          if (config.router.isMethodNecessary == undefined) {
-            isMethodNecessary = defaultIsMethodNecessary;
-          } else {
-            isMethodNecessary = config.router.isMethodNecessary;
-          }
-        }
-      }
+  get routerDir(): string {
+    if (this.unitTest && this.unitTest.dir) {
+      return this.unitTest.dir;
     }
-    return {
-      controllerFolder: controllerFolder || defaultControllers,
-      isMethodNecessary: isMethodNecessary || defaultIsMethodNecessary,
-    };
+
+    const config = Config.instance;
+    if (config && config.router && config.router.dir) {
+      return config.router.dir;
+    }
+
+    return "controllers";
+  }
+
+  get strict(): boolean {
+    if (this.unitTest && this.unitTest.strict != undefined) {
+      return this.unitTest.strict;
+    }
+
+    const config = Config.instance;
+    if (config && config.router && config.router.strict != undefined) {
+      return config.router.strict;
+    }
+
+    return false;
   }
 }

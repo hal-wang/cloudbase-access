@@ -42,29 +42,60 @@ npm i @hal-wang/cloudbase-access
 
 `Startup` 是 `cba` 的控制中心，构造函数传入环境 `event` 和 `context`。
 
-如在 `main` 函数中：
+如在入口文件中编写：
 
-```ts
-import { Startup } from "@hal-wang/cloudbase-access";
-export const main = async (
-  event: Record<string, unknown>,
-  context: Record<string, unknown>
-): Promise<unknown> => {
+```js
+const { Startup } = require("@hal-wang/cloudbase-access");
+exports.main = async (event, context) => {
   const startup = new Startup(event, context);
-  startup.useRouter();
+  startup.use((ctx) => {
+    ctx.res.body = "hello world";
+  });
   return await startup.invoke();
 };
 ```
 
 以上几行代码即创建一个简单的 API
 
+## 配置文件
+
+配置文件是可选的，在项目目录下定义的 `cba.config.json` 文件，一个常规配置文件如下：
+
+```JSON
+{
+  "router": { // 路由相关
+    "dir": "controllers", // 控制器文件夹目录
+    "strict": false // 是否严格控制 httpMethod
+  },
+  "ts": { // ts编写代码的配置
+    "static": [ // 静态文件/文件夹。由于ts的生成目录一般在其他位置，如果有生产环境需要的非 .ts 文件，需要在此声明
+      {
+        "source": "imgs", // 原文件/文件夹相对路径
+        "target": "assets/imgs" // 目标文件/文件夹相对路径
+      }
+    ]
+  },
+  "doc": { // 使用 cba-map 命令生成文档时必须
+    "target": "../docs/api/README.md", // md文档生成位置
+    "configPath": "docConfigs/base.json" // 配置文件
+  }
+}
+
+```
+
 ## 路由（useRouter）
 
 在前面示例代码中， `startup.useRouter` 是使用路由中间件，调用该函数能够使 `cba` 支持路由功能
 
+`useRouter` 接收一个可选配置参数，该参数包含一个可选字段
+
+- authDelegate: 访问权限，传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
+
 ### 控制器文件夹
 
-`useRouter` 第一个参数是控制器（controllers）文件夹，`cba` 能够将路由文件夹下的所有 `Action` 映射为 `http` 访问路径
+在项目目录下的
+
+`useRouter` 参数是控制器（controllers）文件夹，`cba` 能够将路由文件夹下的所有 `Action` 映射为 `http` 访问路径
 
 该参数默认传参 `controllers` ，即如果不传该参数，则 `controllers` 需要在根目录下定义
 
@@ -94,13 +125,13 @@ export const main = async (
 }
 ```
 
-### isMethodNecessary
+### strict
 
-`useRouter` 第三个参数传入 `isMethodNecessary`
+`useRouter` 第三个参数传入 `strict`
 
-如果设置 `router.isMethodNecessary = true;`, 则所有 `Action` 必须严格使用 `httpMethod` 命名，与 RESTFul 规范相符。否则会找不到路由并返回 `404`。
+如果设置 `router.strict = true;`, 则所有 `Action` 必须严格使用 `httpMethod` 命名，与 RESTFul 规范相符。否则会找不到路由并返回 `404`。
 
-如果 `isMethodNecessary` 为 `false` 或不设置，则 RESTFul 规范的 API 可能会以非 RESTFul 方式调用。如路由 `user/login`，本应是 `get user/login`，但 `post user/login/get` 也能调用。因此如果使用 RESTFul，建议设置 `isMethodNecessary` 为 `true`。
+如果 `strict` 为 `false` 或不设置，则 RESTFul 规范的 API 可能会以非 RESTFul 方式调用。如路由 `user/login`，本应是 `get user/login`，但 `post user/login/get` 也能调用。因此如果使用 RESTFul，建议设置 `strict` 为 `true`。
 
 #### 例 1
 
@@ -165,7 +196,7 @@ export const main = async (
 
 cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合规范，易读性也更好。
 
-因此建议设置 `isMethodNecessary` 为 true 。
+因此建议设置 `strict` 为 true 。
 
 ## 中间件
 

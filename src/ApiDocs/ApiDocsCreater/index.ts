@@ -9,13 +9,13 @@ import ApiDocsMdPart from "./ApiDocsMdPart";
 
 export default class ApiDocsCreater {
   constructor(
-    private readonly cFolder: string,
+    private readonly dir: string,
     private readonly docsConfig?: ApiDocsConfig | string
   ) {
     if (
-      !this.cFolder ||
-      !existsSync(this.cfPath) ||
-      !lstatSync(this.cfPath).isDirectory()
+      !this.dir ||
+      !existsSync(this.dirPath) ||
+      !lstatSync(this.dirPath).isDirectory()
     ) {
       throw new Error(
         "please input controllers folder path, for example 'src/controllers'"
@@ -55,21 +55,21 @@ export default class ApiDocsCreater {
     writeFileSync(path.join(process.cwd(), targetFile), this.docs);
   }
 
-  private get cfPath(): string {
-    return path.join(process.cwd(), this.cFolder);
+  private get dirPath(): string {
+    return path.join(process.cwd(), this.dir);
   }
 
   private readFilesFromFolder(folderRPath: string): string {
     let result = "";
     const storageItems = linq
-      .from(readdirSync(path.join(this.cfPath, folderRPath)))
+      .from(readdirSync(path.join(this.dirPath, folderRPath)))
       .select((item) => path.join(folderRPath, item))
       .toArray();
 
     const files = linq
       .from(storageItems)
       .where((storageItem) => {
-        const stat = lstatSync(path.join(this.cfPath, storageItem));
+        const stat = lstatSync(path.join(this.dirPath, storageItem));
         return (
           stat.isFile() &&
           (storageItem.endsWith(".js") || storageItem.endsWith(".ts"))
@@ -88,7 +88,7 @@ export default class ApiDocsCreater {
     const folders = linq
       .from(storageItems)
       .where((storageItem) => {
-        const stat = lstatSync(path.join(this.cfPath, storageItem));
+        const stat = lstatSync(path.join(this.dirPath, storageItem));
         return stat.isDirectory();
       })
       .orderBy((item) => item)
@@ -101,7 +101,7 @@ export default class ApiDocsCreater {
   }
 
   private readFile(rPath: string): string {
-    const file = path.join(this.cfPath, rPath);
+    const file = path.join(this.dirPath, rPath);
     let action;
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires

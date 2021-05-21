@@ -7,7 +7,9 @@ test("startup test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -20,7 +22,9 @@ test("startup not exist", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(404);
@@ -33,7 +37,9 @@ test("shallow startup test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -46,13 +52,15 @@ test("deep startup test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
 });
 
-test("isMethodNecessary test", async function () {
+test("strict test", async function () {
   let event = {
     body: {},
     path: "/simple/Router",
@@ -60,18 +68,16 @@ test("isMethodNecessary test", async function () {
   };
 
   let startup = new Startup(event, {});
-  startup.useRouter({
-    forceControllerFolder: "test/controllers",
-    forceIsMethodNecessary: false,
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers", strict: false };
+  startup.useRouter();
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
-  startup.useRouter({
-    forceControllerFolder: "test/controllers",
-    forceIsMethodNecessary: true,
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers", strict: true };
+  startup.useRouter();
   await startup.invoke();
   expect(startup.result.statusCode).toBe(404);
 
@@ -82,18 +88,16 @@ test("isMethodNecessary test", async function () {
   };
 
   startup = new Startup(event, {});
-  startup.useRouter({
-    forceControllerFolder: "test/controllers",
-    forceIsMethodNecessary: false,
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers", strict: false };
+  startup.useRouter();
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
 
   startup = new Startup(event, {});
-  startup.useRouter({
-    forceControllerFolder: "test/controllers",
-    forceIsMethodNecessary: true,
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers", strict: true };
+  startup.useRouter();
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
 });
@@ -104,7 +108,9 @@ test("null body test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);

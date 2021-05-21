@@ -8,7 +8,9 @@ test("request method lower case", async function () {
     },
     {}
   );
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -22,7 +24,9 @@ test("request method upper case", async function () {
     },
     {}
   );
-  startup.useRouter({ forceControllerFolder: "test/controllers" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (startup as any).unitTest = { dir: "test/controllers" };
+  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);

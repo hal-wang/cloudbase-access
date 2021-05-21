@@ -1,7 +1,7 @@
 {
   "router": {
-    "controllers": "controllers",
-    "isMethodNecessary": false
+    "dir": "controllers",
+    "strict": false
   },
   "ts": {
     "static": [

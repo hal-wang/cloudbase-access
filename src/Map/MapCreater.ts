@@ -3,11 +3,11 @@ import linq = require("linq");
 import path = require("path");
 
 export default class MapCreater {
-  constructor(private readonly cFolder: string) {
+  constructor(private readonly dir: string) {
     if (
-      !this.cFolder ||
-      !existsSync(this.cfPath) ||
-      !lstatSync(this.cfPath).isDirectory()
+      !this.dir ||
+      !existsSync(this.dirPath) ||
+      !lstatSync(this.dirPath).isDirectory()
     ) {
       throw new Error(
         "please input controllers folder path, for example 'src/controllers'"
@@ -23,19 +23,19 @@ export default class MapCreater {
     writeFileSync(path.join(process.cwd(), filePath), JSON.stringify(this.map));
   }
 
-  private get cfPath(): string {
-    return path.join(process.cwd(), this.cFolder);
+  private get dirPath(): string {
+    return path.join(process.cwd(), this.dir);
   }
 
   private readFilesFromFolder(folderRePath: string, result: Array<string>) {
     const storageItems = linq
-      .from(readdirSync(path.join(this.cfPath, folderRePath)))
+      .from(readdirSync(path.join(this.dirPath, folderRePath)))
       .select((item) => path.join(folderRePath, item));
 
     const files = linq
       .from(storageItems)
       .where((storageItem) => {
-        const stat = lstatSync(path.join(this.cfPath, storageItem));
+        const stat = lstatSync(path.join(this.dirPath, storageItem));
         return (
           stat.isFile() &&
           (storageItem.endsWith(".js") || storageItem.endsWith(".ts"))
@@ -50,7 +50,7 @@ export default class MapCreater {
     const folders = linq
       .from(storageItems)
       .where((storageItem) => {
-        const stat = lstatSync(path.join(this.cfPath, storageItem));
+        const stat = lstatSync(path.join(this.dirPath, storageItem));
         return stat.isDirectory();
       })
       .orderBy((item) => item)
