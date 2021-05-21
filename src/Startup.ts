@@ -51,19 +51,11 @@ export default class Startup {
     });
   }
 
-  /**
-   * strict
-   *
-   * if not, the path end with the httpMethod word will be matched.
-   * for example, the post request with path 'user/get' match 'user.ts'.
-   *
-   * if true, the action in definition must appoint method.
-   */
-  public useRouter(config?: { authDelegate?: () => Authority }): void {
-    if (config && config.authDelegate) {
-      const authDelegate = config.authDelegate;
+  public useRouter(config?: { authFunc?: () => Authority }): void {
+    if (config && config.authFunc) {
+      const authFunc = config.authFunc;
       this.use(() => {
-        const auth = authDelegate();
+        const auth = authFunc();
         const action = this.getAction();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (auth.roles as any) = action.roles;
@@ -122,6 +114,14 @@ export default class Startup {
     return "controllers";
   }
 
+  /**
+   * strict
+   *
+   * if not, the path end with the httpMethod word will be matched.
+   * for example, the post request with path 'user/get' match 'user.ts'.
+   *
+   * if true, the action in definition must appoint method.
+   */
   get strict(): boolean {
     if (this.unitTest && this.unitTest.strict != undefined) {
       return this.unitTest.strict;

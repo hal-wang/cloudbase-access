@@ -5,4 +5,4 @@ yarn.lock
 
 cba-map.json
 test.*
-bin/*
+bin

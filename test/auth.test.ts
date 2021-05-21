@@ -18,7 +18,7 @@ test("router test login access", async function () {
 
   startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter({
-    authDelegate: () => new Auth(),
+    authFunc: () => new Auth(),
   });
 
   await startup.invoke();
@@ -39,7 +39,7 @@ test("router test login not access", async function () {
   );
   startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter({
-    authDelegate: () => new Auth(),
+    authFunc: () => new Auth(),
   });
 
   await startup.invoke();
@@ -60,7 +60,7 @@ test("router test admin access", async function () {
   );
   startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter({
-    authDelegate: () => new Auth(),
+    authFunc: () => new Auth(),
   });
 
   await startup.invoke();
@@ -81,7 +81,7 @@ test("router test admin not access", async function () {
   );
   startup.ctx.setBag("unitTest", { dir: "test/controllers" });
   startup.useRouter({
-    authDelegate: () => new Auth(),
+    authFunc: () => new Auth(),
   });
 
   await startup.invoke();
