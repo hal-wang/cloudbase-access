@@ -4,9 +4,7 @@ import { Action, Response, Request } from "../src/index";
 
 class Login extends Action {
   async invoke(): Promise<void> {
-    const { account, password } = <Record<string, unknown>>(
-      this.ctx.req.data
-    );
+    const { account, password } = <Record<string, unknown>>this.ctx.req.data;
 
     if (account != "abc") {
       this.notFound("用户不存在");

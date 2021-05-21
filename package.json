@@ -26,7 +26,7 @@
     "deploy": "sh build.sh && npm publish --access=public",
     "deploy:beta": "sh build.sh && npm publish --tag=beta --access=public",
     "test": "npm run build && jest",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src test --ext .ts"
   },
   "jest": {
     "testEnvironment": "node"
