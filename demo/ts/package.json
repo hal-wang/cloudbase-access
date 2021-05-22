@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "build": "cba-build"
+  },
+  "devDependencies": {
+    "@hal-wang/cloudbase-access": "../.."
+  }
+}
