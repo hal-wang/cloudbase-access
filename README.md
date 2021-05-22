@@ -42,13 +42,13 @@ npm i @hal-wang/cloudbase-access
 
 `Startup` 是 `cba` 的控制中心，构造函数传入环境 `event` 和 `context`。
 
-如在入口文件中编写：
+如在入口文件中编写（JS）：
 
 ```js
 const { Startup } = require("@hal-wang/cloudbase-access");
 exports.main = async (event, context) => {
   const startup = new Startup(event, context);
-  startup.use((ctx) => {
+  startup.use(async (ctx) => {
     ctx.res.body = "hello world";
   });
   return await startup.invoke();
@@ -57,53 +57,107 @@ exports.main = async (event, context) => {
 
 以上几行代码即创建一个简单的 API
 
-## 配置文件
+## 构建
 
-配置文件是可选的，在项目目录下定义的 `cba.config.json` 文件，一个常规配置文件如下：
+在 package.json 文件的 scripts 节点下添加
+
+```JSON
+"build": "cba-build"
+```
 
 ```JSON
 {
-  "router": { // 路由相关
-    "dir": "controllers", // 控制器文件夹目录
+  "scripts": {
+    "build": "cba-build"
+  },
+  "dependencies": {
+    "@hal-wang/cloudbase-access": "^2.0.1"
+  }
+}
+```
+
+构建时运行
+
+```
+npm run build
+```
+
+## 配置文件
+
+在项目目录下定义 `cba.config.json` 文件，一个常规配置文件如下：
+
+```JSON
+{
+  "router": {  // 路由相关
+    "dir": "controllers", // 路由文件夹目录
     "strict": false // 是否严格控制 httpMethod
   },
   "ts": { // ts编写代码的配置
     "static": [ // 静态文件/文件夹。由于ts的生成目录一般在其他位置，如果有生产环境需要的非 .ts 文件，需要在此声明
       {
-        "source": "imgs", // 原文件/文件夹相对路径
-        "target": "assets/imgs" // 目标文件/文件夹相对路径
+        "source": "static", // 原文件/文件夹相对路径
+        "target": "assets" // 目标文件/文件夹相对路径
+      },
+      {
+        "source": "static.txt",
+        "target": "read.txt"
       }
     ]
   },
-  "doc": { // 使用 cba-map 命令生成文档时必须
-    "target": "../docs/api/README.md", // md文档生成位置
-    "configPath": "docConfigs/base.json" // 配置文件
+  "doc": { // 使用 cba-map 命令生成文档时必须，详情参考后面的 “自动化文档”
+    "output": "../docs/api/README.md",
+    "title": "cba-title",
+    "subtitle": "cba-subtitle",
+    "parts": [
+      {
+        "inputHeaders": [
+          {
+            "name": "base-input-header",
+            "desc": "this is a base input header",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "outputHeaders": [
+          {
+            "name": "base-output-header",
+            "desc": "this is a base output header",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "custom",
+        "query": [
+          {
+            "name": "base-query",
+            "desc": "this is a base query",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "partsFromAuth": true
   }
 }
-
 ```
 
 ## 路由（useRouter）
 
-在前面示例代码中， `startup.useRouter` 是使用路由中间件，调用该函数能够使 `cba` 支持路由功能
+调用 `startup.useRouter` 函数即可开启路由中间件，开启后能够支持路由功能，常规项目都需要使用。
 
-`useRouter` 接收一个可选配置参数，该参数包含一个可选字段
+`useRouter` 接收一个可选配置参数 `config` ，该参数包含一个可选字段
 
-- authDelegate: 访问权限，传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
+- authFunc: 函数类型，函数返回值为权限认证对象，详情后面 [权限](#权限) 部分有介绍。
 
-### 控制器文件夹
+### 路由文件夹
 
-在项目目录下的
+配置文件的 `router.dir` 值是路由文件夹路径，`cba` 能够将路由文件夹下的所有 `Action` 映射为 `http` 访问路径
 
-`useRouter` 参数是控制器（controllers）文件夹，`cba` 能够将路由文件夹下的所有 `Action` 映射为 `http` 访问路径
+如果配置文件没有该值，默认为 `controllers`，并且在根目录下（ts 则是目标目录下）需要定义此文件夹
 
-该参数默认传参 `controllers` ，即如果不传该参数，则 `controllers` 需要在根目录下定义
-
-所有 `controllers` 统一放在这个文件夹中，在 `controllers` 目录中，建立各 `controller` 文件夹，再在 `controller` 文件夹中建 `action` 文件。详情后面 [##Action](##Action) 部分有介绍。
-
-### 访问权限
-
-`Startup` 第二个参数（可选）传入权限认证对象，详情后面 [权限](#权限) 部分有介绍。
+所有 API Action 统一放在这个文件夹中，在 `controllers` 目录中，建立各文件或文件夹。文件是 API 的最小执行单元 Action，详情后面 [##Action](##Action) 部分有介绍。
 
 ### 路由匹配
 
@@ -111,7 +165,7 @@ exports.main = async (event, context) => {
 
 路由查询参数命名以 `^` 开头（文件系统中命名不允许出现字符 `:`），如果存在多个查询参数则后面的会覆盖前面的，如 `get user/^id/todo/^id`，则 `id` 值为 `todoId`。正确命名应如 `user/^userId/todo/^todoId`。
 
-如果限制 `httpMethod`, `action` 应以 `post.ts`、`get.ts`、`delete.ts`、`patch.ts`、`put.ts` （或 `.js` ）命名，否则任意 `httpMethod` 都可以访问。
+如果限制 `httpMethod`, `action` 应以 `post.ts`、`get.ts`、`delete.ts`、`patch.ts`、`put.ts` （或其他自定义 method，扩展名为.js 效果相同 ）命名，否则任意 `httpMethod` 都可以访问。
 
 #### X-HTTP-Method-Override
 
@@ -127,11 +181,11 @@ exports.main = async (event, context) => {
 
 ### strict
 
-`useRouter` 第三个参数传入 `strict`
+配置文件的 `router.strict` 值决定是否开启严格模式
 
-如果设置 `router.strict = true;`, 则所有 `Action` 必须严格使用 `httpMethod` 命名，与 RESTFul 规范相符。否则会找不到路由并返回 `404`。
+如果设置 `router.strict: true`, 则所有 `Action` 必须严格使用 `httpMethod` 命名，与 RESTFul 规范相符。否则会找不到路由并返回 `404`。
 
-如果 `strict` 为 `false` 或不设置，则 RESTFul 规范的 API 可能会以非 RESTFul 方式调用。如路由 `user/login`，本应是 `get user/login`，但 `post user/login/get` 也能调用。因此如果使用 RESTFul，建议设置 `strict` 为 `true`。
+如果 `strict` 为 `false` 或不设置，则 RESTFul 规范的 API 可能会以非 RESTFul 方式调用。如路由 `user/login`，本应是 `get user/login`，但 `post user/login/get` 也能调用。因此如果使用 RESTFul 或限制 method，建议设置 `strict` 为 `true`。
 
 #### 例 1
 
@@ -202,7 +256,7 @@ cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合�
 
 中间件是 `cba` 最重要的部分之一，如记录日志，验证权限
 
-中间件包括
+以下内容都继承自中间件：
 
 1. API 执行最小单元 `Action`
 2. 权限认证 `Authority`
@@ -220,29 +274,49 @@ cloudbase 云函数没有限制 httpMethod，但建议使用方式 1 更符合�
  中间件1   中间件2 ... 中间件n
     _       _           _
 ->-|-|-----|-|---------|-|-->   没有执行 next
-   | |     | |         | |   ↓
+   | |     | |         | |   ↓  或是最后一个
 -<-|-|-----|-|---------|-|--<   反向递归
     -       -           -
 ```
 
 ### 注册中间件
 
-你需要使用 `startup.use` 注册中间件，传参是一个创建中间件的回调函数，如
+你需要使用 `startup.use` 注册中间件，传参是一个创建中间件的回调函数，如（JS）
 
-```ts
-import { Startup } from "@hal-wang/cloudbase-access";
-export const main = async (
-  event: Record<string, unknown>,
-  context: Record<string, unknown>
-): Promise<unknown> => {
+```js
+const { Startup } = require("@hal-wang/cloudbase-access");
+exports.main = async (event, context) => {
   const startup = new Startup(event, context);
-  startup.use(() => new YourMiddleware());
-  startup.invoke();
-  return startup.result;
+  startup.use(async (ctx) => {
+    // 简单中间件
+    ctx.res.body = "hello world";
+  });
+  startup.use(() => new YourMiddleware()); // 类中间件
+  return await startup.invoke();
 };
 ```
 
-### useRouter
+#### 简单中间件
+
+简单中间件不需要单独写一个中间件类，但其底层仍然会被转化为普通中间件来执行
+
+```TS
+startup.use(async (ctx) => {
+  ctx.res.body = "hello world";
+});
+```
+
+或
+
+```TS
+startup.use(async (ctx,next) => {
+  ctx.res.body = "hello world";
+  await next();
+  ctx.res.headers.h = "h";
+});
+```
+
+## 路由（`startup.useRouter()`）
 
 `startup.useRouter` 是一个特殊的注册中间件的方式，调用该方法能够使 `cba` 支持路由功能
 
@@ -257,13 +331,13 @@ export const main = async (
 
 该对象包含以下属性：
 
-- res: 返回结果
-- req: 请求内容
-- action: Action，只有执行了 Authority 或 Action 的中间件，此值才会有内容，因此可以在中间件中的 `await next()` 后使用
+- res: `Response` 对象，API 返回结果
+- req: `Request` 对象，API 请求内容
+- action: `Action` 对象，只有执行了 `Authority` 或 `Action` 的中间件后，此值才会有内容，因此可以在任意中间件中的 `await next()` 之后使用（如果没有执行 `Authority` 或 `Action` 中间件，`action` 值仍然为 `undefined`）
 
 ### Response
 
-管道的返回内容，可以调用 `res.result` 来获取最终 HTTP 返回结构 `ResponseStruct`
+管道的返回内容，可以调用 `ctx.res.result` 来获取最终 HTTP 返回结构 `ResponseStruct`
 
 在每个中间件中都可以修改 `this.ctx.res` 内容
 
@@ -275,13 +349,21 @@ export const main = async (
 
 `req` 对象包含以下字段
 
+- event
+- context
+- path
+- headers
+- params
+- data
+- query
+
 #### event
 
-云函数环境 event
+云函数环境 `event`
 
 #### context
 
-云函数环境 context
+云函数环境 `context`
 
 #### path
 
@@ -311,18 +393,17 @@ query.id == "66"; // true;
 
 ## Action
 
-正常情况 Action 会终止管道继续向后执行
+`Action` 也是中间件，该类继承于中间件类 `Middleware`， 正常情况 Action 会终止管道继续向后执行
 
-每次调用 API，如果顺利进行，主要执行的是 `Action` 中的 `invoke` 函数。
+每次调用 API，如果顺利进行，主要执行的是自定义 `Action` 对象中的 `invoke` 函数。
 
-所有 `Action` 都应派生自 `Action` 类，并重写 `invoke` 函数。
+所有自定义 `Action` 都应派生自 `Action` 类，并重写 `invoke` 函数。
 
 ### 创建一个 Action
 
-1. 在云函数根目录（即与 `index.ts` 同级）创建名为 `controllers` 文件夹。也可以为其他，需要在 userRouter 函数第一个参数可以指定，默认为 `controllers`
-1. 根据各业务，创建不同 `controller` 文件夹，名称自定，但名称与路由名称对应
-1. 在 controller 文件夹中，创建 `.ts` 文件，每个 `.ts` 文件对应一个 `action`
-1. 在 `.ts` 文件中创建类，并继承 `Action`，重写 `invoke` 函数
+1. 在云函数根目录（即与 `index.ts` 同级）创建名为 `controllers` （也可以为其他路径或名称，但需要在配置文件设置，此处为默认 `controllers`）
+1. 根据各业务，创建 `.ts/.js` 文件或文件夹，名称自定，但名称和路径会映射为访问路径，每个文件对应一个 `action`
+1. 在 `.ts/.js` 文件中创建继承 `Action` 的类，并重写 `invoke` 函数
 
 ```
 +-- controllers
@@ -333,6 +414,9 @@ query.id == "66"; // true;
 |   +-- type2
 |       +-- action3.ts
 |       +-- action4.ts
+|       +-- ^id
+|           +-- action5.ts
+|           +-- ...
 ```
 
 ### Action 文件内容
@@ -425,7 +509,7 @@ export default class extends Action {
       this.notFound('账号或密码错误')
     }
     else {
-      this.ok(new {/*返回信息*/})
+      this.ok({/*返回信息*/})
     }
   }
 }
@@ -436,28 +520,33 @@ API 返回错误时，可统一返回 `ErrorMessage`，命名以 `Msg` 结尾的
 
 ## 权限
 
-`startup.useRouter()` 第二个参数是权限验证 `Authority` 对象。
+默认的权限功能是用于判断用户能否使用 API，可以精确到控制每个 `Action`
 
-你需要新写个类，继承 `Authority`，并实现 `invoke` 函数。
+`startup.useRouter()` 参数接收一个 `authFunc` 字段，值为创建 `Authority` 派生类对象的回调
 
-`Authority` 也是个中间件，只是加载方式较特殊。当然你也可以自己写个权限管理中间件，效果可以与 `Authority` 相同。
+`Authority` 类继承于中间件类 `Middleware`，因此该类对象也是中间件，但加载方式比较特殊
 
-权限是用于判断用户能否使用 API，可以精确到控制每个 `Action` 。下例使用请求头部的账号信息验证调用者信息，用法如下：
+因此你需要新写个类，继承 `Authority`，并实现 `invoke` 函数
 
-```ts
+当然你也可以自己写个权限管理中间件，效果可以与 `Authority` 相同，但可能无法在 `Action` 执行前访问 `Action` 中的 `roles` 字段
+
+下例使用请求头部的账号信息验证调用者信息，用法如下：
+
+```TS
+// Authority 类，用于权限验证
 class Auth extends Authority {
-  async invoke(): Promise<MiddlewareResult> {
+  async invoke(): Promise<void> {
     if (!this.roles || !this.roles.length) {
-      return MiddlewareResult.getSuccessResult();
+      await this.next(); // 无需验证，执行下一个中间件
+      return;
     }
 
     if (this.roles.includes("login") && !this.loginAuth()) {
-      return MiddlewareResult.getFailedResult(
-        Response.forbidden("账号或密码错误")
-      );
+      this.forbidden("账号或密码错误"); // 终止中间件的执行
+      return;
     }
 
-    return MiddlewareResult.getSuccessResult();
+    await this.next(); // 验证通过，执行下一个中间件
   }
 
   loginAuth() {
@@ -466,84 +555,63 @@ class Auth extends Authority {
     return account == "abc" && password == "123456";
   }
 }
+```
 
+```TS
+// 云函数入口
 export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
 ): Promise<unknown> => {
-  const startup = new Startup(event, context, new Auth());
-  return (await startup.invoke()).result;
+  const startup = new Startup(event, context);
+  startup.useRouter(
+    authFunc: () => new Auth(),
+  );
+  return await startup.invoke();
 };
 ```
 
-```ts
+```TS
+// Action
 import { Action } from "@hal-wang/cloudbase-access";
-
 export default class extends Action {
   constructor() {
     super(["login"]);
   }
 
+  // 只有 login 身份验证通过，才会执行此 invoke 函数
   async invoke(): Promise<void> {
     this.ok();
   }
 }
 ```
 
-## cba-map
-
-`cba-map` 是可选的，它能提升路由匹配速度，其本身为 json 文件，并且要上传至 `cloudbase`云函数根目录。
-
-### 建议使用
-
-如果不使用`cba-map`，路由匹配方式是先遍历 `controllers` 中的各个 `action`，再进行匹配，如果项目较大可能会影响匹配速度。
-
-在 100 个 `action` 的项目中，经测试`cba-map`提升路由匹配速度大概 20 倍左右（有 `cba-map` 耗时 1-2ms，无`cba-map`耗时 30-40ms）。因此在 `action` 数量较多时建议使用 `cba-map`。
-
-### 使用方式
-
-在 package.json 文件中的 scripts 中添加
-
-```json
-  "scripts": {
-    "cba-map": "cba-map dist/controllers",
-  },
-```
-
-`dist/controllers` 应改为你的 js 文件的 `controllers` 目录路径。在 ts 项目中，应该是执行 tsc 生成的 js 目录。
-
-执行 `npm run cba-map` 会以`dist/controllers`目录，在项目目录下生成 `cba-map.json` 文件（建议将其加入 `.gitignore`文件）。
-
-## cba-doc
+## 自动化文档
 
 `cba` 支持自动化文档创建，目前已支持输出 `md` 格式文档。
 
 文档的编写支持两种方式：
 
-1. 给 `Action` 类实例对象的 docs 属性赋值
-2. 按特定格式注释 `Action` 定义文件
+1. 字段赋值：给 `Action` 类实例对象的 `docs` 属性赋值
+2. 注释解析：按特定格式注释 `Action` 定义文件 （建议）
 
 ### 使用方式
+
+使用此功能需要预先配置，后面 [自动化文档配置文件](###自动化文档配置文件) 部分有详细介绍。
 
 在 package.json 文件中的 scripts 中添加
 
 ```json
   "scripts": {
-    "cba-doc": "cba-doc dist/controllers doc.md doc.config.json",
+    "doc": "cba-doc",
   },
 ```
 
-`cba-doc` 命令传入三个参数
-
-1. js 文件的 `controllers` 目录路径。在 ts 项目中，应该是执行 tsc 生成的 js 目录
-2. 目标文件相对路径
-3. 配置文件路径
-
-执行 `npm run cba-doc`
+执行 `npm run doc`
 
 ### `action` 注释
 
-参考如下格式在文件任意处注释：
+参考如下格式在文件任意处注释（建议在 Action 类声明之前）：
 
 ```
 /**
@@ -576,7 +644,7 @@ export default class extends Action {
 
 `@` 的数量可对比 JSON 对象的深度，其中一级和二级是固定的，如 `@action`、`@parts`、`@input`、`@output`、`@@headers`、`@@query`、`@@body`、`@@params`、`@@code`，三级或以上不做限制
 
-只有 `@action` 是必须的，如果没有则不会生成文档。其他都可选
+只有 `@action` 是必须的，如果没有则不会生成文档，其他都是可选的
 
 #### @action
 
@@ -612,7 +680,9 @@ parts 的内容较为复杂，参考 [parts](###parts) 部分
 
 ### `docs` 属性赋值
 
-参考如下内容给`Action`实例对象的 `docs` 属性赋值：
+`docs` 是 `ApiDocs` 对象
+
+参考如下内容给 `Action` 实例对象的 `docs` 属性赋值：
 
 ```TS
     this.docs = {
@@ -683,39 +753,90 @@ parts 的内容较为复杂，参考 [parts](###parts) 部分
 
 因此各属性的介绍与 [action 注释](###action注释) 的方式相同，此处不再赘述。
 
-### 配置文件
+### @auth
 
-前面所说 `cba-doc` 命令的第三个参数为配置文件路径，配置文件格式如下：
+为了简单化，`action` 注释或 `docs` 属性赋值的方式，字段 `parts` 值也可以为一个特殊值 `@auth`，此时这个 `Action` 的 `parts` 字段值将取自 `action.roles` 字段值。
+
+更进一步，如果配置文件中的 `partsFromAuth` 属性值为 `true`，那么所有 `parts` 如果未设置值，都将取自 `action.roles` 属性值。（没有 `@input` 将忽略输入参数，没有 `@output` 将忽略输出参数 ）。
+
+### 自动化文档配置文件
+
+在 `cba.config.json` 配置文件中，doc 字段即为自动化文档的相关配置，配置格式如下：
 
 ```JSON
 {
-  "title": "cba-title",
-  "subtitle": "cba-subtitle",
-  "parts": [
-    "docs/configs/test1.json",
-    "docs/configs/test2.json",
-    "docs/configs/test3.json"
-  ],
-  "partsFromAuth": true
+  "doc": {
+    "output": "../docs/api/README.md",
+    "title": "cba-title",
+    "subtitle": "cba-subtitle",
+    "parts": [
+      {
+        "name": "part1",
+        "inputHeaders": [
+          {
+            "name": "base-input-header",
+            "desc": "this is a base input header",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "part2",
+        "outputHeaders": [
+          {
+            "name": "base-output-header",
+            "desc": "this is a base output header",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "part3",
+        "query": [
+          {
+            "name": "base-query",
+            "desc": "this is a base query",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "partsFromAuth": true
+  }
 }
 ```
 
-1. title: 生成文档的标题
-2. subtitle: 生成文档的简介
-3. parts: 参考 [parts](###parts) 部分
-4. partsFromAuth: 参考 [parts](###parts) 部分
+1. output
+1. title
+1. subtitle
+1. parts
+1. partsFromAuth
 
-### parts
+#### output
+
+生成目标文件的相对路径
+
+#### title
+
+生成文档的标题
+
+#### subtitle
+
+生成文档的简介
+
+#### parts
 
 有些参数可能会被多个 API 使用，对于一个网站，可能大多数 API 都需要在头部传入`cookie`、`account`等。
 
 利用 `parts` 功能可以重复使用某些参数。
 
-#### 配置
+每个 `part` 为一个`可配置项`
 
-前面配置文件的 `parts` 属性值为字符串数组，内容为重复部分的配置文件路径，每个文件都是一个可配置项。
+##### 配置
 
-每个可配置项格式如下：
+前面配置文件的 `parts` 属性值为`可配置项`数组。
+
+每个`可配置项`格式如下：
 
 ```JSON
 {
@@ -732,24 +853,13 @@ parts 的内容较为复杂，参考 [parts](###parts) 部分
   "params":[],
   "codes":[]
 }
-
 ```
 
-其中 `name` 值为该配置项的标识。如果该值为空或未设置，则会使用该配置项的文件名。
+其中 `name` 值为该配置项的标识，如果设置不正确会找不到该配置项
 
-#### ApiDocs 对象
+##### 注释中的格式
 
-对于 `ApiDocs`，其属性 parts 值为字符串数组，字符串是配置项的标识。
-
-如果 `ApiDocs.parts` 包含某个可配置项，则生成的文档会包含该可配置项的内容。
-
-有时 `parts` 与 `auth` 使用场景可能重复。为了简单化，属性 parts 值也可以为一个特殊值 `@auth`，此时这个 `Action` 的 `parts`属性值将取自 `auth` 属性值。
-
-更进一步，如果配置文件中的 `partsFromAuth` 属性值为 `true`，那么所有 `parts` 如果未设置值，都将取自 `auth` 属性值。（未写自动化文档 `Action `将被忽略，没有 `@input` 将忽略输入参数，没有 `@output` 将忽略输出参数 ）。
-
-#### 注释中的格式
-
-在注释中，格式如：
+在注释中，parts 格式如：
 
 ```
 @parts part1 part2
