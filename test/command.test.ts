@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as shell from "shelljs";
 
 test("cba command", async function () {
-  const sourceConfig = "./cba.config.example.json";
+  const sourceConfig = "./demo/cba.config.json";
   const targetConfig = "./test/command/cba.config.json";
   fs.copyFileSync(sourceConfig, targetConfig);
 
