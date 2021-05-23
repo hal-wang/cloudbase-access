@@ -1,15 +1,22 @@
 import * as fs from "fs";
 import ApiDocsCreater from "../../src/ApiDocs/ApiDocsCreater";
 import { AppConfig } from "../../src/Config";
+import TestConfig from "../TestConfig";
 
 const configPath = "./demo/cba.config.json";
 const config = JSON.parse(fs.readFileSync(configPath, "utf-8")) as AppConfig;
 if (!config || !config.router) {
   throw new Error();
 }
-config.router.dir = "test/controllers";
+config.router.dir = TestConfig.routerDir;
 
 const creater = new ApiDocsCreater(config);
+Object.defineProperty(creater, "routerDir", {
+  get: function () {
+    return TestConfig.routerDir;
+  },
+});
+
 test("api docs creater", async function () {
   const docs = creater.docs;
   expect(!!docs).toBe(true);

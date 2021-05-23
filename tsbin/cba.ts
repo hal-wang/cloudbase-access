@@ -6,11 +6,6 @@ import * as shell from "shelljs";
 import { Config } from "../dist";
 import MapCreater from "../dist/Map/MapCreater";
 
-const config = Config.instance;
-if (!config) {
-  throw new Error("the config file is not exist");
-}
-
 let outDir = "/";
 const tsconfigPath = path.join(process.cwd(), "tsconfig.json");
 if (fs.existsSync(tsconfigPath)) {
@@ -35,8 +30,8 @@ if (fs.existsSync(tsconfigPath)) {
   deleteFile(outDir, ".d.ts");
 
   if (existDir) {
-    if (config.ts && config.ts.static) {
-      config.ts.static.forEach(({ source, target }) => {
+    if (Config.default.ts && Config.default.ts.static) {
+      Config.default.ts.static.forEach(({ source, target }) => {
         const sourcePath = path.join(process.cwd(), source);
         const targetPath = path.join(process.cwd(), outDir, target);
         copyFile(sourcePath, targetPath);
@@ -53,9 +48,7 @@ if (fs.existsSync(tsconfigPath)) {
   }
 }
 
-const mapCreater = new MapCreater(
-  path.join(outDir, config.router.dir || "controllers")
-);
+const mapCreater = new MapCreater(Config.getRouterDirPath(Config.default));
 mapCreater.write();
 
 function deleteFile(filePath: string, type?: string) {

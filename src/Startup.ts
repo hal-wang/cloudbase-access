@@ -102,16 +102,11 @@ export default class Startup {
   }
 
   get dir(): string {
-    if (this.unitTest && this.unitTest.dir) {
-      return this.unitTest.dir;
+    if (this.unitTest) {
+      return this.unitTest.dir || Config.defaultRouterDir;
     }
 
-    const config = Config.instance;
-    if (config && config.router && config.router.dir) {
-      return config.router.dir;
-    }
-
-    return "controllers";
+    return Config.getRouterDirPath(Config.default);
   }
 
   /**
@@ -123,11 +118,13 @@ export default class Startup {
    * if true, the action in definition must appoint method.
    */
   get strict(): boolean {
-    if (this.unitTest && this.unitTest.strict != undefined) {
-      return this.unitTest.strict;
+    if (this.unitTest) {
+      return this.unitTest.strict == undefined
+        ? Config.defaultStrict
+        : this.unitTest.strict;
     }
 
-    const config = Config.instance;
+    const config = Config.default;
     if (config && config.router && config.router.strict != undefined) {
       return config.router.strict;
     }

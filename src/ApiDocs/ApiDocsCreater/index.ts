@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync, lstatSync, readdirSync } from "fs";
+import { writeFileSync, lstatSync, readdirSync } from "fs";
 import linq = require("linq");
 import path = require("path");
 import Action from "../../Middleware/Action";
@@ -6,7 +6,7 @@ import ApiDocsConfig from "../ApiDocsConfig";
 import ApiDocsMdActionCreater from "./ApiDocsMdActionCreater";
 import ApiDocsNoteParser from "../ApiDocsNoteParser";
 import ApiDocsMdPart from "./ApiDocsMdPart";
-import { AppConfig } from "../../Config";
+import Config, { AppConfig } from "../../Config";
 
 export default class ApiDocsCreater {
   constructor(private readonly config: AppConfig) {}
@@ -39,28 +39,17 @@ export default class ApiDocsCreater {
     writeFileSync(path.join(process.cwd(), targetFile), this.docs);
   }
 
-  private get dirPath(): string {
-    if (!this.config.router || !this.config.router.dir) {
-      throw new Error("there is no router dir");
-    }
-    const result = path.join(process.cwd(), this.config.router.dir);
-    if (!existsSync(result) || !lstatSync(result).isDirectory()) {
-      throw new Error("the dir is not exist");
-    }
-    return result;
-  }
-
   private readFilesFromFolder(folderRPath: string): string {
     let result = "";
     const storageItems = linq
-      .from(readdirSync(path.join(this.dirPath, folderRPath)))
+      .from(readdirSync(path.join(this.routerDir, folderRPath)))
       .select((item) => path.join(folderRPath, item))
       .toArray();
 
     const files = linq
       .from(storageItems)
       .where((storageItem) => {
-        const stat = lstatSync(path.join(this.dirPath, storageItem));
+        const stat = lstatSync(path.join(this.routerDir, storageItem));
         return (
           stat.isFile() &&
           (storageItem.endsWith(".js") || storageItem.endsWith(".ts"))
@@ -79,7 +68,7 @@ export default class ApiDocsCreater {
     const folders = linq
       .from(storageItems)
       .where((storageItem) => {
-        const stat = lstatSync(path.join(this.dirPath, storageItem));
+        const stat = lstatSync(path.join(this.routerDir, storageItem));
         return stat.isDirectory();
       })
       .orderBy((item) => item)
@@ -91,18 +80,15 @@ export default class ApiDocsCreater {
     return result;
   }
 
+  private get routerDir(): string {
+    return Config.getRouterDirPath(this.config);
+  }
+
   private readFile(rPath: string): string {
-    const file = path.join(this.dirPath, rPath);
-    let action;
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const actionClass = require(file).default;
-      action = new actionClass() as Action;
-      if (!action) return "";
-    } catch (err) {
-      console.log("require err", err.message);
-      return "";
-    }
+    const file = path.join(process.cwd(), this.routerDir, rPath);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const actionClass = require(file).default;
+    const action = new actionClass() as Action;
 
     let docs;
     if (action.docs) {
