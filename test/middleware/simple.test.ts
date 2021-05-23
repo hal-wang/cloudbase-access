@@ -19,8 +19,12 @@ test("simpple middleware", async function () {
       ctx.res.headers.mdw4 = "mdw4";
       await next();
     })
-    .use(async (ctx) => {
+    .use(async (ctx, next) => {
       ctx.res.headers.mdw5 = "mdw5";
+      await next();
+    })
+    .use(async (ctx) => {
+      ctx.res.statusCode = 200;
     });
 
   const result = await startup.invoke();

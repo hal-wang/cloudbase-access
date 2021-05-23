@@ -8,6 +8,8 @@ import Action from "./Middleware/Action";
 import { ResponseStruct } from ".";
 import Config, { RouterConfig } from "./Config";
 import SimpleMiddleware from "./Middleware/SimpleMiddleware";
+import ResponseError from "./Response/ResponseError";
+import StatusCode from "./Response/StatusCode";
 
 export default class Startup {
   private static _current: Startup;
@@ -25,7 +27,10 @@ export default class Startup {
     context: Record<string, unknown>
   ) {
     Startup._current = this;
-    this.ctx = new HttpContext(new Request(event, context), new Response(200));
+    this.ctx = new HttpContext(
+      new Request(event, context),
+      new Response(StatusCode.notFound, <ResponseError>{ message: "Not Found" })
+    );
   }
 
   use(
