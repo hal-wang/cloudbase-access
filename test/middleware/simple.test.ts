@@ -1,28 +1,27 @@
 import { Startup } from "../../src";
 
 test("simpple middleware", async function () {
-  const startup = new Startup({}, {});
-
-  startup.use(async (ctx, next) => {
-    ctx.res.headers.mdw1 = "mdw1";
-    await next();
-  });
-  startup.use(async (ctx, next) => {
-    ctx.res.headers.mdw2 = "mdw2";
-    await next();
-    ctx.res.headers.mdw4 = "mdw4->2";
-  });
-  startup.use(async (ctx, next) => {
-    ctx.res.headers.mdw3 = "mdw3";
-    await next();
-  });
-  startup.use(async (ctx, next) => {
-    ctx.res.headers.mdw4 = "mdw4";
-    await next();
-  });
-  startup.use(async (ctx) => {
-    ctx.res.headers.mdw5 = "mdw5";
-  });
+  const startup = new Startup({}, {})
+    .use(async (ctx, next) => {
+      ctx.res.headers.mdw1 = "mdw1";
+      await next();
+    })
+    .use(async (ctx, next) => {
+      ctx.res.headers.mdw2 = "mdw2";
+      await next();
+      ctx.res.headers.mdw4 = "mdw4->2";
+    })
+    .use(async (ctx, next) => {
+      ctx.res.headers.mdw3 = "mdw3";
+      await next();
+    })
+    .use(async (ctx, next) => {
+      ctx.res.headers.mdw4 = "mdw4";
+      await next();
+    })
+    .use(async (ctx) => {
+      ctx.res.headers.mdw5 = "mdw5";
+    });
 
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);

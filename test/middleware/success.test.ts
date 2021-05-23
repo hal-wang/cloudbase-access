@@ -11,14 +11,13 @@ test("middleware test success", async function () {
     path: "/simple/router",
     httpMethod: "POST",
   };
-  const startup = new Startup(event, {});
-
-  startup.use(() => new Mdw1(stepResult));
-  startup.use(() => new Mdw2(stepResult));
-  startup.use(() => new Mdw3(stepResult));
-  startup.use(() => new Mdw4(stepResult));
+  const startup = new Startup(event, {})
+    .use(() => new Mdw1(stepResult))
+    .use(() => new Mdw2(stepResult))
+    .use(() => new Mdw3(stepResult))
+    .use(() => new Mdw4(stepResult))
+    .useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);

@@ -51,11 +51,11 @@ npm i @hal-wang/cloudbase-access
 ```js
 const { Startup } = require("@hal-wang/cloudbase-access");
 exports.main = async (event, context) => {
-  const startup = new Startup(event, context);
-  startup.use(async (ctx) => {
-    ctx.res.body = "hello world";
-  });
-  return await startup.invoke();
+  return await new Startup(event, context)
+    .use(async (ctx) => {
+      ctx.res.body = "hello world";
+    })
+    .invoke();
 };
 ```
 
@@ -571,8 +571,8 @@ export const main = async (
   event: Record<string, unknown>,
   context: Record<string, unknown>
 ): Promise<unknown> => {
-  const startup = new Startup(event, context);
-  startup.useRouter(
+  const startup = new Startup(event, context)
+  .useRouter(
     authFunc: () => new Auth(),
   );
   return await startup.invoke();

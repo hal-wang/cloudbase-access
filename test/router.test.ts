@@ -7,9 +7,8 @@ test("startup test", async function () {
     path: "/simple/RoUtEr",
     httpMethod: "POST",
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -21,9 +20,8 @@ test("startup not exist", async function () {
     path: "/simple/router1",
     httpMethod: "POST",
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(404);
@@ -35,9 +33,8 @@ test("shallow startup test", async function () {
     path: "/router",
     httpMethod: "POST",
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -49,9 +46,8 @@ test("deep startup test", async function () {
     path: "/simple/deepActions/RoUtEr",
     httpMethod: "POST",
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -64,15 +60,13 @@ test("strict test", async function () {
     httpMethod: "POST",
   };
 
-  let startup = new Startup(event, {});
+  let startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir, strict: false });
-  startup.useRouter();
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
 
-  startup = new Startup(event, {});
+  startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir, strict: true });
-  startup.useRouter();
   await startup.invoke();
   expect(startup.result.statusCode).toBe(404);
 
@@ -82,15 +76,13 @@ test("strict test", async function () {
     httpMethod: "PUT",
   };
 
-  startup = new Startup(event, {});
+  startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir, strict: false });
-  startup.useRouter();
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
 
-  startup = new Startup(event, {});
+  startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir, strict: true });
-  startup.useRouter();
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
 });
@@ -100,9 +92,8 @@ test("null body test", async function () {
     path: "/nullbody",
     httpMethod: "POST",
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);

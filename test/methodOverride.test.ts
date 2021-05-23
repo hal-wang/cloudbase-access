@@ -33,9 +33,8 @@ test(`method override request`, async function () {
       "X-HTTP-Method-Override": "GET",
     },
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);

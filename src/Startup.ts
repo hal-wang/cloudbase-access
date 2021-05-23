@@ -32,7 +32,7 @@ export default class Startup {
     mdf:
       | (() => Middleware)
       | ((ctx: HttpContext, next: () => Promise<void>) => Promise<void>)
-  ): void {
+  ): Startup {
     if (!mdf) throw new Error();
 
     let mdFunc;
@@ -49,9 +49,11 @@ export default class Startup {
     this.ctx.mds.push({
       mdf: mdFunc,
     });
+
+    return this;
   }
 
-  public useRouter(config?: { authFunc?: () => Authority }): void {
+  public useRouter(config?: { authFunc?: () => Authority }): Startup {
     if (config && config.authFunc) {
       const authFunc = config.authFunc;
       this.use(() => {
@@ -65,6 +67,8 @@ export default class Startup {
     this.use(() => {
       return this.getAction();
     });
+
+    return this;
   }
 
   getAction(): Action {
@@ -97,11 +101,11 @@ export default class Startup {
     return this.result;
   }
 
-  get unitTest(): RouterConfig {
+  private get unitTest(): RouterConfig {
     return this.ctx.getBag<RouterConfig>("unitTest");
   }
 
-  get dir(): string {
+  private get dir(): string {
     if (this.unitTest) {
       return this.unitTest.dir || Config.defaultRouterDir;
     }
@@ -117,7 +121,7 @@ export default class Startup {
    *
    * if true, the action in definition must appoint method.
    */
-  get strict(): boolean {
+  private get strict(): boolean {
     if (this.unitTest) {
       return this.unitTest.strict == undefined
         ? Config.defaultStrict

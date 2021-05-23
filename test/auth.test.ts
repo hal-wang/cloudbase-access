@@ -15,12 +15,10 @@ test("router test login access", async function () {
       httpMethod: "POST",
     },
     {}
-  );
-
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter({
+  ).useRouter({
     authFunc: () => new Auth(),
   });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -37,11 +35,10 @@ test("router test login not access", async function () {
       httpMethod: "POST",
     },
     {}
-  );
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter({
+  ).useRouter({
     authFunc: () => new Auth(),
   });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(403);
@@ -58,11 +55,10 @@ test("router test admin access", async function () {
       httpMethod: "POST",
     },
     {}
-  );
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter({
+  ).useRouter({
     authFunc: () => new Auth(),
   });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -79,11 +75,10 @@ test("router test admin not access", async function () {
       httpMethod: "POST",
     },
     {}
-  );
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter({
+  ).useRouter({
     authFunc: () => new Auth(),
   });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(403);

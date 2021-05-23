@@ -7,9 +7,8 @@ test("restful root get", async function () {
     path: "/",
     httpMethod: "GET",
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);

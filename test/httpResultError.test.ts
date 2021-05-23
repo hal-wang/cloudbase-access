@@ -8,9 +8,8 @@ test("router test", async function () {
     path: "/error",
     httpMethod: "POST",
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
 

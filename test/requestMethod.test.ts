@@ -8,9 +8,8 @@ test("request method lower case", async function () {
       httpMethod: "post",
     },
     {}
-  );
+  ).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -23,9 +22,8 @@ test("request method upper case", async function () {
       httpMethod: "POST",
     },
     {}
-  );
+  ).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);

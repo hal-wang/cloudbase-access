@@ -7,9 +7,8 @@ test(`action name error`, async function () {
     path: "/err",
     httpMethod: HttpMethod.post,
   };
-  const startup = new Startup(event, {});
+  const startup = new Startup(event, {}).useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
   await startup.invoke();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(404);

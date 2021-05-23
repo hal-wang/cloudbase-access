@@ -19,7 +19,8 @@ export default class HttpContext {
   public getBag<T>(key: string): T {
     return this.bag[key] as T;
   }
-  public setBag<T>(key: string, value: T): void {
+  public setBag<T>(key: string, value: T): HttpContext {
     this.bag[key] = value;
+    return this;
   }
 }

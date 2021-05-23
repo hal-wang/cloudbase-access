@@ -7,14 +7,13 @@ test("middleware additives", async function () {
     path: "/simple/router",
     httpMethod: "POST",
   };
-  const startup = new Startup(event, {});
-
-  startup.use(() => new Mdw1());
-  startup.use(() => new Mdw2());
-  startup.use(() => new Mdw3());
-  startup.use(() => new Mdw4());
+  const startup = new Startup(event, {})
+    .use(() => new Mdw1())
+    .use(() => new Mdw2())
+    .use(() => new Mdw3())
+    .use(() => new Mdw4())
+    .useRouter();
   startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
-  startup.useRouter();
 
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
