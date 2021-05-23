@@ -2,6 +2,7 @@ import { Startup } from "../src/index";
 import Authority from "../src/Middleware/Authority";
 import linq = require("linq");
 import global from "./global";
+import TestConfig from "./TestConfig";
 
 test("router test login access", async function () {
   const startup = new Startup(
@@ -16,7 +17,7 @@ test("router test login access", async function () {
     {}
   );
 
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter({
     authFunc: () => new Auth(),
   });
@@ -37,7 +38,7 @@ test("router test login not access", async function () {
     },
     {}
   );
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter({
     authFunc: () => new Auth(),
   });
@@ -58,7 +59,7 @@ test("router test admin access", async function () {
     },
     {}
   );
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter({
     authFunc: () => new Auth(),
   });
@@ -79,7 +80,7 @@ test("router test admin not access", async function () {
     },
     {}
   );
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter({
     authFunc: () => new Auth(),
   });

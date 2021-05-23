@@ -1,4 +1,5 @@
 import { HttpMethod, Startup } from "../../src/index";
+import TestConfig from "../TestConfig";
 
 test(`restful query test1`, async function () {
   const event = {
@@ -7,7 +8,7 @@ test(`restful query test1`, async function () {
     httpMethod: HttpMethod.get,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
 
   const result = await startup.invoke();
@@ -22,7 +23,7 @@ test(`restful query test2`, async function () {
     httpMethod: HttpMethod.get,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
 
   const result = await startup.invoke();

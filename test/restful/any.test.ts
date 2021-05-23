@@ -1,4 +1,5 @@
 import { HttpMethod, Startup } from "../../src/index";
+import TestConfig from "../TestConfig";
 
 const methods = ["test", "aaa", "NO"];
 
@@ -10,7 +11,7 @@ methods.forEach((method) => {
       httpMethod: method,
     };
     const startup = new Startup(event, {});
-    startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+    startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
     startup.useRouter();
 
     const result = await startup.invoke();

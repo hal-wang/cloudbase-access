@@ -1,5 +1,6 @@
 import { ErrorMessage, Startup } from "../src";
 import StatusCode from "../src/Response/StatusCode";
+import TestConfig from "./TestConfig";
 
 test("router test", async function () {
   const event = {
@@ -8,7 +9,7 @@ test("router test", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
 
   await startup.invoke();

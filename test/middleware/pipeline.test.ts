@@ -1,4 +1,5 @@
 import { Middleware, Startup } from "../../src/index";
+import TestConfig from "../TestConfig";
 
 test("middleware additives", async function () {
   const event = {
@@ -12,7 +13,7 @@ test("middleware additives", async function () {
   startup.use(() => new Mdw2());
   startup.use(() => new Mdw3());
   startup.use(() => new Mdw4());
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
 
   const result = await startup.invoke();

@@ -1,4 +1,5 @@
 import { HttpMethod, Startup, Request } from "../src/index";
+import TestConfig from "./TestConfig";
 
 test("method override", async function () {
   const event = {
@@ -33,7 +34,7 @@ test(`method override request`, async function () {
     },
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
 
   await startup.invoke();

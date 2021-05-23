@@ -1,4 +1,5 @@
 import { Startup } from "../src/index";
+import TestConfig from "./TestConfig";
 
 test("request method lower case", async function () {
   const startup = new Startup(
@@ -8,7 +9,7 @@ test("request method lower case", async function () {
     },
     {}
   );
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
 
   await startup.invoke();
@@ -23,7 +24,7 @@ test("request method upper case", async function () {
     },
     {}
   );
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
 
   await startup.invoke();

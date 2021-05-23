@@ -1,4 +1,5 @@
 import { HttpMethod, Startup } from "../../src/index";
+import TestConfig from "../TestConfig";
 
 test(`find next`, async function () {
   const event = {
@@ -7,7 +8,7 @@ test(`find next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
@@ -20,7 +21,7 @@ test(`find simple`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
@@ -34,7 +35,7 @@ test(`find simple next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
@@ -48,7 +49,7 @@ test(`find miss next`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
@@ -63,7 +64,7 @@ test(`find miss next 2`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
@@ -77,7 +78,7 @@ test(`find miss next 3`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
@@ -91,7 +92,7 @@ test(`find miss next 4`, async function () {
     httpMethod: HttpMethod.post,
   };
   const startup = new Startup(event, {});
-  startup.ctx.setBag("unitTest", { dir: "test/controllers" });
+  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
   startup.useRouter();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);
