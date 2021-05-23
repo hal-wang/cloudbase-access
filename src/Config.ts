@@ -1,6 +1,7 @@
 import { existsSync, lstatSync } from "fs";
 import * as path from "path";
 import ApiDocsConfig from "./ApiDocs/ApiDocsConfig";
+import Constant from "./Constant";
 
 export interface AppConfig {
   router?: RouterConfig;
@@ -27,7 +28,7 @@ export default class Config {
   public static get default(): AppConfig {
     if (this._default) return this._default;
 
-    const configPath = path.join(process.cwd(), "cba.config.json");
+    const configPath = path.join(process.cwd(), Constant.configFileName);
     if (!existsSync(configPath)) {
       throw new Error("the config file is not exist");
     } else {
@@ -37,8 +38,16 @@ export default class Config {
     }
   }
 
-  public static defaultRouterDir = "controllers";
-  public static defaultStrict = false;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public static get tsconfig(): any | null {
+    const tsconfigPath = path.join(process.cwd(), "tsconfig.json");
+    if (existsSync(tsconfigPath)) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      return require(tsconfigPath);
+    } else {
+      return null;
+    }
+  }
 
   public static getRouterDirPath(config: AppConfig): string {
     if (!config) {
@@ -48,23 +57,11 @@ export default class Config {
       throw new Error("there is no router config");
     }
 
-    let outDir = "";
-    const tsconfigPath = path.join(process.cwd(), "tsconfig.json");
-    if (existsSync(tsconfigPath)) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const tsconfig = require(tsconfigPath);
-      const existDir =
-        tsconfig.compilerOptions && tsconfig.compilerOptions.outDir;
-      if (existDir) {
-        outDir = tsconfig.compilerOptions.outDir;
-      }
-    }
-
     const result = path.join(
-      outDir,
+      this.outDir,
       config.router && config.router.dir
         ? config.router.dir
-        : this.defaultRouterDir
+        : Constant.defaultRouterDir
     );
 
     if (!existsSync(result) || !lstatSync(result).isDirectory()) {
@@ -72,5 +69,14 @@ export default class Config {
     }
 
     return result;
+  }
+
+  public static get outDir(): string {
+    const tsconfig = this.tsconfig;
+    return tsconfig &&
+      tsconfig.compilerOptions &&
+      tsconfig.compilerOptions.outDir
+      ? tsconfig.compilerOptions.outDir
+      : "";
   }
 }

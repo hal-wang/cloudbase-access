@@ -5,20 +5,12 @@ import * as path from "path";
 import * as shell from "shelljs";
 import { Config } from "../dist";
 import MapCreater from "../dist/Map/MapCreater";
+import Constant from "../dist/Constant";
 
-let outDir = "/";
-const tsconfigPath = path.join(process.cwd(), "tsconfig.json");
-if (fs.existsSync(tsconfigPath)) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const tsconfig = require(tsconfigPath);
-  const existDir = tsconfig.compilerOptions && tsconfig.compilerOptions.outDir;
-  if (existDir) {
-    outDir = tsconfig.compilerOptions.outDir;
-  }
-
-  if (existDir) {
-    const targetRoot = path.join(process.cwd(), outDir);
-    deleteFile(targetRoot);
+const outDir = Config.outDir;
+if (Config.tsconfig) {
+  if (outDir) {
+    deleteFile(path.join(process.cwd(), outDir));
   }
 
   const tscResult = shell.exec("tsc");
@@ -29,7 +21,7 @@ if (fs.existsSync(tsconfigPath)) {
   }
   deleteFile(outDir, ".d.ts");
 
-  if (existDir) {
+  if (outDir) {
     if (Config.default.ts && Config.default.ts.static) {
       Config.default.ts.static.forEach(({ source, target }) => {
         const sourcePath = path.join(process.cwd(), source);
@@ -42,14 +34,15 @@ if (fs.existsSync(tsconfigPath)) {
       path.join(process.cwd(), outDir, "package.json")
     );
     copyFile(
-      path.join(process.cwd(), "cba.config.json"),
-      path.join(process.cwd(), outDir, "cba.config.json")
+      path.join(process.cwd(), Constant.configFileName),
+      path.join(process.cwd(), outDir, Constant.configFileName)
     );
   }
 }
 
-const mapCreater = new MapCreater(Config.getRouterDirPath(Config.default));
-mapCreater.write();
+new MapCreater(Config.getRouterDirPath(Config.default)).write(
+  path.join(Config.outDir, Constant.mapFileName)
+);
 
 function deleteFile(filePath: string, type?: string) {
   if (!fs.existsSync(filePath)) return;

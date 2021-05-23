@@ -1,11 +1,10 @@
 import * as shell from "shelljs";
 import * as fs from "fs";
-
-const cbaMapPath = "./cba-map.json";
+import Constant from "../src/Constant";
 
 test("js demo", async function () {
+  const cbaMapPath = `./${Constant.mapFileName}`;
   shell.cd("./demo/js");
-
   try {
     if (fs.existsSync(cbaMapPath)) {
       fs.unlinkSync(cbaMapPath);
@@ -20,8 +19,8 @@ test("js demo", async function () {
 });
 
 test("ts demo", async function () {
+  const cbaMapPath = `./dist/${Constant.mapFileName}`;
   shell.cd("./demo/ts");
-
   try {
     if (fs.existsSync(cbaMapPath)) {
       fs.unlinkSync(cbaMapPath);

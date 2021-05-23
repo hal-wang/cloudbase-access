@@ -1,6 +1,7 @@
 import { writeFileSync, existsSync, lstatSync, readdirSync } from "fs";
 import linq = require("linq");
 import path = require("path");
+import Constant from "../Constant";
 
 export default class MapCreater {
   constructor(private readonly dir: string) {
@@ -17,8 +18,11 @@ export default class MapCreater {
     return this.readFilesFromFolder("", []);
   }
 
-  write(filePath = "cba-map.json"): void {
-    writeFileSync(path.join(process.cwd(), filePath), JSON.stringify(this.map));
+  write(filePath: string = Constant.mapFileName): void {
+    writeFileSync(
+      path.join(process.cwd(), filePath.toString()),
+      JSON.stringify(this.map)
+    );
   }
 
   private get dirPath(): string {

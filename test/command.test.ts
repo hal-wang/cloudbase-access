@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as fs from "fs";
 import * as shell from "shelljs";
+import Constant from "../src/Constant";
 
 test("cba command", async function () {
-  const sourceConfig = "./demo/cba.config.json";
-  const targetConfig = "./test/command/cba.config.json";
+  const sourceConfig = `./demo/${Constant.configFileName}`;
+  const targetConfig = `./test/command/${Constant.configFileName}`;
   fs.copyFileSync(sourceConfig, targetConfig);
 
   shell.cd("./test/command");

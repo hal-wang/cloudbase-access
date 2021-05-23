@@ -10,6 +10,7 @@ import Config, { RouterConfig } from "./Config";
 import SimpleMiddleware from "./Middleware/SimpleMiddleware";
 import ResponseError from "./Response/ResponseError";
 import StatusCode from "./Response/StatusCode";
+import Constant from "./Constant";
 
 export default class Startup {
   private static _current: Startup;
@@ -112,7 +113,7 @@ export default class Startup {
 
   private get dir(): string {
     if (this.unitTest) {
-      return this.unitTest.dir || Config.defaultRouterDir;
+      return this.unitTest.dir || Constant.defaultRouterDir;
     }
 
     return Config.getRouterDirPath(Config.default);
@@ -129,7 +130,7 @@ export default class Startup {
   private get strict(): boolean {
     if (this.unitTest) {
       return this.unitTest.strict == undefined
-        ? Config.defaultStrict
+        ? !!Constant.defaultStrict
         : this.unitTest.strict;
     }
 

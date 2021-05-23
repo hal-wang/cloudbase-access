@@ -9,6 +9,7 @@ import PathParser from "./PathParser";
 import HttpMethod from "../Request/HttpMethod";
 import StatusCode from "../Response/StatusCode";
 import Response from "../Response";
+import Constant from "../Constant";
 
 export default class MapParser {
   public readonly realPath: string;
@@ -183,7 +184,7 @@ export default class MapParser {
   }
 
   private getMap(): string[] {
-    const mapPath = path.join(process.cwd(), "cba-map.json");
+    const mapPath = path.join(process.cwd(), Constant.mapFileName);
     if (existsSync(mapPath)) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       return require(mapPath);
