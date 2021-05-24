@@ -20,7 +20,7 @@ export interface TsStaticItemConfig {
 }
 
 export interface TsConfig {
-  static?: TsStaticItemConfig[];
+  static?: (TsStaticItemConfig | string)[];
 }
 
 export default class Config {

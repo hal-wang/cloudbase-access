@@ -9,10 +9,7 @@
         "source": "static",
         "target": "assets"
       },
-      {
-        "source": "static.txt",
-        "target": "read.txt"
-      }
+      "static.txt"
     ]
   },
   "doc": {

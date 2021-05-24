@@ -21,8 +21,7 @@ test("cba command", async function () {
       {
         const execResult = shell.exec(`npm i && npm run build`);
         expect(execResult.code).toBe(0);
-        expect(fs.existsSync(`./dist`)).toBe(true);
-        expect(fs.existsSync(`./README.md`)).toBe(false);
+        expectFile(tsconfig.compilerOptions.outDir);
       }
 
       tsconfig.compilerOptions.outDir = "./dist";
@@ -31,7 +30,7 @@ test("cba command", async function () {
       {
         const execResult = shell.exec(`npm run build`);
         expect(execResult.code).toBe(0);
-        expect(fs.existsSync(tsconfig.compilerOptions.outDir)).toBe(true);
+        expectFile(tsconfig.compilerOptions.outDir);
       }
     } finally {
       fs.writeFileSync("./tsconfig.json", tsconfigStr);
@@ -40,3 +39,11 @@ test("cba command", async function () {
     shell.cd("../..");
   }
 });
+
+function expectFile(outDir: string) {
+  expect(fs.existsSync(outDir)).toBe(true);
+  expect(fs.existsSync(`${outDir}/static.txt`)).toBe(true);
+  expect(fs.existsSync(`${outDir}/assets/file1.txt`)).toBe(true);
+  expect(fs.existsSync(`${outDir}/assets/file2.txt`)).toBe(true);
+  expect(fs.existsSync(`${outDir}/README.md`)).toBe(false);
+}

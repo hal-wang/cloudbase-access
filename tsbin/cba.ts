@@ -23,7 +23,16 @@ if (Config.tsconfig) {
 
   if (outDir) {
     if (Config.default.ts && Config.default.ts.static) {
-      Config.default.ts.static.forEach(({ source, target }) => {
+      Config.default.ts.static.forEach((staticItem) => {
+        let source: string;
+        let target: string;
+        if (typeof staticItem == "string") {
+          source = staticItem;
+          target = staticItem;
+        } else {
+          source = staticItem.source;
+          target = staticItem.target;
+        }
         const sourcePath = path.join(process.cwd(), source);
         const targetPath = path.join(process.cwd(), outDir, target);
         copyFile(sourcePath, targetPath);
