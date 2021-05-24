@@ -114,6 +114,7 @@ npm run build
     "subtitle": "cba-subtitle",
     "parts": [
       {
+        "name": "part1",
         "inputHeaders": [
           {
             "name": "base-input-header",
@@ -123,6 +124,7 @@ npm run build
         ]
       },
       {
+        "name": "part2",
         "outputHeaders": [
           {
             "name": "base-output-header",
@@ -132,7 +134,7 @@ npm run build
         ]
       },
       {
-        "name": "custom",
+        "name": "part3",
         "query": [
           {
             "name": "base-query",
