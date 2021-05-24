@@ -21,6 +21,7 @@
     "subtitle": "cba-subtitle",
     "parts": [
       {
+        "name": "part1",
         "inputHeaders": [
           {
             "name": "base-input-header",
@@ -30,6 +31,7 @@
         ]
       },
       {
+        "name": "part2",
         "outputHeaders": [
           {
             "name": "base-output-header",
@@ -39,7 +41,7 @@
         ]
       },
       {
-        "name": "custom",
+        "name": "part3",
         "query": [
           {
             "name": "base-query",
