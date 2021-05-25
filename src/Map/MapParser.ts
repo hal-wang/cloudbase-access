@@ -10,6 +10,7 @@ import HttpMethod from "../Request/HttpMethod";
 import StatusCode from "../Response/StatusCode";
 import Response from "../Response";
 import Constant from "../Constant";
+import MapItem from "./MapItem";
 
 export default class MapParser {
   public readonly realPath: string;
@@ -52,13 +53,13 @@ export default class MapParser {
     }
   }
 
-  private getRestfulMapPath(map: string[]): string {
+  private getRestfulMapPath(map: MapItem[]): string {
     let mapPath;
 
     if (!this.strict) {
       const matchedPaths = linq
         .from(map)
-        .where((item) => this.isSimplePathMatched(item))
+        .where((item) => this.isSimplePathMatched(item.path))
         .toArray();
       mapPath = this.getMostLikePath(matchedPaths);
       if (mapPath) return mapPath;
@@ -66,24 +67,24 @@ export default class MapParser {
 
     const matchedPaths = linq
       .from(map)
-      .where((item) => !!new PathParser(item).httpMethod)
-      .where((item) => this.isMethodPathMatched(item, true))
+      .where((item) => !!new PathParser(item.path).httpMethod)
+      .where((item) => this.isMethodPathMatched(item.path, true))
       .toArray();
     mapPath = this.getMostLikePath(matchedPaths);
     if (mapPath) return mapPath;
 
     const anyMethodPaths = linq
       .from(map)
-      .where((item) => new PathParser(item).httpMethod == HttpMethod.any)
-      .where((item) => this.isMethodPathMatched(item, false))
+      .where((item) => new PathParser(item.path).httpMethod == HttpMethod.any)
+      .where((item) => this.isMethodPathMatched(item.path, false))
       .toArray();
     mapPath = this.getMostLikePath(anyMethodPaths);
     if (mapPath) return mapPath;
 
     const otherMethodPathCount = linq
       .from(map)
-      .where((item) => !!new PathParser(item).httpMethod)
-      .where((item) => this.isMethodPathMatched(item, false))
+      .where((item) => !!new PathParser(item.path).httpMethod)
+      .where((item) => this.isMethodPathMatched(item.path, false))
       .count();
     if (otherMethodPathCount) throw this.methodNotAllowedErr;
 
@@ -132,15 +133,15 @@ export default class MapParser {
     return true;
   }
 
-  private getMostLikePath(mapPaths: string[]): string | undefined {
-    if (!mapPaths || !mapPaths.length) return;
-    if (mapPaths.length == 1) return mapPaths[0];
+  private getMostLikePath(mapItems: MapItem[]): string | undefined {
+    if (!mapItems || !mapItems.length) return;
+    if (mapItems.length == 1) return mapItems[0].path;
 
     const pathsParts = <{ path: string; parts: string[] }[]>[];
-    mapPaths.forEach((path) => {
+    mapItems.forEach((mapItem) => {
       pathsParts.push({
-        path: path,
-        parts: path.toLowerCase().split("/"),
+        path: mapItem.path,
+        parts: mapItem.path.toLowerCase().split("/"),
       });
     });
 
@@ -183,7 +184,7 @@ export default class MapParser {
     return path.join(process.cwd(), this.dir);
   }
 
-  private getMap(): string[] {
+  private getMap(): MapItem[] {
     const mapPath = path.join(process.cwd(), Constant.mapFileName);
     if (existsSync(mapPath)) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
