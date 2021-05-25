@@ -1,5 +1,6 @@
 import { HttpMethod, Startup } from "../../src/index";
-import TestConfig from "../TestConfig";
+import "../UseTest";
+import "../../src/Router";
 
 test(`action name error`, async function () {
   const event = {
@@ -7,8 +8,7 @@ test(`action name error`, async function () {
     path: "/err",
     httpMethod: HttpMethod.post,
   };
-  const startup = new Startup(event, {}).useRouter();
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
+  const startup = new Startup(event, {}).useTest().useRouter();
   await startup.invoke();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(404);

@@ -1,5 +1,6 @@
 import { HttpMethod, Startup } from "../../src/index";
-import TestConfig from "../TestConfig";
+import "../UseTest";
+import "../../src/Router";
 
 const methods = [
   HttpMethod.get,
@@ -20,8 +21,7 @@ methods.forEach((method) => {
       path: "/restful",
       httpMethod: method,
     };
-    const startup = new Startup(event, {}).useRouter();
-    startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
+    const startup = new Startup(event, {}).useTest().useRouter();
 
     const result = await startup.invoke();
     expect(result.statusCode).toBe(200);

@@ -1,5 +1,6 @@
 import { Middleware, Startup } from "../../src/index";
-import TestConfig from "../TestConfig";
+import "../UseTest";
+import "../../src/Router";
 
 test("middleware additives", async function () {
   const event = {
@@ -8,12 +9,12 @@ test("middleware additives", async function () {
     httpMethod: "POST",
   };
   const startup = new Startup(event, {})
+    .useTest()
     .use(() => new Mdw1())
     .use(() => new Mdw2())
     .use(() => new Mdw3())
     .use(() => new Mdw4())
     .useRouter();
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
 
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);

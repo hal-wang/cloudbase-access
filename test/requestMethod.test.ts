@@ -1,5 +1,6 @@
 import { Startup } from "../src/index";
-import TestConfig from "./TestConfig";
+import "./UseTest";
+import "../src/Router";
 
 test("request method lower case", async function () {
   const startup = new Startup(
@@ -8,8 +9,9 @@ test("request method lower case", async function () {
       httpMethod: "post",
     },
     {}
-  ).useRouter();
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
+  )
+    .useTest()
+    .useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);
@@ -22,8 +24,9 @@ test("request method upper case", async function () {
       httpMethod: "POST",
     },
     {}
-  ).useRouter();
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
+  )
+    .useTest()
+    .useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);

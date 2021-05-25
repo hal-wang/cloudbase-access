@@ -1,5 +1,6 @@
 import { Response, Startup } from "../src/index";
-import TestConfig from "./TestConfig";
+import "./UseTest";
+import "../src/Router";
 
 test("router test", async function () {
   const event = <Record<string, unknown>>{
@@ -8,8 +9,7 @@ test("router test", async function () {
     httpMethod: "POST",
   };
   Response.baseHeaders["custom-header"] = "aaa";
-  const startup = new Startup(event, {}).useRouter();
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
+  const startup = new Startup(event, {}).useTest().useRouter();
 
   await startup.invoke();
   expect(startup.result.statusCode).toBe(200);

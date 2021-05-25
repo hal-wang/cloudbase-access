@@ -1,16 +1,11 @@
-import Authority from "./Middleware/Authority";
 import Response from "./Response";
 import Middleware from "./Middleware";
 import Request from "./Request";
-import MapParser from "./Map/MapParser";
 import HttpContext from "./HttpContext";
-import Action from "./Middleware/Action";
-import { ResponseStruct } from ".";
-import Config, { RouterConfig } from "./Config";
 import SimpleMiddleware from "./Middleware/SimpleMiddleware";
 import ResponseError from "./Response/ResponseError";
 import StatusCode from "./Response/StatusCode";
-import Constant from "./Constant";
+import ResponseStruct from "./Response/ResponseStruct";
 
 export default class Startup {
   private static _current: Startup;
@@ -59,32 +54,6 @@ export default class Startup {
     return this;
   }
 
-  public useRouter(config?: { authFunc?: () => Authority }): Startup {
-    if (config && config.authFunc) {
-      const authFunc = config.authFunc;
-      this.use(() => {
-        const auth = authFunc();
-        const action = this.getAction();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (auth.roles as any) = action.roles;
-        return auth;
-      });
-    }
-    this.use(() => {
-      return this.getAction();
-    });
-
-    return this;
-  }
-
-  getAction(): Action {
-    if (!this.ctx.action) {
-      const mapParser = new MapParser(this.ctx.req, this.dir, this.strict);
-      this.ctx.action = mapParser.action;
-    }
-    return this.ctx.action;
-  }
-
   async invoke(): Promise<ResponseStruct> {
     try {
       const { mdf, md } = this.ctx.mds[0];
@@ -105,40 +74,5 @@ export default class Startup {
     }
 
     return this.result;
-  }
-
-  private get unitTest(): RouterConfig {
-    return this.ctx.getBag<RouterConfig>("unitTest");
-  }
-
-  private get dir(): string {
-    if (this.unitTest) {
-      return this.unitTest.dir || Constant.defaultRouterDir;
-    }
-
-    return Config.getRouterDirPath(Config.default);
-  }
-
-  /**
-   * strict
-   *
-   * if not, the path end with the httpMethod word will be matched.
-   * for example, the post request with path 'user/get' match 'user.ts'.
-   *
-   * if true, the action in definition must appoint method.
-   */
-  private get strict(): boolean {
-    if (this.unitTest) {
-      return this.unitTest.strict == undefined
-        ? !!Constant.defaultStrict
-        : this.unitTest.strict;
-    }
-
-    const config = Config.default;
-    if (config && config.router && config.router.strict != undefined) {
-      return config.router.strict;
-    }
-
-    return false;
   }
 }

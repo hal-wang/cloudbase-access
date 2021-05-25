@@ -2,19 +2,20 @@ import * as fs from "fs";
 import ApiDocsCreater from "../../src/ApiDocs/ApiDocsCreater";
 import { AppConfig } from "../../src/Config";
 import Constant from "../../src/Constant";
-import TestConfig from "../TestConfig";
+import "../UseTest";
+import "../../src/Router";
 
 const configPath = `./demo/${Constant.configFileName}`;
 const config = JSON.parse(fs.readFileSync(configPath, "utf-8")) as AppConfig;
 if (!config || !config.router) {
   throw new Error();
 }
-config.router.dir = TestConfig.routerDir;
+config.router.dir = "./test/controllers";
 
 const creater = new ApiDocsCreater(config);
 Object.defineProperty(creater, "routerDir", {
   get: function () {
-    return TestConfig.routerDir;
+    return "./test/controllers";
   },
 });
 

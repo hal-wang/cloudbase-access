@@ -1,46 +1,113 @@
-import Request from "../Request";
 import { existsSync } from "fs";
-import path = require("path");
-import MapCreater from "./MapCreater";
-import Action from "../Middleware/Action";
 import linq = require("linq");
-import ResponseError from "../Response/ResponseError";
-import PathParser from "./PathParser";
-import HttpMethod from "../Request/HttpMethod";
-import StatusCode from "../Response/StatusCode";
-import Response from "../Response";
+import path = require("path");
+import Config, { RouterConfig } from "../Config";
 import Constant from "../Constant";
+import MapCreater from "./MapCreater";
 import MapItem from "./MapItem";
+import PathParser from "./PathParser";
+import Action from "../Middleware/Action";
+import Authority from "../Middleware/Authority";
+import HttpMethod from "../Request/HttpMethod";
+import Response from "../Response";
+import ResponseError from "../Response/ResponseError";
+import StatusCode from "../Response/StatusCode";
+import Startup from "../Startup";
+import * as cba from "..";
 
-export default class MapParser {
-  public readonly realPath: string;
+declare module ".." {
+  interface Startup {
+    useRouter(config?: { authFunc?: () => Authority }): cba.Startup;
+  }
+}
 
+cba.Startup.prototype.useRouter = function (config?: {
+  authFunc?: () => Authority;
+}): Startup {
+  return new Router(this, config).use();
+};
+
+class Router {
   constructor(
-    private readonly req: Request,
-    private readonly dir: string,
-    public readonly strict: boolean
-  ) {
-    const map = this.getMap();
-    this.realPath = this.getRestfulMapPath(map);
+    private readonly startup: Startup,
+    private readonly config?: { authFunc?: () => Authority }
+  ) {}
 
-    this.setQuery();
+  private get unitTest(): RouterConfig {
+    return this.startup.ctx.getBag<RouterConfig>("unitTest");
   }
 
-  public get action(): Action {
-    const filePath = path.join(this.dirPath, this.realPath);
+  private _mapItem: MapItem | undefined;
+  public get mapItem(): MapItem {
+    if (!this._mapItem) {
+      this._mapItem = this.getMapItem();
+    }
+    return this._mapItem;
+  }
+
+  use(): Startup {
+    if (this.config && this.config.authFunc) {
+      const authFunc = this.config.authFunc;
+      this.startup.use(() => {
+        const auth = authFunc();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (auth.roles as any) = this.mapItem.roles;
+        return auth;
+      });
+    }
+    this.startup.use(() => {
+      this.setQuery();
+      return this.getAction();
+    });
+    return this.startup;
+  }
+
+  private get dir(): string {
+    if (this.unitTest) {
+      return this.unitTest.dir || Constant.defaultRouterDir;
+    }
+
+    return Config.getRouterDirPath(Config.default);
+  }
+
+  /**
+   * strict
+   *
+   * if not, the path end with the httpMethod word will be matched.
+   * for example, the post request with path 'user/get' match 'user.ts'.
+   *
+   * if true, the action in definition must appoint method.
+   */
+  private get strict(): boolean {
+    if (this.unitTest) {
+      return this.unitTest.strict == undefined
+        ? !!Constant.defaultStrict
+        : this.unitTest.strict;
+    }
+
+    const config = Config.default;
+    if (config && config.router && config.router.strict != undefined) {
+      return config.router.strict;
+    }
+
+    return false;
+  }
+
+  public getAction(): Action {
+    const filePath = path.join(this.dirPath, this.mapItem.path);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const actionClass = require(filePath).default;
     const action = new actionClass() as Action;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (action as any).realPath = this.realPath;
+    (action as any).realPath = this.mapItem.path;
     return action;
   }
 
   private setQuery(): void {
-    if (!this.realPath.includes("^")) return;
+    if (!this.mapItem.path.includes("^")) return;
 
-    const reqPath = this.req.path;
-    const mapPathStrs = this.realPath.split("/");
+    const reqPath = this.startup.ctx.req.path;
+    const mapPathStrs = this.mapItem.path.split("/");
     const reqPathStrs = reqPath.split("/");
     for (let i = 0; i < Math.min(mapPathStrs.length, reqPathStrs.length); i++) {
       const mapPathStr = mapPathStrs[i];
@@ -49,20 +116,20 @@ export default class MapParser {
 
       const key = mapPathStr.substr(1, mapPathStr.length - 1);
       const value = decodeURIComponent(reqPathStr);
-      this.req.query[key] = value;
+      this.startup.ctx.req.query[key] = value;
     }
   }
 
-  private getRestfulMapPath(map: MapItem[]): string {
-    let mapPath;
-
+  private getMapItem(): MapItem {
+    const map = this.getMap();
+    let mapItem;
     if (!this.strict) {
       const matchedPaths = linq
         .from(map)
         .where((item) => this.isSimplePathMatched(item.path))
         .toArray();
-      mapPath = this.getMostLikePath(matchedPaths);
-      if (mapPath) return mapPath;
+      mapItem = this.getMostLikeMapItem(matchedPaths);
+      if (mapItem) return mapItem;
     }
 
     const matchedPaths = linq
@@ -70,16 +137,16 @@ export default class MapParser {
       .where((item) => !!new PathParser(item.path).httpMethod)
       .where((item) => this.isMethodPathMatched(item.path, true))
       .toArray();
-    mapPath = this.getMostLikePath(matchedPaths);
-    if (mapPath) return mapPath;
+    mapItem = this.getMostLikeMapItem(matchedPaths);
+    if (mapItem) return mapItem;
 
     const anyMethodPaths = linq
       .from(map)
       .where((item) => new PathParser(item.path).httpMethod == HttpMethod.any)
       .where((item) => this.isMethodPathMatched(item.path, false))
       .toArray();
-    mapPath = this.getMostLikePath(anyMethodPaths);
-    if (mapPath) return mapPath;
+    mapItem = this.getMostLikeMapItem(anyMethodPaths);
+    if (mapItem) return mapItem;
 
     const otherMethodPathCount = linq
       .from(map)
@@ -93,7 +160,7 @@ export default class MapParser {
 
   private isSimplePathMatched(mapPath: string): boolean {
     mapPath = this.removeExtension(mapPath);
-    const reqUrlStrs = this.req.path.toLowerCase().split("/");
+    const reqUrlStrs = this.startup.ctx.req.path.toLowerCase().split("/");
     const mapPathStrs = mapPath.toLowerCase().split("/");
     if (reqUrlStrs.length != mapPathStrs.length) return false;
 
@@ -105,15 +172,15 @@ export default class MapParser {
     methodIncluded: boolean
   ): boolean {
     mapPath = this.removeExtension(mapPath);
-    const reqUrlStrs = this.req.path
-      ? this.req.path.toLowerCase().split("/")
+    const reqUrlStrs = this.startup.ctx.req.path
+      ? this.startup.ctx.req.path.toLowerCase().split("/")
       : [];
     const mapPathStrs = mapPath.toLowerCase().split("/");
     if (reqUrlStrs.length != mapPathStrs.length - 1) return false;
-    if (!this.req.method) return false;
+    if (!this.startup.ctx.req.method) return false;
 
     if (methodIncluded) {
-      reqUrlStrs.push(String(this.req.method).toLowerCase());
+      reqUrlStrs.push(String(this.startup.ctx.req.method).toLowerCase());
     } else {
       mapPathStrs.splice(mapPathStrs.length - 1, 1);
     }
@@ -133,14 +200,14 @@ export default class MapParser {
     return true;
   }
 
-  private getMostLikePath(mapItems: MapItem[]): string | undefined {
+  private getMostLikeMapItem(mapItems: MapItem[]): MapItem | undefined {
     if (!mapItems || !mapItems.length) return;
-    if (mapItems.length == 1) return mapItems[0].path;
+    if (mapItems.length == 1) return mapItems[0];
 
-    const pathsParts = <{ path: string; parts: string[] }[]>[];
+    const pathsParts = <{ mapItem: MapItem; parts: string[] }[]>[];
     mapItems.forEach((mapItem) => {
       pathsParts.push({
-        path: mapItem.path,
+        mapItem: mapItem,
         parts: mapItem.path.toLowerCase().split("/"),
       });
     });
@@ -152,16 +219,16 @@ export default class MapParser {
         .toArray()
     );
     for (let i = 0; i < minPartsCount; i++) {
-      const notLikePaths = linq
+      const notLikeItems = linq
         .from(pathsParts)
-        .select((pp) => ({ part: pp.parts[i], path: pp.path }))
+        .select((pp) => ({ part: pp.parts[i], mapItem: pp.mapItem }))
         .where((p) => p.part.includes("^"))
         .toArray();
-      if (notLikePaths.length > 0 && notLikePaths.length < pathsParts.length) {
-        notLikePaths.forEach((mlp) => {
+      if (notLikeItems.length > 0 && notLikeItems.length < pathsParts.length) {
+        notLikeItems.forEach((mlp) => {
           const ppToRemove = linq
             .from(pathsParts)
-            .where((p) => p.path == mlp.path)
+            .where((p) => p.mapItem.path == mlp.mapItem.path)
             .firstOrDefault();
           if (ppToRemove) {
             pathsParts.splice(pathsParts.indexOf(ppToRemove), 1);
@@ -169,7 +236,7 @@ export default class MapParser {
         });
       }
 
-      if (pathsParts.length == 1) return pathsParts[0].path;
+      if (pathsParts.length == 1) return pathsParts[0].mapItem;
     }
 
     const mostLikePathParts = linq
@@ -177,7 +244,7 @@ export default class MapParser {
       .orderBy((pp) => pp.parts.length)
       .firstOrDefault();
     if (!mostLikePathParts) return;
-    return mostLikePathParts.path;
+    return mostLikePathParts.mapItem;
   }
 
   private get dirPath(): string {
@@ -203,23 +270,23 @@ export default class MapParser {
   }
 
   private get notFoundErr(): ResponseError {
-    const msg = `Can't find the path：${this.req.path}`;
+    const msg = `Can't find the path：${this.startup.ctx.req.path}`;
     return new ResponseError(
       new Response(StatusCode.notFound, {
         message: msg,
-        path: this.req.path,
+        path: this.startup.ctx.req.path,
       }),
       msg
     );
   }
 
   private get methodNotAllowedErr(): ResponseError {
-    const msg = `method not allowed：${this.req.method}`;
+    const msg = `method not allowed：${this.startup.ctx.req.method}`;
     return new ResponseError(
       new Response(StatusCode.methodNotAllowedMsg, {
         message: msg,
-        method: this.req.method,
-        path: this.req.path,
+        method: this.startup.ctx.req.method,
+        path: this.startup.ctx.req.path,
       }),
       msg
     );

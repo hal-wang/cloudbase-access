@@ -1,5 +1,6 @@
 import { Startup } from "../../src/index";
-import TestConfig from "../TestConfig";
+import "../UseTest";
+import "../../src/Router";
 
 test(`method not allowed`, async function () {
   const event = {
@@ -7,8 +8,7 @@ test(`method not allowed`, async function () {
     path: "/restful/1",
     httpMethod: "NO",
   };
-  const startup = new Startup(event, {}).useRouter();
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
+  const startup = new Startup(event, {}).useTest().useRouter();
   const result = await startup.invoke();
   expect(result.statusCode).toBe(405);
 });

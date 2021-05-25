@@ -1,5 +1,6 @@
 import { HttpMethod, Startup } from "../../src";
-import TestConfig from "../TestConfig";
+import "../UseTest";
+import "../../src/Router";
 
 test("restful root get", async function () {
   const event = {
@@ -7,8 +8,7 @@ test("restful root get", async function () {
     path: "/",
     httpMethod: "GET",
   };
-  const startup = new Startup(event, {}).useRouter();
-  startup.ctx.setBag("unitTest", { dir: TestConfig.routerDir });
+  const startup = new Startup(event, {}).useTest().useRouter();
 
   const result = await startup.invoke();
   expect(result.statusCode).toBe(200);

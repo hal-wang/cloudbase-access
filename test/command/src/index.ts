@@ -1,4 +1,5 @@
 import { Startup } from "@hal-wang/cloudbase-access";
+import "@hal-wang/cloudbase-access/dist/Router";
 
 export const main = async (
   event: Record<string, unknown>,
