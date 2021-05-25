@@ -34,7 +34,7 @@ class Router {
   ) {}
 
   private get unitTest(): RouterConfig {
-    return this.startup.ctx.getBag<RouterConfig>("unitTest");
+    return this.startup.ctx.getBag<RouterConfig>("B-UnitTest");
   }
 
   private _mapItem: MapItem | undefined;

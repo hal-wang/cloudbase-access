@@ -15,6 +15,6 @@ cba.Startup.prototype.useTest = function (config?: RouterConfig) {
     config.dir = "./test/controllers";
   }
 
-  this.ctx.setBag("unitTest", config);
+  this.ctx.setBag("B-UnitTest", config);
   return this;
 };
