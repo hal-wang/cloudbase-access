@@ -1,3 +1,5 @@
+> 已废弃，建议使用更灵活更强大的 [sfa](https://github.com/sfajs)
+
 # cloudbase-access ( cba )
 
 利用 NodeJS 和 CloudBase 快速创建 Serverless RESTful Api
