@@ -1,4 +1,5 @@
-> 已废弃，建议使用更灵活更强大的 [sfa](https://github.com/sfajs)
+> 已更新为更轻更灵活的 sfa, 详情见 <https://github.com/sfajs>
+> [@sfajs/cloudbase](https://github.com/sfajs/cloudbase) 为本项目升级版
 
 # cloudbase-access ( cba )
 
