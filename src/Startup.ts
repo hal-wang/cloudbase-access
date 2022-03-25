@@ -66,8 +66,9 @@ export default class Startup {
       mdw.init(this.ctx, 0);
       await mdw.invoke();
     } catch (err) {
-      if (err.res) {
-        this.ctx.res.update(err.res);
+      const error = err as any;
+      if (error.res) {
+        this.ctx.res.update(error.res);
       } else {
         throw err;
       }
