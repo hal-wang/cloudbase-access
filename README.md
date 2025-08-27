@@ -1,6 +1,6 @@
-> 已更新为更轻更灵活的 Ipare, 详情见 <https://github.com/ipare>
+> 已更新为更轻更灵活的 halsp, 详情见 <https://github.com/halsp>
 
-> [@ipare/lambda](https://github.com/ipare/lambda) 为本项目升级版
+> [@halsp/lambda](https://github.com/halsp/lambda) 为本项目升级版
 
 # cloudbase-access ( cba )
 
